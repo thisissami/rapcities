@@ -53,7 +53,7 @@ module.exports = function fileServer(maxage){
         contentType = 'image/svg+xml';
       }
 	  else if(req.url == '/bot.svg'){
-		folder = __dirname + '/pde/SVG/applet_js/bot.svg';
+		folder = __dirname + '/pde/SVG/applet_js/rappericon.svg';
         contentType = 'image/svg+xml';
       }	  else if(req.url == '/frame.svg'){
 		folder = __dirname + '/pde/SVG/applet_js/frame.svg';

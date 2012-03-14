@@ -41,7 +41,7 @@ else{
     require('./fileServer')(),
     //remove this once connect reaches v2.0.0 - connect.compress({memLevel:9}),
     connect.logger(),
-    onRequest).listen(8888);
+    onRequest).listen(80);
   console.log('Server has started.');
 }
 

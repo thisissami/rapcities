@@ -55,7 +55,7 @@ void setup() {
   // work at the "map" level
 
 $.ajax({
-	url: "http://localhost:8888/getArtists", 
+	url: "http://rapcities.com/getArtists", 
 	success: function(data){if(data){artlocs = data}}
 });
 
@@ -619,7 +619,7 @@ void setMapBoundsUsingScreenCoords( float x0, float y0, float x1, float y1 ){
     println( "adding Node using root coords:"+r.x+" "+r.y+" " );
 
 $.ajax({
-	url: "http://localhost:8888/addArtist", 
+	url: "http://rapcities.com/addArtist", 
 	data: {name: artist, x: r.x, y: r.y}, 
 	success: function(data){if(data){alert("Successfully added artist: " + data.name + "!")}}
 });
