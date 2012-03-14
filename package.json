@@ -2,6 +2,7 @@
 	"name": "rapcities-uploader",
 	"description": "uploader for rapcities",
 	"author": "thisissami",
+	"version": "0.0.1",
 	"dependencies": {
 		"connect": "1.8.0",
 		"mongodb": "0.9.7-0",
