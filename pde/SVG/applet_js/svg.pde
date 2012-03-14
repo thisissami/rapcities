@@ -376,16 +376,19 @@ class SceneGraph {
     tmp = root.getNode(0);
     if ( tmp.getName()=="map" ) {
       pushStyle();
-      fill(125, 125, 255);
+      fill(255);
+		noStroke();
+		ellipseMode(CENTER);
+		ellipse(mouseX,mouseY,10,10);
       //println(mouseX+","+mouseY);
-      PVector p = new PVector(mouseX, mouseY);
+      /*PVector p = new PVector(mouseX, mouseY);
       text("Screen:" +p.x + " " + p.y, mouseX,mouseY);
       PVector r = root.fromParentCoords( p, null );      
       PVector c = tmp.fromParentCoords( r, null );
       pVector s = m_fromRoot.mult( p, null );
       text("\n Frame:" +r.x + " " + r.y, mouseX,mouseY+15);
       text("\n Map:" +c.x + " " + c.y, mouseX,mouseY+30);
-      text("\n current:" +s.x + " " + s.y, mouseX,mouseY+45);
+      text("\n current:" +s.x + " " + s.y, mouseX,mouseY+45);*/
       //text("\n Map:" +c.x + " " + c.y, mouseX, mouseY);
       popStyle();
     }  
@@ -608,22 +611,12 @@ void setMapBoundsUsingScreenCoords( float x0, float y0, float x1, float y1 ){
       PVector vectorC = tmp.fromParentCoords( p2, null );
 $.ajax({
 	url: "http://rapcities.com/addArtist", 
+	//url: "http://localhost:8888/addArtist",
 	data: {name: artist, x: vectorC.x, y: vectorC.y}, 
 	success: function(data){if(data){alert("Successfully added artist: " + data.name + "!")}}
 });
 
-/// SEND 
-
-
-/// FILES
-
-
-///FROM HERE PLZ KTHXBAI
-
-
-///JKNKTHXBAIET
-
-    return addNode( filename, nodeName, r.x, r.y, s.x,s.y );
+    //return addNode( filename, nodeName, r.x, r.y, s.x,s.y );
 }
 
   // get lowest z-order node using root node's coordinate system ( ie "screen" )

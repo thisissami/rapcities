@@ -56,6 +56,7 @@ void setup() {
 
 $.ajax({
 	url: "http://rapcities.com/getArtists", 
+	//url: "http://localhost:8888/getArtists", 
 	success: function(data){if(data){artlocs = data}}
 });
 
@@ -620,6 +621,7 @@ void setMapBoundsUsingScreenCoords( float x0, float y0, float x1, float y1 ){
 
 $.ajax({
 	url: "http://rapcities.com/addArtist", 
+	//url: "http://localhost:8888/addArtist",
 	data: {name: artist, x: r.x, y: r.y}, 
 	success: function(data){if(data){alert("Successfully added artist: " + data.name + "!")}}
 });
