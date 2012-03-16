@@ -1,6 +1,6 @@
 var mongodb = require('mongodb'),
-  //mongoserver = new mongodb.Server('10.112.0.110', 26374),
-  mongoserver = new mongodb.Server('localhost', 26374),
+  mongoserver = new mongodb.Server('10.112.0.110', 26374),
+  //mongoserver = new mongodb.Server('localhost', 26374),
   dbConnector = new mongodb.Db('uenergy', mongoserver);
 dbConnector.open(function(err, DB){
     if(err){

@@ -55,8 +55,8 @@ void setup() {
   scene.gotoChild( "map" );
   // work at the "map" level
 $.ajax({
-	//url: "http://rapcities.com/getArtists", 
-	url: "http://localhost:8888/getArtists", 
+	url: "http://rapcities.com/getArtists", 
+	//url: "http://localhost:8888/getArtists", 
 	success: function(data){if(data){artlocs = data}}
 });
 scene.setMapBounds();
