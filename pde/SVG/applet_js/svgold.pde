@@ -9,8 +9,6 @@ float mouseXPrev=0.0f, mouseYPrev = 0.0f;
 boolean rightDragging, leftDragging, leftClicked, rightClicked;
 
 int BOTCOUNT = 0;
-String ARTISTSVG = "bot.svg";
-PVector artistPos = new PVector[1];
 
 SceneGraph scene = new SceneGraph( this );
 
@@ -100,16 +98,17 @@ void perFrame() {
       println( "clicked location not within bounds of root." );
     } else if ( clickedNode.getName() == "map" ) {
 	
-      	artist = document.input.artist.value;
-
-		var yes = confirm("Upload these coordinates for artist: " + artist + "?");
-		if(yes){println("uploading!");
+	artist = document.input.artist.value;
+	
+	var yes = confirm("Upload these coordinates for artist: " + artist + "?");
+	if(yes){println("uploading!");
       String iconName = "bot"+BOTCOUNT++;
-      SceneNode added = scene.addNodeUsingScreenCoords( ARTISTSVG, iconName, mouseX, mouseY, 50, 50 );
-      if ( null == added ) {
+      if ( false == scene.addNodeUsingScreenCoords( "bot.svg", iconName, curX, curY, 25, 25 )) {
         println( "add location failed" );
-      } 
-    }} 
+
+    }
+}
+} 
     else if ( clickedNode.getName() != "screen" ) {
       println("clickedNode:"+clickedNode.getName());
     }
@@ -260,9 +259,6 @@ newNode.setBounds( 531, 231, 1384, 1041,true);
     float[][] bounds = newNode.getBounds(true);
     bounds = newNode.getBounds(false);
   }
-  if( filename == ARTISTSVG ) {
-    //addToDatabase( newNode );
-  }
 }
 class SceneGraph {
   PApplet App;
@@ -288,7 +284,7 @@ class SceneGraph {
   void gotoRoot() {
     current = root;
     m_toRoot = new PMatrix2D(root.getToParent(null));
-    m_fromRoot = new PMatrix2D(root.getFromParent(m_fromRoot));
+    m_fromRoot = new PMatrix2D(root.getFromParent(null));
     //PMatrix2D p = root.getToParent(null);
     //p.print();
     //for( int i=0;i<6;++i)
@@ -335,8 +331,12 @@ class SceneGraph {
     return null;
   }  
 
-  SceneNode addNode( String filename, String nodeName, float posX, float posY, float dx, float dy ) {
-    return addNode( filename, nodeName, new PVector( posX, posY), new PVector(dx, dy ));
+  boolean addNode( String filename, String nodeName, float posX, float posY, float dx, float dy ) {
+    return !( null == addNode( filename, nodeName, new PVector( posX, posY), new PVector(dx, dy )));
+  }
+
+  boolean addNode( String filename, String nodeName ) {
+    return !( null == addNode( filename, nodeName, null, null ));
   }
 
   boolean gotoChild( String childName ) {
@@ -356,7 +356,7 @@ class SceneGraph {
 
         m_toRoot.apply( current.getToParent(null) );
         print( "m_toRoot" ); m_toRoot.print();
-        m_fromRoot.preApply( current.getFromParent(m_fromRoot) );
+        m_fromRoot.preApply( current.getFromParent(null) );
         print( "m_fromRoot" ); m_fromRoot.print();
         println("gotoChild returning. current:"+current.getName());
         PMatrix2D test = new PMatrix2D( m_fromRoot );
@@ -380,6 +380,15 @@ class SceneGraph {
 		noStroke();
 		ellipseMode(CENTER);
 		ellipse(mouseX,mouseY,10,10);
+      //println(mouseX+","+mouseY);
+      /*PVector p = new PVector(mouseX, mouseY);
+      text("Screen:" +p.x + " " + p.y, mouseX,mouseY);
+      PVector r = root.fromParentCoords( p, null );      
+      PVector c = tmp.fromParentCoords( r, null );
+      pVector s = m_fromRoot.mult( p, null );
+      text("\n Frame:" +r.x + " " + r.y, mouseX,mouseY+15);
+      text("\n Map:" +c.x + " " + c.y, mouseX,mouseY+30);
+      text("\n current:" +s.x + " " + s.y, mouseX,mouseY+45);*/
       //text("\n Map:" +c.x + " " + c.y, mouseX, mouseY);
       popStyle();
     }  
@@ -453,7 +462,6 @@ class SceneGraph {
     while ( null != (tmp = root.getNode (j++))) {
       println( "j="+j+" : zoom on " + tmp.getName() );
       tmp.setScaleAboutPt( r.x, r.y, sX, sY );
-      tmp.resetVisible();
     }
   }
   
@@ -476,6 +484,7 @@ class SceneGraph {
   }           
 
   void pan( float dx, float dy, boolean bLocal ) {
+    SceneNode tmp = root.getNode(0);
     float _dx = dx;
     float _dy = dy;
 
@@ -483,31 +492,31 @@ class SceneGraph {
     if ( !gotoChild( "map" ) ) {
       return;
     }
-    PMatrix2D m = m_toRoot;
-    if( m == null ) println("m is null ");
+    
+    PMatrix2D m= m_toRoot;
+    println( "root "+m.elements[0]+" "+m.elements[1]+" "+m.elements[2]);
+    println( "     "+m.elements[3]+" "+m.elements[4]+" "+m.elements[5]);
     _dx = m.elements[0]*dx+m.elements[1]*dy;
     _dy = m.elements[3]*dx+m.elements[4]*dy;
 
     println( "Attempting to translate "+_dx+","+_dy );
-    float[] r_bounds = root.getBounds(true);
-    println( "root bounds "+r_bounds[0]+","+r_bounds[1]+","+r_bounds[2]+","+r_bounds[3]);
-    SceneNode tmp = root.getNode(0);
-    for ( int j = 1; tmp != null ; tmp = root.getNode(j++) ) {
-      float[] bounds = tmp.getBounds(false);
-      println( tmp.getName()+" bounds: " +bounds[0]+","+bounds[1]+","+bounds[2]+","+bounds[3]);
-      m= tmp.getFromParent(m);
-      if( m == null ) println("m is null ");
+    float[][] r_bounds = root.getBounds(false);
+    float[][] temp = new float[2][2];
+    temp[0] = m.elements[0]*r_bounds[0]+m.elements[1]*r_bounds[1]+m.elements[2];
+    temp[1] = m.elements[3]*r_bounds[0]+m.elements[4]*r_bounds[1]+m.elements[5];
+    temp[2] = m.elements[0]*r_bounds[2]+m.elements[1]*r_bounds[3]+m.elements[2];
+    temp[3] = m.elements[3]*r_bounds[2]+m.elements[4]*r_bounds[3]+m.elements[5];
+    r_bounds[0]=temp[0];r_bounds[1]=temp[1];r_bounds[2]=temp[2];r_bounds[3]=temp[3];
+
+    println( r_bounds[0]+","+r_bounds[1]+","+r_bounds[2]+","+r_bounds[3]);
+    for ( int j = 0; tmp != null ; tmp = root.getNode(j++) ) {
+      float[][] bounds = tmp.getBounds(false);
       println( bounds[0]+","+bounds[1]+","+bounds[2]+","+bounds[3]);
-      float[][] temp = new float[2][2];
-      temp[0] = m.elements[0]*r_bounds[0]+m.elements[1]*r_bounds[1]+m.elements[2];
-      temp[1] = m.elements[3]*r_bounds[0]+m.elements[4]*r_bounds[1]+m.elements[5];
-      temp[2] = m.elements[0]*r_bounds[2]+m.elements[1]*r_bounds[3]+m.elements[2];
-      temp[3] = m.elements[3]*r_bounds[2]+m.elements[4]*r_bounds[3]+m.elements[5];
-      //println( "root bounds in child coords:"+temp[0]+","+temp[1]+","+temp[2]+","+temp[3]);     
       if( _dx > 0 ) _dx = min( r_bounds[0] - bounds[0] , _dx );
       if( _dx < 0 ) _dx = -min( bounds[2]-r_bounds[2], -_dx );
       if( _dy > 0 ) _dy = min( r_bounds[1] - bounds[1] , _dy );
       if( _dy < 0 ) _dy = -min( bounds[3] - r_bounds[3], -_dy );
+ 
      }
 
     if( abs(_dx) < 0.0000001 ) {
@@ -560,15 +569,21 @@ void setMapBoundsUsingScreenCoords( float x0, float y0, float x1, float y1 ){
 
   // Helper Functions
   // adds node using root node's coordinate system ( ie "screen" )
-  // returns 
-  SceneNode addNodeUsingScreenCoords ( String filename, String nodeName, float posX, float posY, float dx, float dy ) {
+  boolean addNodeUsingScreenCoords ( String filename, String nodeName, float posX, float posY, float dx, float dy ) {
     gotoRoot();
     if ( !gotoChild( "map" ) ) {
       return false;
     }
+    //PMatrix2D tmp = current.getToParent(null);
+    //tmp.invert();
+    //tmp.apply(new PMatrix2D ( dx, 0.0, posX, 
+    //0.0, dy, posY ));
+    //tmp.print();
     m_fromRoot.print();
     PVector p = new PVector(mouseX, mouseY);
+    //PVector r = root.fromParentCoords( p, null );
     PVector r = m_fromRoot.mult( p, null );    
+    //PVector s = root.fromParentCoords( new PVector(posX+dx, posY+dy), null );
     PVector s = m_fromRoot.mult( new PVector(posX+dx, posY+dy), null );
     
     s.sub(r);
@@ -591,15 +606,17 @@ void setMapBoundsUsingScreenCoords( float x0, float y0, float x1, float y1 ){
     //return addNode( filename, nodeName, tmp.m02, tmp.m12, (tmp.m00+tmp.m01),(tmp.m10+tmp.m11) );
     //return addNode( filename, nodeName, tmp.m02, tmp.m12, sX, sY );
     println( "adding Node using root coords:"+r.x+" "+r.y+" " );
-	tmp = root.getNode(0);
-  PVector p2 = root.fromParentCoords( p, null );      
-  PVector vectorC = tmp.fromParentCoords( p2, null );
+		tmp = root.getNode(0);
+      PVector p2 = root.fromParentCoords( p, null );      
+      PVector vectorC = tmp.fromParentCoords( p2, null );
 $.ajax({
-//url: "http://rapcities.com/addArtist", 
-url: "http://localhost:8888/addArtist",
-data: {name: artist, x: vectorC.x, y: vectorC.y}, 
-success: function(data){if(data){alert("Successfully added artist: " + data.name + "!")}}
+	//url: "http://rapcities.com/addArtist", 
+	url: "http://localhost:8888/addArtist",
+	data: {name: artist, x: vectorC.x, y: vectorC.y}, 
+	success: function(data){if(data){alert("Successfully added artist: " + data.name + "!")}}
 });
+
+    //return addNode( filename, nodeName, r.x, r.y, s.x,s.y );
 }
 
   // get lowest z-order node using root node's coordinate system ( ie "screen" )
@@ -612,32 +629,6 @@ success: function(data){if(data){alert("Successfully added artist: " + data.name
     }
     return foundNode;
   }
-  
-  PVector addToDatabase( SceneNode n ) {
-    if( n == null ) {
-      println("addToDatabase n is null");
-      return;
-    }
-    PVector pos = new PVector();
-    pos = n.getPos();
-    SceneNode p = n;
-    while( ( p = p.getParent() ) != null ){
-      println("addToDatabase: "+ p.getName() + "LeftTop: "+pos.x+","+pos.y );
-      if( p.getName() == "map" ) {
-        float b[] = p.getBounds( true );
-        println("bounds:"+b[0]+","+b[1]+"+"+b[2]+","+b[3]);
-        pos.x = (pos.x-b[0])/(b[2]-b[0]);
-        pos.y = (pos.y-b[1])/(b[3]-b[1]);
-        println("addToDatabase: "+ n.getName() + "LeftTop: "+pos.x+","+pos.y );
-        append(artistPos,pos);
-        return pos;
-      }
-      PMatrix mp = p.getToParent();
-      pos = mp.mult(pos, null );      
-    }
-    return null;
-  }
-  
 } 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -748,7 +739,7 @@ public class SceneNode {
       rect( 0, 0, svgP.width, svgP.height );
       // END OF DEBUG
     }
-    shapeMode( CORNERS );
+    //shapeMode( CORNERS );
     //println("Drawing svg " + svgP.getName());
     svgP.drawImpl();
   }
@@ -763,7 +754,7 @@ public class SceneNode {
 //      rect( 0, 0, svgP.width, svgP.height );
       // END OF DEBUG
     }
-    shapeMode( CORNERS );
+    //shapeMode( CORNERS );
     //println("Drawing svg " + svgP.getName());
      svgP.draw();
   }
@@ -879,10 +870,10 @@ public class SceneNode {
   PVector getScale() {
     float dx = sqrt( (m_toParent.m00)*(m_toParent.m00)+(m_toParent.m01)*(m_toParent.m01) );
     float dy = sqrt( (m_toParent.m10)*(m_toParent.m10)+(m_toParent.m11)*(m_toParent.m11) );
-    //if ( matrix instanceof PMatrix2D) ((PMatrix2D)matrix).print();
+    if ( matrix instanceof PMatrix2D) ((PMatrix2D)matrix).print();
 
-    //dx *= svgP.width/(tMaxX-tMinX); // internal scaling
-    //dy *= svgP.height/(tMaxY-tMinY); // internal scaling    
+    dx *= svgP.width/(tMaxX-tMinX); // internal scaling
+    dy *= svgP.height/(tMaxY-tMinY); // internal scaling    
     return new PVector( dx, dy, 0.0 );
   }
 
@@ -968,10 +959,10 @@ public class SceneNode {
      }
   }
   
-  float[] getBounds(boolean bLocal) {
-    println(getName()+" getBounds.");
+  float[][] getBounds(boolean bLocal) {
+    println("getBounds.");
     print( this.getName());
-    float[] vertices = new float[4];
+    float[][] vertices = new float[2][2];
     if(bLocal){
       vertices[0]=tMinX;vertices[1]=tMinY;vertices[2]=tMaxX;vertices[3]=tMaxY;
       println( "local: "+vertices[0]+","+vertices[1]+","+vertices[2]+","+vertices[3]);
@@ -1008,17 +999,11 @@ public class SceneNode {
   }
 
   PMatrix2D getFromParent(PMatrix2D target) {
-    if ( m_fromParent == null ) {
-      println(getName()+" m_fromParent is null");
-      return null;
-    }
+    if ( m_fromParent == null ) return null;
+
     target = new PMatrix2D( m_fromParent ); 
     return target;
   }  
-  void resetVisible(){
-    PVector s = getScale();
-  }
-  
 }
 
 class SceneNodeFactory {
@@ -1321,7 +1306,5 @@ void operateOnVisible()
   }
   s_w.post();
 }
-
-
 
 

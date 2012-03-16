@@ -9,8 +9,6 @@ float mouseXPrev=0.0f, mouseYPrev = 0.0f;
 boolean rightDragging, leftDragging, leftClicked, rightClicked;
 
 int BOTCOUNT = 0;
-String ARTISTSVG = "bot.svg";
-PVector artistPos = new PVector[1];
 
 SceneGraph scene = new SceneGraph( this );
 
@@ -19,6 +17,8 @@ int VPMINX, VPMINY, VPMAXY, VPMAXX;
 // LIBControl values
 float minX, maxY, maxX, minY, MINX, MAXY, MAXX, MINY;
 String[] fontList;
+var artlocs;
+var rapper, rapcircle;
 
 void setup() {
   size(853, 810);
@@ -54,20 +54,22 @@ void setup() {
   }  
   scene.gotoChild( "map" );
   // work at the "map" level
+$.ajax({
+	//url: "http://rapcities.com/getArtists", 
+	url: "http://localhost:8888/getArtists", 
+	success: function(data){if(data){artlocs = data}}
+});
+scene.setMapBounds();
+rapper = loadShape("rapper.svg");
+rapcircle = loadShape("bot.svg");
 }
+ellipseMode(CENTER);
+var times = 0;
 
 void draw() {
   //println( "Draw!");
   background(150);
   perFrame();
-  if( fontList.length > 0 ){
-    //PFont font = loadFont(fontList[0]); 
-    //textFont(font); 
-  //}
-  fill(0, 102, 153);
-  text(frameCount, 15, 60);
-  //text("\n Map:" +c.x + " " + c.y, 15, 60);
-  }
 
   scene.draw();
 
@@ -78,11 +80,40 @@ void draw() {
   rect(VPMINX, 0, width, VPMINY);
   rect(VPMAXX, VPMINY, width, height);   
   popStyle();
-
 if( !(rightDragging || leftDragging) )
   noLoop();
+else
+	scene.setMapBounds();
+	
+	if(artlocs)
+		drawArtists();
+	if(curclicked != -1){
+		stroke(255);
+		textSize(13);
+		text(artlocs[curclicked].name, 50, 50);
+	}
 }
-
+var curartist = -1;
+var curclicked = -1;
+void drawArtists(){
+	fill(255);
+	shapeMode(CENTER);
+	//alert('wkaaksdfkjsf!');
+	curartist = -1;
+	for(int i = 0; i < artlocs.length; i++){
+		if(artlocs[i].x < right && artlocs[i].x > left && artlocs[i].y > top && artlocs[i].y < bottom){
+			float x = map(artlocs[i].x, left, right, 0, width);
+			float y = map(artlocs[i].y, top, bottom, 0, height);
+			if(mouseX < x+15 && mouseX > x-15 && mouseY > y-15 && mouseY < y+15){
+				shape(rapcircle,x,y,30,30);
+				curartist = i;
+			}
+			else
+				shape(rapper,x, y, 20,30);
+		}
+	}	
+}	
+var left, right, top, bottom;
 var artist;
 
 void perFrame() {
@@ -99,17 +130,7 @@ void perFrame() {
     if( clickedNode == null ) {
       println( "clicked location not within bounds of root." );
     } else if ( clickedNode.getName() == "map" ) {
-	
-      	artist = document.input.artist.value;
-
-		var yes = confirm("Upload these coordinates for artist: " + artist + "?");
-		if(yes){println("uploading!");
-      String iconName = "bot"+BOTCOUNT++;
-      SceneNode added = scene.addNodeUsingScreenCoords( ARTISTSVG, iconName, mouseX, mouseY, 50, 50 );
-      if ( null == added ) {
-        println( "add location failed" );
-      } 
-    }} 
+} 
     else if ( clickedNode.getName() != "screen" ) {
       println("clickedNode:"+clickedNode.getName());
     }
@@ -132,6 +153,11 @@ void mousePressed() {
     }
     if (mouseButton == LEFT) { 
       leftClicked = leftDragging = true;
+		if(curartist != -1){
+			curclicked = curartist;
+		}
+		else
+			curclicked = -1;
     }
     loop();
   }
@@ -152,7 +178,8 @@ void mouseScrolled() {
   if (!bMouseOut) {
     zoomFactor = 1-0.1*delta;
     scene.zoomOnPoint(mouseX, mouseY, zoomFactor, zoomFactor);
-    loop();
+    scene.setMapBounds();
+	loop();
   }
 }
 
@@ -260,9 +287,6 @@ newNode.setBounds( 531, 231, 1384, 1041,true);
     float[][] bounds = newNode.getBounds(true);
     bounds = newNode.getBounds(false);
   }
-  if( filename == ARTISTSVG ) {
-    //addToDatabase( newNode );
-  }
 }
 class SceneGraph {
   PApplet App;
@@ -297,6 +321,20 @@ class SceneGraph {
     m_toRoot.print();
   }
 
+	void setMapBounds(){
+	    PVector p = new PVector(0,0);
+		tmp = root.getNode(0);
+	    PVector p2 = root.fromParentCoords( p, null );      
+	    PVector vectorC = tmp.fromParentCoords( p2, null );
+		left = vectorC.x; top = vectorC.y;
+		PVector p = new PVector(width,height);
+		tmp = root.getNode(0);
+	    PVector p2 = root.fromParentCoords( p, null );      
+	    PVector vectorC = tmp.fromParentCoords( p2, null );
+		right = vectorC.x; bottom = vectorC.y;
+		println('\n\n\n\n\n\nOMG TOP = '+top+' and RIGHT = '+ right);
+	}
+	
   protected SceneNode addNode( String filename, String nodeName, PVector pos, PVector d ) {
     SceneNode newNode;
     //m_toParent.mult( pos, pos );
@@ -376,10 +414,6 @@ class SceneGraph {
     tmp = root.getNode(0);
     if ( tmp.getName()=="map" ) {
       pushStyle();
-      fill(255);
-		noStroke();
-		ellipseMode(CENTER);
-		ellipse(mouseX,mouseY,10,10);
       //text("\n Map:" +c.x + " " + c.y, mouseX, mouseY);
       popStyle();
     }  
@@ -590,16 +624,6 @@ void setMapBoundsUsingScreenCoords( float x0, float y0, float x1, float y1 ){
 
     //return addNode( filename, nodeName, tmp.m02, tmp.m12, (tmp.m00+tmp.m01),(tmp.m10+tmp.m11) );
     //return addNode( filename, nodeName, tmp.m02, tmp.m12, sX, sY );
-    println( "adding Node using root coords:"+r.x+" "+r.y+" " );
-	tmp = root.getNode(0);
-  PVector p2 = root.fromParentCoords( p, null );      
-  PVector vectorC = tmp.fromParentCoords( p2, null );
-$.ajax({
-//url: "http://rapcities.com/addArtist", 
-url: "http://localhost:8888/addArtist",
-data: {name: artist, x: vectorC.x, y: vectorC.y}, 
-success: function(data){if(data){alert("Successfully added artist: " + data.name + "!")}}
-});
 }
 
   // get lowest z-order node using root node's coordinate system ( ie "screen" )
@@ -612,32 +636,7 @@ success: function(data){if(data){alert("Successfully added artist: " + data.name
     }
     return foundNode;
   }
-  
-  PVector addToDatabase( SceneNode n ) {
-    if( n == null ) {
-      println("addToDatabase n is null");
-      return;
-    }
-    PVector pos = new PVector();
-    pos = n.getPos();
-    SceneNode p = n;
-    while( ( p = p.getParent() ) != null ){
-      println("addToDatabase: "+ p.getName() + "LeftTop: "+pos.x+","+pos.y );
-      if( p.getName() == "map" ) {
-        float b[] = p.getBounds( true );
-        println("bounds:"+b[0]+","+b[1]+"+"+b[2]+","+b[3]);
-        pos.x = (pos.x-b[0])/(b[2]-b[0]);
-        pos.y = (pos.y-b[1])/(b[3]-b[1]);
-        println("addToDatabase: "+ n.getName() + "LeftTop: "+pos.x+","+pos.y );
-        append(artistPos,pos);
-        return pos;
-      }
-      PMatrix mp = p.getToParent();
-      pos = mp.mult(pos, null );      
-    }
-    return null;
-  }
-  
+    
 } 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

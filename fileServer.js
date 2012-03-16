@@ -40,6 +40,10 @@ module.exports = function fileServer(maxage){
 		folder = __dirname + '/pde/SVG/applet_js/svgtester.pde';
         contentType = 'text/processing';
       }
+	else if(req.url == '/rapcity.pde'){
+		folder = __dirname + '/pde/SVG/applet_js/rapcity.pde';
+        contentType = 'text/processing';
+      }
 	  else if(req.url == '/processing.js'){
 		folder = __dirname + '/pde/SVG/applet_js/processing.js';
         contentType = 'text/javascript';
@@ -55,7 +59,12 @@ module.exports = function fileServer(maxage){
 	  else if(req.url == '/bot.svg'){
 		folder = __dirname + '/pde/SVG/applet_js/rappericon.svg';
         contentType = 'image/svg+xml';
-      }	  else if(req.url == '/frame.svg'){
+      }
+	  else if(req.url == '/rapper.svg'){
+		folder = __dirname + '/pde/SVG/applet_js/rapper2.svg';
+        contentType = 'image/svg+xml';
+      }
+	  else if(req.url == '/frame.svg'){
 		folder = __dirname + '/pde/SVG/applet_js/frame.svg';
         contentType = 'image/svg+xml';
       }	  
@@ -90,7 +99,7 @@ module.exports = function fileServer(maxage){
         break;
       case('/'):
         if (files.index) sendfile('index')
-        else readfile('/pde/indexold.html','text/html','index',true)
+        else readfile('/pde/index.html','text/html','index',true)
         break;
       case('/processing-1.3.6.min.js'):
         if (files.processing) sendfile('processing')
