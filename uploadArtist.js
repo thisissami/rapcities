@@ -10,7 +10,7 @@ dbConnector.open(function(err, DB){
     else{
       db = DB;
       console.log('opened successfully');
-      db.createCollection('artistLocations', function(err, artlocs){
+      db.createCollection('artistLocations2', function(err, artlocs){
       if(err){
         console.log('oh shit! db.createCollection error!');
         console.log(err);
