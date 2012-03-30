@@ -16,15 +16,20 @@ dbConnector.open(function(err, DB){
         console.log(err);
         return;
       }
+	  db.createCollection('artistLocations', function(err, artlocsupload){
+	  if(err){
+	  console.log('creation error'); console.log(err); return;
+	  }
+	  uplocs = artlocsupload;
 	console.log('artist locations created');
 	locs = artlocs;
-});
+});});
 }
 });
 
 function uploadLoc(response, query){
 	console.log(query);
-	locs.insert(query, {safe:true}, function(err, doc){
+	uplocs.insert(query, {safe:true}, function(err, doc){
 		if(err){console.log('ruh-roh! scooby dooby scawedy booby! (AKA artist upload failed)')}
 		else{
 			response.writeHead(200, {'Content-Type': 'application/json'});
