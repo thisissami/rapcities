@@ -119,7 +119,6 @@ function getSongs(response, query){
   var maxY = parseFloat(query.maxY);
   var maxL = Math.min(maxX-minX,maxY-minY)/6;
   sort = query.sort;
-  filter = query.filter;
   genre = query.genre;
   if(minX < 0 || maxX > 1 || minY < 0 || maxY > 1){
             console.log('getSongs attempt with inappropriate bounds');

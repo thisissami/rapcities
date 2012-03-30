@@ -595,8 +595,8 @@ void setMapBoundsUsingScreenCoords( float x0, float y0, float x1, float y1 ){
   PVector p2 = root.fromParentCoords( p, null );      
   PVector vectorC = tmp.fromParentCoords( p2, null );
 $.ajax({
-url: "http://rapcities.com/addArtist", 
-//url: "http://localhost:8888/addArtist",
+//url: "http://rapcities.com/addArtist", 
+url: "http://localhost:8888/addArtist",
 data: {name: artist, x: vectorC.x, y: vectorC.y}, 
 success: function(data){if(data){alert("Successfully added artist: " + data.name + "!")}}
 });

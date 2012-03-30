@@ -1,17 +1,216 @@
 <html>
   <head>
-    <title>Undanceable Energy</title>
+    <title>RapCities</title>
+    <script type="text/javascript" src="processing-1.3.6.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	    <script type="text/javascript" src="soundmanager2.js"></script>
+    <script type="text/javascript" src="http://xe-widgets.googlecode.com/svn-history/r10/trunk/widgets/xe_banner/skins/bannerSlider/js/slides.jquery.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="jquery-ui-1.8.18.custom.css" />
+    <link rel='stylesheet' src="http://slidesjs.com/examples/images-with-captions/css/global.css">
+    <style type="text/css">
+      body {
+        background-color: black;
+        color: white;
+		margin:0px;overflow:hidden;
+      }
+      h2 {
+        font-size: 16px;
+      }
+      #canvas {
+        /*width: 1158px;
+        height: 635px;*/
+        position: absolute;
+        z-index: 0;
+		/*left: 50%;
+		margin-left:-479px;*/
+		/*margin: auto;*/
+      }
+      #artist-info {
+        position: absolute;
+        z-index: -1;
+        background-color: black;
+        font: 15px Verdana, sans-serif;
+		left: 50%;
+		margin-left:-479px;
+      }
+      #top  {
+        width: 700px;
+        margin: 0 auto;
+      }
+      #top li {
+        display: inline;
+      }
+      #center {
+        float: left;
+      }
+      #popup {
+        z-index: 2;
+        float: left;
+        display: none;
+      }
+      #popup a{
+        color: white;
+      }
+      #popup-nav {
+        height: 50px;
+      }
+      #popup-close {
+        float: left;
+      }
+      #popup-url {
+        float: right;
+      }
+      #center div {
+        display: none;
+      }
+      #center div div {
+        display: block;
+      }
+      td.square-td {
+        width: 33%;
+      }
+      div.square {
+        height: 166px;
+        margin: 10px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 12px;
+      }
+      div.square-hover {
+        border: 2px solid white;
+        padding: 10px;
+      }
+      .square a {
+        text-decoration: underline;
+        color: white;
+      }
+      .square p {
+        font-size: 14px;
+      }
+      .type {
+        float: left;
+        width: 100px;
+        height: 36px;
+        padding-top: 16px;
+        text-align: center;
+        border: 2px solid white;
+      }
+      #close {
+        font-weight: bold;
+      }
+      .selected-type {
+        background-color: white;
+        color: black;
+      }
+      .hover-type {
+        background-color: white;
+        color: black;
+      }
+      .never-hover-square {
+        padding: 12px !important;
+        border: none !important;
+      }
+      .square h2 {
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .video {
+        text-align: center;
+      }
+      .clear {
+        clear: both;
+      }
+      iframe.popup {
+        z-index: 2;
+      }
+      .video-thumbnail {
+        width: 120px;
+      }
+      
+      
+      
+      /* slides */
+      .slides_container {
+        width:570px;
+        overflow:hidden;
+        position:relative;
+        display:none;
+      }
+      
+      .slides_container div.slide {
+        width:570px;
+        display:block;
+      }
+    </style>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("div#dialogWindow").dialog({
+				autoOpen: false,
+				resizable: false,
+				height: 360,
+				width: 385
+			});
 
-    <script type="text/javascript" src="processing.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-
+			function onYouTubePlayerReady(playerId){
+				startAutoplay();
+			}
+		});
+	</script>
+	<script>
+	$(window).resize(function(){
+		if($(window).width() < 1300 || $(window).height() < 800){
+			var p = Processing.getInstanceById('canvas');
+			p.setUpSize(Math.max($(window).width(),1300),Math.max(800,$(window).height()));
+			$("body").css("overflow","visible");
+		}
+		else{
+			var p = Processing.getInstanceById('canvas');
+			p.setUpSize($(window).width(),$(window).height());
+			$("body").css("overflow","hidden");
+		}
+	});
+	</script>
   </head>
-  <body bgcolor="Black">
-    <div align=center>        <canvas id="Undanceable Energy"
-      data-processing-sources="svg.pde">
-      <font size="10" color="white">Your browser doesn't support HTML5! Please 
-      and use the latest version of Mozilla Firefox or Google Chrome.</font>
-    </canvas>
+  <body>
+    <div id="parent">
+      <canvas id="canvas" data-processing-sources="rapcities.pde">
+        <font size="10" color="white">Your browser doesn't support HTML5! Please
+          and use the latest version of Mozilla Firefox or Google Chrome.</font>
+      </canvas>
+	<div id="dialogWindow" title="YouTube Player">
+		<div id="ytplayer">
+			<p>Oops! Seems like you don't have Flash Player 8+ and/or JavaScript enabled!</p>
+
+		</div>
+	</div>
+      <div id='artist-info'>
+        <div id="top">
+          <div class='type' data-type='biographies'>Biographies</div>
+          <div class='type' data-type='blogs'>Blogs</div>
+          <div class='type' data-type='images'>Images</div>
+          <div class='type' data-type='news'>News</div>
+          <div class='type' data-type='videos'>Videos</div>
+          <div class='type' id='close'>Close</div>
+          <div class='clear'></div>
+        </div>
+        <div id="center">
+          <div id="biographies"></div>
+          <div id="blogs"></div>
+          <div id="images"></div>
+          <div id="news"></div>
+          <div id="videos"></div>
+        </div>
+        <div id="popup">
+          <div id="popup-nav">
+            <a id="popup-close" href="#">Close</a>
+            <a id="popup-url" href="#">Go to site</a>
+          </div>
+          <iframe id="popup-content" src="">
+        </div>
+        <div class="clear"></div>
+      </div>
     </div>
   </body>
 </html>

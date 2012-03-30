@@ -23,7 +23,9 @@ else{
   url = require('url'),
   path = require('path'),
   fs = require('fs');
-  uploader = require('./uploadArtist');
+  uploader = require('./uploadArtist'),
+  digital7 = require('./7Dconnect'),
+  artistInfo = require('./artistInfo');
         
   function onRequest(req, res, next) {
     var parsed = url.parse(req.url,true);
@@ -31,8 +33,10 @@ else{
     var ext = path.extname(pathname);
     
     switch(pathname){
-      case '/addArtist': console.log('OH SHIT SOME SUCCESS!\n\n\n'); uploader.uploadLoc(res, parsed.query); break;
-	  case '/getArtists': console.log('GETTING ZE ARTISTS!!!!\n\n\n'); uploader.getLocs(res); break;
+      case '/addArtist': console.log('OH SHIT SOME SUCCESS!'); uploader.uploadLoc(res, parsed.query); break;
+	  case '/getArtists': console.log('GETTING ZE ARTISTS!!!!'); uploader.getLocs(res, parsed.query); break;
+	  case '/getArtistInfo': console.log('getting artist info'); artistInfo.get(res, parsed.query); break;
+	  case '/getTrack': console.log('getting track'); digital7.getTrack(res, parsed.query); break;
       default: return;
     }
   }

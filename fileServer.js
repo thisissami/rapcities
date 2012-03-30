@@ -3,6 +3,7 @@ var fs = require('fs'),
   utils = require(__dirname + '/node_modules/connect/lib/utils'),
   zlib = require('zlib'),
   gzip = zlib.createGzip(),
+  url = require('url'),
   files = {};
 
 /**
@@ -16,6 +17,8 @@ module.exports = function fileServer(maxage){
   return function fileServer(req, res, next){
     if(req.socket.remoteAddress || req.socket.socket.remoteAddress == '127.0.0.1'){
       var folder,contentType;
+	  
+	  
       if(req.url == '/indexold.html'){
         folder = __dirname + '/pde/indexold.html';
         contentType = 'text/html';
@@ -32,6 +35,10 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/vyuzik.pde';
         contentType = 'text/processing';
       } 
+	  else if(req.url == '/rapcities.pde'){
+        folder = __dirname + '/pde/rapcities.pde';
+        contentType = 'text/processing';
+      }
 	  else if(req.url == '/svg.pde'){
 		folder = __dirname + '/pde/SVG/applet_js/svg.pde';
         contentType = 'text/processing';
@@ -67,7 +74,48 @@ module.exports = function fileServer(maxage){
 	  else if(req.url == '/frame.svg'){
 		folder = __dirname + '/pde/SVG/applet_js/frame.svg';
         contentType = 'image/svg+xml';
-      }	  
+      }
+	  else if(req.url == '/NYC.gif'){
+		folder = __dirname + '/files/NYCfinal.gif';
+        contentType = 'image/gif';
+      }
+	  else if(req.url == '/info'){
+		folder = __dirname + '/files/icons/info.png';
+        contentType = 'image/png';
+      }
+	  else if(req.url == '/facebook'){
+		folder = __dirname + '/files/icons/Facebook_Grunge_Icon_by_highaltitudes.png';
+        contentType = 'image/png';
+      }
+	  else if(req.url == '/youtube'){
+		folder = __dirname + '/files/icons/youtube_metal_grunge_icon_5_by_highaltitudes-d4168hp.png';
+        contentType = 'image/png';
+      }
+	  else if(req.url == '/heart'){
+		folder = __dirname + '/files/icons/thumb_COLOURBOX2702046.jpeg';
+        contentType = 'image/jpeg';
+      }
+	  else if(req.url == '/twitter'){
+		folder = __dirname + '/files/icons/twitter_metal_grunge_icon_7_by_highaltitudes-d3dzum9.png';
+        contentType = 'image/png';
+      }
+	  else if(req.url == '/miniNYC.png'){
+		folder = __dirname + '/files/miniNYC.png';
+        contentType = 'image/png';
+      }
+	  else if(req.url == '/banner.png'){
+		folder = __dirname + '/files/banner.png';
+        contentType = 'image/png';
+      }
+	  else{
+		var parsed = url.parse(req.url,true);
+		var pathname = parsed.pathname;
+		var ext = path.extname(pathname);
+		if(ext == '.grid'){
+			folder = __dirname + '/files/grid/NYCfinal_'+req.url.split('/')[1].split('.')[0]+'.png';
+			contentType = 'image/png';
+		}
+	}
  
       if(folder){
         fs.readFile(folder, function(error, content){
@@ -99,7 +147,7 @@ module.exports = function fileServer(maxage){
         break;
       case('/'):
         if (files.index) sendfile('index')
-        else readfile('/pde/index.html','text/html','index',true)
+        else readfile('/files/index.html','text/html','index',true)
         break;
       case('/processing-1.3.6.min.js'):
         if (files.processing) sendfile('processing')
@@ -122,7 +170,7 @@ module.exports = function fileServer(maxage){
           res.end(files.sm2f9.body);
         } else readfile('/files/soundmanager2_flash9.swf','application/x-shockwave-flash','sm2f9',false)
         break;*/
-      case('/youtube'):
+      /*case('/youtube'):
         if (files.ytube) {
           res.writeHead(200, files.ytube.headers);
           res.end(files.ytube.body);
@@ -139,7 +187,27 @@ module.exports = function fileServer(maxage){
           res.writeHead(200, files.info.headers);
           res.end(files.info.body);
         } else readfile('/files/info.svg','image/svg+xml','info',false)
-        break;
+        break;*/
+	  case('/jquery-ui-1.8.18.custom.css'):
+		if (files.css) sendfile('css')
+		else readfile('/files/jquery-ui-1.8.18.custom.css','text/css','css',true)
+		break;
+	  case('/images/ui-icons_454545_256x240.png'):
+	    if (files.icon1) sendfile('icon1')
+	    else readfile('/files/images/ui-icons_454545_256x240.png','image/png','icon1',true)
+	    break;
+	  case('/images/ui-icons_cccccc_256x240.png'):
+	    if (files.icon2) sendfile('icon2')
+	    else readfile('/files/images/ui-icons_cccccc_256x240.png','image/png','icon2',true)
+	    break;
+	  case('/images/ui-bg_highlight-soft_75_000000_1x100.png'):
+	    if (files.bg) sendfile('bg')
+	    else readfile('/files/images/ui-bg_highlight-soft_75_000000_1x100.png','image/png','bg',true)
+	    break;
+	  case('/images/ui-bg_flat_75_000000_40x100.png'):
+	    if (files.bg) sendfile('bg')
+	    else readfile('/files/images/ui-bg_highlight-soft_75_000000_1x100.png','image/png','bg',true)
+	    break;
       default: next();
     } 
  //icon, index, sm2, sm2f, sm2f9, processing, info, fbook, ytube;   

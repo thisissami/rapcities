@@ -55,8 +55,8 @@ void setup() {
   scene.gotoChild( "map" );
   // work at the "map" level
 $.ajax({
-	url: "http://rapcities.com/getArtists", 
-	//url: "http://localhost:8888/getArtists", 
+	//url: "http://rapcities.com/getArtists", 
+	url: "http://localhost:8888/getArtists", 
 	success: function(data){if(data){artlocs = data}}
 });
 scene.setMapBounds();
@@ -414,7 +414,17 @@ class SceneGraph {
     tmp = root.getNode(0);
     if ( tmp.getName()=="map" ) {
       pushStyle();
-      //text("\n Map:" +c.x + " " + c.y, mouseX, mouseY);
+rectMode(CORNERS);
+	fill(0);rect(mouseX,mouseY,mouseX+300,mouseY+60);
+	fill(255);
+      PVector p = new PVector(mouseX, mouseY);
+      text("Screen:" +p.x + " " + p.y, mouseX,mouseY);
+      PVector r = root.fromParentCoords( p, null );      
+      PVector c = tmp.fromParentCoords( r, null );
+      pVector s = m_fromRoot.mult( p, null );
+      text("\n Frame:" +r.x + " " + r.y, mouseX,mouseY+15);
+      text("\n Map:" +c.x + " " + c.y, mouseX,mouseY+30);
+      text("\n current:" +s.x + " " + s.y, mouseX,mouseY+45);
       popStyle();
     }  
   }  

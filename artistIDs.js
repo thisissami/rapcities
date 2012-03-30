@@ -3,7 +3,8 @@
  * add information such as biographies and news to them.
  */
 var mongodb = require('mongodb');
-var mongoserver = new mongodb.Server('localhost', 26374);
+//var mongoserver = new mongodb.Server('localhost', 26374);
+var mongoserver = new mongodb.Server('10.112.0.110', 26374);
 var dbConnector = new mongodb.Db('uenergy', mongoserver);
 var http = require('http');
 
@@ -25,7 +26,7 @@ dbConnector.open(function(err, db) {
       } else 
 	arts = art;
 {
-	db.collection('artistLocations',function(err,collection){
+	db.collection('artistLocations2',function(err,collection){
 		if(err){
 			console.log(err.message);
 		} else {
@@ -71,7 +72,11 @@ function doNext(artLocs) {
           if(results.response.status.code == 0) {
             echo_artist = results.response.artists[0];
 console.log(JSON.stringify(echo_artist));
-
+			artLocs.findAndModify({'_id':artist._id}, [['_id','asc']],
+			{$set : {
+				'echoID': echo_artist.id,
+					'7id': echo_artist.foreign_ids[0].foreign_id,
+			}},function(err){if(err)console.log(err)});
             arts.insert({
               '_id' : echo_artist.id,
 				'7id':echo_artist.foreign_ids[0].foreign_id,
