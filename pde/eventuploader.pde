@@ -1,4 +1,4 @@
-/* @pjs preload="facebook,youtube,info,heart,twitter,NYC.gif,rapper.svg,bot.svg,miniNYC.png,banner.png,eventicon.png";*/
+/* @pjs preload="facebook,youtube,info,heart,twitter,NYC.gif,rapper.svg,bot.svg,miniNYC.png,banner.png;";*/
 boolean started;
 PFont font;
 color[] colors;
@@ -155,12 +155,9 @@ void draw(){
   sidePane.draw();
   if(curhover > -1)
 		drawHoverInfo(curhover);
-  if(curehover > -1)
-		drawEventInfo(curehover);
 }
 
 var artists = new ArrayList();
-var events = new ArrayList();
 var artist = null;
 
 void setUpArtists(){
@@ -180,30 +177,6 @@ void setUpArtists(){
       }
     });
   }
-
-void setUpEvents(){
-	events.clear();
-	var pathArray = window.location.pathname.split( '/' );
-	var sponsor;
-	if(pathArray.length > 0){
-		if(pathArray.length < 3)
-			sponsor = pathArray[1];
-		else
-			sponsor = pathArray[3];
-			
-		$.getJSON("http://localhost:8888/getEvents?sponsor="+sponsor, function(results){
-			if(results != null){
-				var length = results.length;
-				for(int i = 0; i < length; i++){
-					results[i].X = map(results[i].x,725.056,935.131,1,2000);
-					results[i].Y = map(results[i].y,701.865,850.945,1,1422);
-		            events.add(results[i]);
-				}
-			}
-		});
-	}
-}
-
 int minX, minY, maxX, maxY;
 int xlength, ylength, miniRedX,miniRedY;
 
@@ -222,7 +195,7 @@ void loadMapPiece(int i, int j){
 
 class Map{
 	PShape rapper, rapcircle;
-	PImage NYC, miniNYC, eventIcon;
+	PImage NYC, miniNYC;
 	int NYCx = 1000;
 	int NYCy = 711;
 	int xdif = (LIBMAXX-LIBMINX)/2;
@@ -239,15 +212,13 @@ class Map{
 	Map(){
 		NYC = loadImage("NYC.gif");
 		miniNYC = loadImage("miniNYC.png");
-		eventIcon = loadImage("eventicon.png");
 		ox = oy = -1;
 		/*ominx = minX = NYCx - xdif;//map(NYCx - xdif,0,2000,725.056,935.131);
 		maxX = NYCx + xdif;//map(NYCx + xdif,0,2000,725.056,935.131);
 		ominy = minY = NYCy - ydif;//map(NYCy - ydif,0,1422,701.865,950.945);
 		maxY = NYCy + ydif;//map(NYCy + ydif,0,1422,701.865,950.945);*/
 		//531.749 231.083 853 810
-		setUpArtists();
-		setUpEvents();
+		//setUpArtists();
 		rapper = loadShape("rapper.svg");
 		rapcircle = loadShape("bot.svg");
 		prep();
@@ -263,7 +234,6 @@ class Map{
 	void draw(){
 		drawMap();
 		drawArtists();
-		drawEvents();
 		fill(0);
 		noStroke();
 		rectMode(CORNERS);
@@ -319,12 +289,8 @@ class Map{
 	void grimage(int j, int i, int one, int two){
 		if(grid[j][i])
 			image(grid[j][i],one,two);
-		else if(!gridLoad[j][i]){
+		else if(!gridLoad[j][i])
 			loadMapPiece(j,i);
-			rectMode(CENTER);
-			fill(150); noStroke();
-			rect(one, two, 1000,1000);
-		}
 	}
 	
 	void drawMini(){
@@ -408,22 +374,6 @@ class Map{
 		}
 	}
 	
-	void drawEvents(){
-		imageMode(CENTER);
-		curehover = -1;
-		for(int i = 0; i < events.size(); i++){
-			var cur = events.get(i);
-			if(cur.x < maxX+15 && cur.x > minX-15 && cur.y < maxY+24 && cur.y > minY-24){
-				var x = map(cur.x,minX,maxX,LIBMINX,LIBMAXX);
-				var y = map(cur.y,minY,maxY,LIBMINY,LIBMAXY);
-				if(mouseX < x+15 && mouseX > x-15 && mouseY < y+24 && mouseY > y-24){
-					curehover = i;
-				}
-				image(eventIcon,x,y);
-			}
-		}
-	}
-	
 	void mousePressed(){
 		ox = mouseX;
 		oy = mouseY;
@@ -490,54 +440,20 @@ void drawHoverInfo(int i){
     text(name, mouseX+6, mouseY-30);
 }
 
-void drawEventInfo(int i){
-    String name = events.get(i).sponsor.toUpperCase();
-    textSize(18);
-    int xlength = textWidth(name);
-    stroke(colors[6]);
-    fill(0);
-	rectMode(CORNERS);
-    rect(mouseX, mouseY-33,mouseX+xlength+12, mouseY-7,10);
-
-      fill(colors[6]);
-    textAlign(LEFT,TOP);
-    text(name, mouseX+6, mouseY-30);
-}
-
 void mouseClicked(){
-  if(curhover >= 0){
-    artist = artists.get(curhover);
-	getSong(artist.topTracks[0].id);
-	playingSong = 0;
+  if(mouseX > LIBMINX && mouseX < LIBMAXX && mouseY > LIBMINY && mouseY < LIBMAXY){
+		var link = document.input.link.value;
+		var sponsor = document.input.sponsor.value;
+		var yes = confirm("Upload these coordinates for video '" + link + "' by sponsor '" + sponsor + "'?");
+		if(yes){
+			$.ajax({
+			//url: "http://rapcities.com/addEvent", 
+			url: "http://localhost:8888/addEvent",
+			data: {link: link, sponsor: sponsor, x: map(mouseX, LIBMINX, LIBMAXX, minX, maxX), y: map(mouseY, LIBMINY, LIBMAXY, minY, maxY)}, 
+			success: function(data){if(data){alert("Successfully added video: '" + data.link + "'!")}}
+			});
+		}
   }
-  else if(curehover >= 0){
-	togglePlayer();
-	loadEventVideo();
-	song.pause();
-  }
-  else if(curMenu >= 0){
-	switch(curMenu){
-		case 0: //info
-			artinfo.showArtistInfo(artist.echoID);
-			return;
-		case 1: //heart
-		case 4: //twitter
-		case 2://facebook
-			link(artist.facebook, "_new");
-		    return;
-		case 3://youtube
-			togglePlayer();
-			loadVideo();
-			song.pause();
-			//link("http://www.youtube.com/results?search_query=" + song.title.replace(/ /g, '+') + "+" +
-		      //    song.artist.replace(/ /g, '+'), "_new");
-		    return;
-	}
-	}
-	else if(curSong >= 0){
-		playingSong = curSong;
-		getSong(artist.topTracks[curSong].id);
-	}
 }	
 void getSong(int id){
 	$.getJSON('http://localhost:8888/getTrack?id=' + id, function(data){
@@ -1611,13 +1527,11 @@ void togglePlayer(){
   }
 }
 
-void loadEventVideo(){
-	$("#ytplayer").html('<script type="text/javascript">var params={allowScriptAccess:"always"};var atts={id:"ytplayer"};var url="http://www.youtube.com/v/'+events.get(curehover).link+'?enablejsapi=1&playerapiid=ytplayer&version=3&autoplay=1&controls=1";swfobject.embedSWF(url,"ytplayer","350","300","8",null,null,params,atts);</script>');
-}
 void loadVideo(){
   $.ajax({
     type: "GET",
 	dataType:'jsonp',
+	//url:"http://gdata.youtube.com/feeds/api/videos?q=felix+cartal+world+class+driver&v=2&alt=jsonc&max-results=1&format=5",
 	url: "http://gdata.youtube.com/feeds/api/videos?q="+artist.topTracks[playingSong].title.replace(/ /g,'+')+"+"+artist.name.replace(/ /g, '+')+"&v=2&alt=jsonc&max-results=1&format=5",
     success: function (response) {
       if(response.data.items.length>0){

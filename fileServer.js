@@ -19,12 +19,16 @@ module.exports = function fileServer(maxage){
       var folder,contentType;
 	  
 	  
-      if(req.url == '/indexold.html'){
+      /*if(req.url == '/indexold.html'){
         folder = __dirname + '/pde/indexold.html';
         contentType = 'text/html';
-      }
+      }*/
 	  else if(req.url == '/uploader'){
         folder = __dirname + '/pde/artistupload.html';
+        contentType = 'text/html';
+      }
+	else if(req.url == '/eventuploader'){
+        folder = __dirname + '/pde/eventupload.html';
         contentType = 'text/html';
       }
 	  else if(req.url == '/tester'){
@@ -39,10 +43,14 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/rapcities.pde';
         contentType = 'text/processing';
       }
-	  else if(req.url == '/svg.pde'){
-		folder = __dirname + '/pde/SVG/applet_js/svg.pde';
+	  else if(req.url == '/uploader.pde'){
+		folder = __dirname + '/pde/uploader.pde';
         contentType = 'text/processing';
       }  
+	else if(req.url == '/eventuploader.pde'){
+		folder = __dirname + '/pde/eventuploader.pde';
+        contentType = 'text/processing';
+      }
 	  else if(req.url == '/svgtester.pde'){
 		folder = __dirname + '/pde/SVG/applet_js/svgtester.pde';
         contentType = 'text/processing';
@@ -74,6 +82,10 @@ module.exports = function fileServer(maxage){
 	  else if(req.url == '/frame.svg'){
 		folder = __dirname + '/pde/SVG/applet_js/frame.svg';
         contentType = 'image/svg+xml';
+      }
+	  else if(req.url == '/eventicon.png'){
+		folder = __dirname + '/pde/SVG/applet_js/eventicon.png';
+        contentType = 'image/png';
       }
 	  else if(req.url == '/NYC.gif'){
 		folder = __dirname + '/files/NYCfinal.gif';
@@ -146,6 +158,8 @@ module.exports = function fileServer(maxage){
         res.end('check the header!');
         break;
       case('/'):
+      case('/hennessy'):
+	  case('/smirnoff'):
         if (files.index) sendfile('index')
         else readfile('/files/index.html','text/html','index',true)
         break;

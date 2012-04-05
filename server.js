@@ -35,6 +35,8 @@ else{
     switch(pathname){
       case '/addArtist': console.log('OH SHIT SOME SUCCESS!'); uploader.uploadLoc(res, parsed.query); break;
 	  case '/getArtists': console.log('GETTING ZE ARTISTS!!!!'); uploader.getLocs(res, parsed.query); break;
+	  case '/addEvent': console.log('OH SHIT ADDING AN EVENT!!!!'); uploader.uploadEvent(res, parsed.query); break;
+      case '/getEvents': console.log('OH SHIT GETTING AN EVENT!!!!'); uploader.getEvents(res, parsed.query); break;
 	  case '/getArtistInfo': console.log('getting artist info'); artistInfo.get(res, parsed.query); break;
 	  case '/getTrack': console.log('getting track'); digital7.getTrack(res, parsed.query); break;
       default: return;

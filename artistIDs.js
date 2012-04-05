@@ -3,8 +3,8 @@
  * add information such as biographies and news to them.
  */
 var mongodb = require('mongodb');
-//var mongoserver = new mongodb.Server('localhost', 26374);
 var mongoserver = new mongodb.Server('10.112.0.110', 26374);
+//var mongoserver = new mongodb.Server('localhost', 26374);
 var dbConnector = new mongodb.Db('uenergy', mongoserver);
 var http = require('http');
 

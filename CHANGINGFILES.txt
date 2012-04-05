@@ -1,0 +1,10 @@
+uploadArtist
+topTracks
+server.js
+prepareGeoNYC
+fileserver *sometimes
+facebook
+artist_info
+artistID
+artistInfo
+artistLocs

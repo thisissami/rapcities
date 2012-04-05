@@ -241,7 +241,7 @@ void processPrivateData(SceneNode newNode, String filename ) {
         else {
           println( "frame is null" );
         }
-      }
+      } 
     }
   }
   // for the map: BUGBUG: fix later

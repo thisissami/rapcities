@@ -1,7 +1,8 @@
 var api = require('7digital-api'),
 	artistes = new api.Artists();
 	var mongodb = require('mongodb');
-	var mongoserver = new mongodb.Server('localhost', 26374);
+	var mongoserver = new mongodb.Server('10.112.0.110', 26374);
+	//var mongoserver = new mongodb.Server('localhost', 26374);
 	var dbConnector = new mongodb.Db('uenergy', mongoserver);
 
 var done = false;
@@ -103,12 +104,3 @@ var rateLimit = 500;
     }
 });
 }
-
-
-		
-	
-	
-	
-	/*34988" }
-	{ "_id" : "ARVTAI41187B9B8B67", "7id" : "7digital-US:artist:3249" }
-	{ "_id" : "ARZ3U2M1187B989ACB", "7id" : "7digital-US:artist:11066*/

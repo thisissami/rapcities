@@ -23,6 +23,11 @@ dbConnector.open(function(err, DB){
 	  uplocs = artlocsupload;
 	console.log('artist locations created');
 	locs = artlocs;
+	
+	db.createCollection('sponsorEvents', function(err, even){
+		if(err){ console.log('creationevent error'); console.log(err); return;}
+		events = even;
+	});
 });});
 }
 });
@@ -30,13 +35,35 @@ dbConnector.open(function(err, DB){
 function uploadLoc(response, query){
 	console.log(query);
 	uplocs.insert(query, {safe:true}, function(err, doc){
-		if(err){console.log('ruh-roh! scooby dooby scawedy booby! (AKA artist upload failed)')}
+		if(err){console.log('ruh-roh! scooby dooby scawedy booby! (AKA artist upload failed)'); console.log(err);}
 		else{
 			response.writeHead(200, {'Content-Type': 'application/json'});
 			var returned = {'name':query.name};
 			response.end(JSON.stringify(returned));
 		}
 	});
+}
+
+function uploadEvent(response, query){
+	query.sponsor = query.sponsor.toLowerCase();
+	events.insert(query, {safe:true}, function(err,doc){
+		if(err){console.log('ruh-h! event upload failed!'); console.log(err); }
+		else{
+			response.writeHead(200, {'Content-Type': 'application/json'});
+			var returned = {'link':query.link};
+			response.end(JSON.stringify(returned));
+		}
+	});
+}
+
+function getEvents(response, query){
+	var sponsor = query.sponsor.toLowerCase();
+	events.find({'sponsor':sponsor}).toArray(function(err, results){
+        if(!err){
+            response.writeHead(200, {'Content-Type': 'application/json'});
+            response.end(JSON.stringify(results));
+        }
+    });
 }
 
 function getLocs(response, query){
@@ -160,3 +187,5 @@ function lerp(min, max, i){
 
 exports.uploadLoc = uploadLoc;
 exports.getLocs = getLocs;
+exports.uploadEvent = uploadEvent;
+exports.getEvents = getEvents;
