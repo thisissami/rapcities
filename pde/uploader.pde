@@ -446,8 +446,8 @@ void mouseClicked(){
 		var yes = confirm("Upload these coordinates for artist: '" + artist + "'?");
 		if(yes){
 			$.ajax({
-			//url: "http://rapcities.com/addArtist", 
-			url: "http://localhost:8888/addArtist",
+			url: "http://rapcities.com/addArtist", 
+			//url: "http://localhost:8888/addArtist",
 			data: {name: artist, x: map(mouseX, LIBMINX, LIBMAXX, minX, maxX), y: map(mouseY, LIBMINY, LIBMAXY, minY, maxY)}, 
 			success: function(data){if(data){alert("Successfully added artist: '" + data.name + "'!")}}
 			});

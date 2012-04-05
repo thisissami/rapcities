@@ -162,7 +162,7 @@ var artist = null;
 
 void setUpArtists(){
     artists.clear();
-    String jsonstring = "http://localhost:8888/getArtists";/*?maxX="+maxX+"&minX="+minX+
+    String jsonstring = "http://rapcities.com/getArtists";/*?maxX="+maxX+"&minX="+minX+
               "&minY="+minY+"&maxY="+maxY;*/
     if(sortSongs){jsonstring+="&sort="+sortSongs;}
     if(genreMode){jsonstring+="&genre="+curGenre;}
@@ -448,7 +448,7 @@ void mouseClicked(){
 		if(yes){
 			$.ajax({
 			//url: "http://rapcities.com/addEvent", 
-			url: "http://localhost:8888/addEvent",
+			url: "http://rapcities.com/addEvent",
 			data: {link: link, sponsor: sponsor, x: map(mouseX, LIBMINX, LIBMAXX, minX, maxX), y: map(mouseY, LIBMINY, LIBMAXY, minY, maxY)}, 
 			success: function(data){if(data){alert("Successfully added video: '" + data.link + "'!")}}
 			});
@@ -456,7 +456,7 @@ void mouseClicked(){
   }
 }	
 void getSong(int id){
-	$.getJSON('http://localhost:8888/getTrack?id=' + id, function(data){
+	$.getJSON('http://rapcities.com/getTrack?id=' + id, function(data){
 		if(started) stopSong();
 		startSong(data.url);
 	});
@@ -1370,7 +1370,7 @@ class ArtistInfo{
 	  $('#center, #popup, #popup-nav, #popup-content').css('width', selectDivWidth+'px');
 	  $('#popup-content').css('height', selectDivHeight+'px');
 
-	  $.getJSON('http://localhost:8888/getArtistInfo?id=' + artist_id, function(data) {
+	  $.getJSON('http://rapcities.com/getArtistInfo?id=' + artist_id, function(data) {
 	    loadBiographies(data.biographies);
 	    loadBlogs(data.blogs);
 	    loadImages(data.images);

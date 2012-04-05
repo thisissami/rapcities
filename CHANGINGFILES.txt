@@ -8,3 +8,6 @@ artist_info
 artistID
 artistInfo
 artistLocs
+
+uploaders .pde
+rapcities.pde
