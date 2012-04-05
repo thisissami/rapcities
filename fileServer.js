@@ -23,7 +23,7 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/indexold.html';
         contentType = 'text/html';
       }*/
-	  else if(req.url == '/uploader'){
+	   if(req.url == '/uploader'){
         folder = __dirname + '/pde/artistupload.html';
         contentType = 'text/html';
       }
