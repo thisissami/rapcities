@@ -39,10 +39,10 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/vyuzik.pde';
         contentType = 'text/processing';
       } 
-	  else if(req.url == '/rapcities.pde'){
+	  /*else if(req.url == '/rapcities.pde'){
         folder = __dirname + '/pde/rapcities.pde';
         contentType = 'text/processing';
-      }
+      }*/
 	  else if(req.url == '/uploader.pde'){
 		folder = __dirname + '/pde/uploader.pde';
         contentType = 'text/processing';

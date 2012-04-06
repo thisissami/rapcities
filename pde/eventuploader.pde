@@ -444,12 +444,13 @@ void mouseClicked(){
   if(mouseX > LIBMINX && mouseX < LIBMAXX && mouseY > LIBMINY && mouseY < LIBMAXY){
 		var link = document.input.link.value;
 		var sponsor = document.input.sponsor.value;
+		var title = document.input.title.value;
 		var yes = confirm("Upload these coordinates for video '" + link + "' by sponsor '" + sponsor + "'?");
 		if(yes){
 			$.ajax({
 			//url: "http://rapcities.com/addEvent", 
 			url: "http://rapcities.com/addEvent",
-			data: {link: link, sponsor: sponsor, x: map(mouseX, LIBMINX, LIBMAXX, minX, maxX), y: map(mouseY, LIBMINY, LIBMAXY, minY, maxY)}, 
+			data: {link: link, sponsor: sponsor, title: title, x: map(mouseX, LIBMINX, LIBMAXX, minX, maxX), y: map(mouseY, LIBMINY, LIBMAXY, minY, maxY)}, 
 			success: function(data){if(data){alert("Successfully added video: '" + data.link + "'!")}}
 			});
 		}

@@ -491,7 +491,7 @@ void drawHoverInfo(int i){
 }
 
 void drawEventInfo(int i){
-    String name = events.get(i).sponsor.toUpperCase();
+    String name = events.get(i).title;
     textSize(18);
     int xlength = textWidth(name);
     stroke(colors[6]);
