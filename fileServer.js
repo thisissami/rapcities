@@ -160,6 +160,13 @@ module.exports = function fileServer(maxage){
       case('/'):
       case('/hennessy'):
 	  case('/smirnoff'):
+	  case('/greygoose'):
+	case('/ciroc'):
+	case('/crownroyal'):
+	case('/baileys'):
+	case('/moet'):
+	case('/belvedere'):
+	case('/bacardi'):
         if (files.index) sendfile('index')
         else readfile('/files/index.html','text/html','index',true)
         break;
