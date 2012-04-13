@@ -19,14 +19,19 @@ module.exports = function fileServer(maxage){
       var folder,contentType;
 	  
 	  
-      /*if(req.url == '/indexold.html'){
-        folder = __dirname + '/pde/indexold.html';
-        contentType = 'text/html';
-      }*/
+      
 	   if(req.url == '/uploader'){
         folder = __dirname + '/pde/artistupload.html';
         contentType = 'text/html';
       }
+	/*else if(req.url == '/indexold.html'){
+        folder = __dirname + '/pde/indexold.html';
+        contentType = 'text/html';
+      }
+	else if(req.url == '/rapcities.pde'){
+        folder = __dirname + '/pde/rapcitiesAlpha.pde';
+        contentType = 'text/processing';
+      }*/
 	else if(req.url == '/eventuploader'){
         folder = __dirname + '/pde/eventupload.html';
         contentType = 'text/html';
@@ -39,10 +44,6 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/vyuzik.pde';
         contentType = 'text/processing';
       } 
-	  /*else if(req.url == '/rapcities.pde'){
-        folder = __dirname + '/pde/rapcities.pde';
-        contentType = 'text/processing';
-      }*/
 	  else if(req.url == '/uploader.pde'){
 		folder = __dirname + '/pde/uploader.pde';
         contentType = 'text/processing';
@@ -85,6 +86,10 @@ module.exports = function fileServer(maxage){
       }
 	  else if(req.url == '/eventicon.png'){
 		folder = __dirname + '/pde/SVG/applet_js/eventicon.png';
+        contentType = 'image/png';
+      }
+	  else if(req.url == '/logo'){
+		folder = __dirname + '/files/logo.png';
         contentType = 'image/png';
       }
 	  else if(req.url == '/NYC.gif'){

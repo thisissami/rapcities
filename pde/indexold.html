@@ -143,32 +143,44 @@
         width:570px;
         display:block;
       }
+
+	#dialogWindow{
+		z-index:1;
+		position:absolute;
+		right:20px;
+		top:350px;
+	}
+	#YouTubeP{
+		z-index:1;
+	}
+	#parent{
+		position:relative;
+	}
     </style>
 	<script type="text/javascript">
-		$(document).ready(function() {
-			$("div#dialogWindow").dialog({
-				autoOpen: false,
-				resizable: false,
-				height: 360,
-				width: 385
-			});
-
-			function onYouTubePlayerReady(playerId){
-				startAutoplay();
-			}
-		});
+		function onYouTubePlayerReady(playerId){	document.getElementById('YouTubeP').addEventListener("onStateChange","onytplayerStateChange");
+		Processing.getInstanceById('canvas').prepPlayer();	
+		}
+		
+		function onytplayerStateChange(newState) {
+		   if(newState == 0){
+			Processing.getInstanceById('canvas').videoEnded();
+		   }
+		}	
 	</script>
 	<script>
 	$(window).resize(function(){
-		if($(window).width() < 1300 || $(window).height() < 800){
+		if($(window).width() < 700 || $(window).height() < 870){
 			var p = Processing.getInstanceById('canvas');
-			p.setUpSize(Math.max($(window).width(),1300),Math.max(800,$(window).height()));
+			p.setUpSize(Math.max($(window).width(),700),Math.max(870,$(window).height()));
+			//$("#dialogWindow").css("position","fixed");
 			$("body").css("overflow","visible");
 		}
 		else{
 			var p = Processing.getInstanceById('canvas');
 			p.setUpSize($(window).width(),$(window).height());
 			$("body").css("overflow","hidden");
+			$("#parent").css("width",$(window).width()).css("height",$(window).height());
 		}
 	});
 	</script>
@@ -179,7 +191,7 @@
         <font size="10" color="white">Your browser doesn't support HTML5! Please
           and use the latest version of Mozilla Firefox or Google Chrome.</font>
       </canvas>
-	<div id="dialogWindow" title="YouTube Player">
+	<div id="dialogWindow">
 		<div id="ytplayer">
 			<p>Oops! Seems like you don't have Flash Player 8+ and/or JavaScript enabled!</p>
 
