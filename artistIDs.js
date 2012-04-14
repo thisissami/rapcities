@@ -72,6 +72,7 @@ function doNext(artLocs) {
           if(results.response.status.code == 0) {
             echo_artist = results.response.artists[0];
 console.log(JSON.stringify(echo_artist));
+if(echo_artist.id){
 			artLocs.findAndModify({'_id':artist._id}, [['_id','asc']],
 			{$set : {
 				'echoID': echo_artist.id,
@@ -96,7 +97,7 @@ console.log(JSON.stringify(echo_artist));
                 }
               }
             });
-          } else {
+          }} else {
             console.log('response error for artist ' + artist.name + ": " + JSON.stringify(results.response))
           }
         });
