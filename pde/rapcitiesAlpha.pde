@@ -107,13 +107,15 @@ void setUpSize(width,height){
 		miniRedX = map(xlength,0,xgrid,0,284);
 		miniRedY = map(ylength,0,ygrid,0,270);
 		nyc.setMins();
-		seekLeft = PANEMINX+110;
 		volX = PANEMINX+40;
-		seekRight = PANEMAXX - 10 - timeDisplacement;
 		
 		//yloc = PANEMAXY - 15;
 	    current.play.newPos(PANEMINX+72, yloc);
-	    current.ffwd.newPos(PANEMINX+95, yloc);
+	    current.ffwd.newPos(PANEMAXX-20, yloc);
+		seekLeft = PANEMINX+95;
+		volX = PANEMINX+40;
+		seekRight = PANEMAXX - 40 - timeDisplacement;
+	
 		curLeft = PANEMINX; curRight = PANEMAXX; //curTop = PANEMAXY - 230; curBottom = PANEMAXY;
 	  //$('#dialogWindow').css('right',bannerX + "px").css('top',PANEMAXY-200+"px");
 	}
@@ -221,6 +223,9 @@ void loadMapPiece(int i, int j){
 	grid[i][j] = loadImage(title);
 }
 
+void keyPressed(){
+	nyc.keyPressed();
+}
 class Map{
 	PShape rapper, rapcircle;
 	PImage NYC, miniNYC, eventIcon;
@@ -255,7 +260,7 @@ class Map{
 	{ "name" : "top left", "x" : "725.0560652572382", "y" : "701.8649879537509", "_id" : ObjectId("4f6509e2a0651c0372000004") }
 	
 	*/
-	
+
 	
 	void draw(){
 		drawMap();
@@ -353,8 +358,8 @@ class Map{
 		ylength = HEIGHT;
 		miniRedX = map(xlength,0,xgrid,0,284);
 		miniRedY = map(ylength,0,ygrid,0,270);
-		midX = xgrid/2;
-		midY = ygrid/2;
+		midX = 3095.5;
+		midY = 5033.5;
 		miniMidX = map(midX,0,xgrid,0,284);
 		miniMidY = map(midY,0,ygrid,0,270);
 		widths = new Array(1018,1027, 1017, 1028, 1017, 1028, 1017,1037);
@@ -367,10 +372,7 @@ class Map{
 			miniPressed = true;
 			miniMidX = min(max(miniRedX/2,mouseX - PANEMINX),284-miniRedX/2);
 			miniMidY = min(max(miniRedY/2,mouseY - PANEMAXY),270-miniRedY/2);
-			midX = map(miniMidX,0,284,0,xgrid);
-			midY = map(miniMidY,0,270,0,ygrid);
-			setMins();
-			//alert(miniRedX);
+			miniToMaxi();
 		}
 	}
 	
@@ -378,16 +380,30 @@ class Map{
 		if(miniPressed){
 			miniMidX = min(max(miniRedX/2,mouseX - PANEMINX),284-miniRedX/2);
 			miniMidY = min(max(miniRedY/2,mouseY - PANEMAXY),270-miniRedY/2);
-			midX = map(miniMidX,0,284,0,xgrid);
-			midY = map(miniMidY,0,270,0,ygrid);
-			setMins();
+			miniToMaxi();
 		}
+	}
+	void miniToMaxi(){
+		midX = map(miniMidX,0,284,0,xgrid);
+		midY = map(miniMidY,0,270,0,ygrid);
+		setMins();
 	}
 	
 	void miniMouseReleased(){
 		miniPressed = false;
 	}
 	boolean once = false;
+	
+	void keyPressed(){
+		if(key == CODED){
+			switch(keyCode){
+				case(UP): miniMidY = max(miniMidY-1,miniRedY/2); miniToMaxi(); break;
+				case(DOWN): miniMidY = min(miniMidY+1,270-miniRedY/2); miniToMaxi();break;
+				case(LEFT): miniMidX = max(miniMidX-1, miniRedX/2); miniToMaxi();break;
+				case(RIGHT): miniMidX = min(miniMidX+1, 284-miniRedX/2); miniToMaxi();break;
+			}
+		}
+	}
 	
 	void drawArtists(){
 		shapeMode(CENTER);
@@ -397,12 +413,25 @@ class Map{
 			if(cur.x < maxX+10 && cur.x > minX-10 && cur.y < maxY+15 && cur.y > minY-15){
 				var x = map(cur.x,minX,maxX,0,WIDTH);
 				var y = map(cur.y,minY,maxY,0,HEIGHT);
-				if(mouseX < x+15 && mouseX > x-15 && mouseY < y+15 && mouseY > y-15){
+				if(mouseX < x+15 && mouseX > x-15 && mouseY < y+15 && mouseY > y-15
+					&& (mouseX < PANEMINX || mouseX > PANEMAXX || mouseY < PANEMINY || mouseY > MINIMAXY)){
 					shape(rapcircle,x,y,30,30);
 					curhover = i;
 				}
-				else if(cur==artist)
+				else if(cur==artist){
 					shape(rapcircle,x,y,30,30);
+				    textSize(18);
+				    int xlength = textWidth(artist.name);
+				    stroke(colors[2]);
+				    fill(0);
+					rectMode(CENTER);
+				    rect(x, y-40,xlength+12, 26,10);
+
+				      fill(colors[2]);
+				     // fill(outlineColors[genres.get(songs.get(hoverSong).genre)]);
+				    textAlign(LEFT,TOP);
+				    text(artist.name, x-xlength/2, y-50);
+			    }
 				else
 					shape(rapper,x,y,20,30);
 			}
@@ -795,11 +824,19 @@ class Forward extends Button{
       noStroke();
     }
     else{
-      noFill();
-      if(super.pressed())
-        stroke(255);
-      else
+      if(super.pressed()){
+		textSize(14);
+		var twidth = textWidth("Next Artist");
+		fill(0); stroke(255);
+		rect(x-twidth/2-3,y+15,x+twidth/2+3,y+35);
+		textAlign(CENTER,TOP);
+        fill(255); text("Next Artist",x,y+17);
+		noFill();
+	}
+      else{
         noStroke();
+		noFill();
+		}
     }
     rect(x - hw, y - hh, x + hw, y+hh);
     if ( invert )
@@ -1076,15 +1113,15 @@ class Current{
   Current(){
 	curLeft = PANEMINX; curRight = PANEMAXX; curTop = PANEMAXY - 230; curBottom = PANEMAXY;
     timeDisplacement = textWidth("0:00/0:00");
-	seekLeft = PANEMINX+110;
+	seekLeft = PANEMINX+95;
 	yloc = PANEMAXY-18;
     play = new Play(PANEMINX+72, yloc, 10, 10);
              //rewind = new Rewind(250, 50, 20, 10);
-    ffwd = new Forward(PANEMINX + 95, yloc, 10, 10);
+    ffwd = new Forward(PANEMAXX-20, yloc, 10, 10);
 	volX = PANEMINX+40;
 	volY = 15; volD = 0.3; //divider (make it twice volY divided by 100)
 	volS = 20; // separatedeness of volume setter
-	seekRight = PANEMAXX - 10 - timeDisplacement;
+	seekRight = PANEMAXX - 40 - timeDisplacement;
     textSize(15);
   }
   
@@ -1384,8 +1421,15 @@ class Current{
   void drawSeekBar(){
     stroke(255);
     strokeWeight(3);
+	if(playMode == VIDEO && player.getPlayerState() == -1){
+		fill(255);
+	      textSize(19);
+	      textAlign(LEFT,CENTER);
+			text("-:--/-:--",curRight-28-timeDisplacement,yloc);
+		
+	}
     if((playMode == AUDIO && song != null && song.readyState == 1) || playMode == VIDEO && player.getPlayerState() == 3){
-      //draw song duration
+		//draw song duration
       strokeWeight(1);
       line(seekLeft, yloc, seekRight, yloc);
       //draw amount loaded
@@ -1444,7 +1488,7 @@ class Current{
       textAlign(LEFT,CENTER);
       //if(total != 0)
         //curTime += "/" + totTime;
-      text(curTime+"/"+totTime,curRight-timeDisplacement,yloc);
+      text(curTime+"/"+totTime,curRight-30-timeDisplacement,yloc);
     }
     strokeWeight(1);
   }
@@ -1669,24 +1713,16 @@ void prepPlayer(){
 	player.setVolume(volume);
 }
 void loadEventVideo(){
-	$("#ytplayer").html('<script type="text/javascript">var params={allowScriptAccess:"always"};var atts={id:"ytplayer"};var url="http://www.youtube.com/v/'+events.get(curehover).link+'?enablejsapi=1&playerapiid=ytplayer&version=3&autoplay=1&controls=1";swfobject.embedSWF(url,"ytplayer","350","300","8",null,null,params,atts);</script>');
+	player.loadVideoById(events.get(curehover).link);
 }
 
 void loadVideo(){
-	$.ajax({
-    type: "GET",
-	dataType:'jsonp',
-	url: "http://gdata.youtube.com/feeds/api/videos?q="+artist.topTracks[playingSong].title.replace(/ /g,'+')+"+"+artist.name.replace(/ /g, '+')+"&v=2&alt=jsonc&max-results=1&format=5",
-    success: function (response) {
-      if(response.data.items.length>0){
-        var video_id = response.data.items[0].id;
-        player.loadVideoById(video_id);
-      }
-	  else{
-	    $("#ytplayer").html("<p>Couldn't find this song on YouTube</p>");
+   	if(artist.topTracks[playingSong].video_id){
+	    player.loadVideoById(artist.topTracks[playingSong].video_id);
 	  }
+	else{
+	 $("#ytplayer").html("<p>Couldn't find this song on YouTube</p>");
 	}
-  });
 }
 void oldloadVideo(){
   $.ajax({
