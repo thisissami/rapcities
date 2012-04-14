@@ -97,7 +97,7 @@ if(echo_artist.id){
                 }
               }
             });
-          }} else {
+          }else console.log('\n\nskipping this guy \n\n');} else {
             console.log('response error for artist ' + artist.name + ": " + JSON.stringify(results.response))
           }
         });
