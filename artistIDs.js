@@ -14,7 +14,7 @@ var request = {
   'port' : 80
 }
 var done = false;
-var rateLimit = 2*1000;
+var rateLimit = 800;
 
 dbConnector.open(function(err, db) {
   if(err) {
@@ -71,8 +71,8 @@ function doNext(artLocs) {
           var results = JSON.parse(body);
           if(results.response.status.code == 0) {
             echo_artist = results.response.artists[0];
+			if(echo_artist && echo_artist.id){
 console.log(JSON.stringify(echo_artist));
-if(echo_artist.id){
 			artLocs.findAndModify({'_id':artist._id}, [['_id','asc']],
 			{$set : {
 				'echoID': echo_artist.id,
