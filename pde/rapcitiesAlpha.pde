@@ -37,6 +37,7 @@ int MINIMAXY;
 void setup(){
   WIDTH = max(700,$(window).width());//screen.width;//950;
   HEIGHT = max(870,$(window).height());//screen.height;// 635;
+setUpArtists();
   logo = loadImage("logo");
 $("#parent").css("width",WIDTH).css("height",HEIGHT);
   if(WIDTH == 700 || HEIGHT == 870){
@@ -181,6 +182,7 @@ void setUpArtists(){
             artists.add(results[i]);
 		}
       }
+	if(player) startMusic();
     });
   }
 
@@ -248,7 +250,6 @@ class Map{
 		ominy = minY = NYCy - ydif;//map(NYCy - ydif,0,1422,701.865,950.945);
 		maxY = NYCy + ydif;//map(NYCy + ydif,0,1422,701.865,950.945);*/
 		//531.749 231.083 853 810
-		setUpArtists();
 		setUpEvents();
 		rapper = loadShape("rapper.svg");
 		rapcircle = loadShape("bot.svg");
@@ -1711,6 +1712,17 @@ void prepPlayer(){
 	player = document.getElementById('YouTubeP');
 	playMode = VIDEO;
 	player.setVolume(volume);
+	if(artists.size() > 0) startMusic();
+}
+
+void startMusic(){
+	for(int i = 0; i < artists.size(); i++){
+		if(artists.get(i).name=="Jay-Z"){
+			artist = artists.get(i);
+			playingSong = 0;
+			loadVideo();
+		}
+	}
 }
 void loadEventVideo(){
 	player.loadVideoById(events.get(curehover).link);
