@@ -1003,9 +1003,10 @@ class SidePane{
     stroke(255);
 	rectMode(CORNERS);
 	//rect(PANEMINX,PANEMINY,PANEMAXX,PANEMAXY);
-	rect(PANEMINX,INFOMINY,PANEMAXX,PANEMAXY);
+	rect(PANEMINX,INFOMINY,PANEMAXX+1,PANEMAXY);
     
     textSize(15);
+	//line(PANEMAXX+1,INFOMINY,PANEMAXX+1,PANEMAXY);
     /*line(PANEMINX,PANEMINY,PANEMAXX,PANEMINY);
     line(PANEMINX, INFOMINY, PANEMAXX, INFOMINY);
     line(PANEMINX,PANEMINY,PANEMINX, PANEMAXY-1);
@@ -1074,17 +1075,17 @@ class SidePane{
 		for(int i = 0; i < tot; i++){
 			if(i == playingSong){
 				fill(colors[2]);
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,250,colors[2],30);
+				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,248,colors[2],30);
 				fill(255);
 			}
 			else if(mouseX>PANEMINX+20 && mouseY < INFOMINY+35+(i+1)*22&& mouseY>INFOMINY+35+i*22){
 				fill(colors[2]);
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,250,colors[2],30);
+				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,248,colors[2],30);
 				curSong = i;
 				fill(255);
 			}
 			else
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,250,color(255),30);
+				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,248,color(255),30);
 		}
 	}
   //Basic Song Information
