@@ -547,7 +547,7 @@ void mouseClicked(){
 	loadEventVideo();
 	//song.pause();
   }
-  else if(curMenu >= 0){
+  /*else if(curMenu >= 0){
 	switch(curMenu){
 		case 0: //info
 			artinfo.showArtistInfo(artist.echoID);
@@ -563,9 +563,9 @@ void mouseClicked(){
 			song.pause();*/
 			//link("http://www.youtube.com/results?search_query=" + song.title.replace(/ /g, '+') + "+" +
 		      //    song.artist.replace(/ /g, '+'), "_new");
-		    return;
+	/*	    return;
 	}
-	}
+	}*/
 	else if(curSong >= 0){
 		playingSong = curSong;
 		loadVideo();
@@ -998,20 +998,22 @@ class SidePane{
   
   void drawControl(){
 	fill(0);
-	noStroke();
-	rectMode(CORNERS);
-	rect(PANEMINX,PANEMINY,PANEMAXX,PANEMAXY);
-    strokeWeight(2);
+	//noStroke();
+	strokeWeight(2);
     stroke(255);
+	rectMode(CORNERS);
+	//rect(PANEMINX,PANEMINY,PANEMAXX,PANEMAXY);
+	rect(PANEMINX,INFOMINY,PANEMAXX,PANEMAXY);
+    
     textSize(15);
-    line(PANEMINX,PANEMINY,PANEMAXX,PANEMINY);
+    /*line(PANEMINX,PANEMINY,PANEMAXX,PANEMINY);
     line(PANEMINX, INFOMINY, PANEMAXX, INFOMINY);
     line(PANEMINX,PANEMINY,PANEMINX, PANEMAXY-1);
-    line(PANEMAXX+1,PANEMINY,PANEMAXX+1,PANEMAXY-1);
+    line(PANEMAXX+1,PANEMINY,PANEMAXX+1,PANEMAXY-1);*/
 	rectMode(CORNERS);
 	noFill();
 	rect(PANEMINX, MINIMAXY, PANEMAXX+1, PANEMAXY);
-    for(int i = 0; i < 5; i++)
+    /*for(int i = 0; i < 5; i++)
       line(PANEMINX + controlLength*(i+1), PANEMINY, PANEMINX + controlLength*(i+1),INFOMINY-1);
 	imageMode(CORNERS);
 	image(info, PANEMINX, PANEMINY,PANEMINX+controlLength,INFOMINY);
@@ -1020,7 +1022,7 @@ class SidePane{
 	image(youtube,PANEMINX+controlLength*3,PANEMINY,PANEMINX+controlLength*4,INFOMINY);
 	image(twitter,PANEMINX+controlLength*4,PANEMINY,PANEMINX+controlLength*5,INFOMINY);
     ellipseMode(CENTER_RADIUS);
-    noStroke();
+    noStroke();*/
     /*for(int i = 0; i < 10; i++){
       fill(colors[(colorIcon.start + i)%10]);
       ellipse(PANEMINX+length+colorIcon.places[i*2],PANEMINY+colorIcon.places[i*2+1],4,4);
@@ -1030,7 +1032,7 @@ class SidePane{
       line(PANEMINX+length*2+7,PANEMINY+sortIcon.places[i], PANEMINX+length*3-8,PANEMINY+sortIcon.places[i]);
     }*/
     //checking da mouse
-    mouseMainPaneControl = -1;
+    /*mouseMainPaneControl = -1;
     stroke(255);
     noFill();
     //rect(PANEMINX+length*panel+2,PANEMINY+1,PANEMINX+length*(panel+1)-2,INFOMINY-2);
@@ -1048,10 +1050,10 @@ class SidePane{
         }
       }
     }
-	else curMenu = -1;
+	else curMenu = -1;*/
   }
   
-	void title(int x, int y){
+	/*void title(int x, int y){
 		switch(curMenu){
 			case 0: text("Artist Info",x,y);break;
 			case 1: text("Heart Artist",x,y);break;
@@ -1059,7 +1061,7 @@ class SidePane{
 			case 3: text("View Current Song Video",x,y);break;
 			case 4: text("Tweet About Song",x,y); break;
 		}
-	}
+	}*/
 	void printTopSongs(){
 		textAlign(LEFT,TOP);
 		textSize(22);
@@ -1241,6 +1243,7 @@ class Current{
     stroke(255);
     strokeWeight(2);
     noFill();
+	ellipseMode(RADIUS);
     if(!muted){
       if(volume > 80)
         arc(volX+6, yloc, 12, 12, -(PI/3), PI/3);

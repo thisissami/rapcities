@@ -172,6 +172,8 @@ module.exports = function fileServer(maxage){
 	case('/moet'):
 	case('/belvedere'):
 	case('/bacardi'):
+	//culture
+	case('/culture'):
         if (files.index) sendfile('index')
         else readfile('/files/index.html','text/html','index',true)
         break;
