@@ -51,9 +51,22 @@
 					              }
 									else{ console.log('success'); process.exit();}
 								});
+							}else{
+								var top = artist.topTracks;
+								var song = { 'title':process.argv[3],'video_id':process.argv[4]}
+								top.push(song);
+								col.findAndModify({'echoID' : artist.echoID}, [['_id', 'asc']], {
+					              $set : {
+					                'topTracks' : top
+					              }},{safe:true}, function(err) {
+					              if(err) {
+					                console.log(err.message);
+					              }
+									else{ console.log('shittier success'); process.exit();}
+								});
 							}
 							});
-						});
+						}).on('error',function(e){console.log(e)});
 					}
 				});
 			}
