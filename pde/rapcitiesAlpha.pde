@@ -38,6 +38,16 @@ void setup(){
   WIDTH = max(700,$(window).width());//screen.width;//950;
   HEIGHT = max(870,$(window).height());//screen.height;// 635;
 setUpArtists();
+setUpEvents("culture");
+var pathArray = window.location.pathname.split( '/' );
+var sponsor;
+if(pathArray.length > 0){
+	if(pathArray.length < 3)
+		sponsor = pathArray[1];
+	else
+		sponsor = pathArray[3];
+	setUpEvents(sponsor);
+}
   logo = loadImage("logo");
 $("#parent").css("width",WIDTH).css("height",HEIGHT);
   if(WIDTH == 700 || HEIGHT == 870){
@@ -186,27 +196,17 @@ void setUpArtists(){
     });
   }
 
-void setUpEvents(){
-	events.clear();
-	var pathArray = window.location.pathname.split( '/' );
-	var sponsor;
-	if(pathArray.length > 0){
-		if(pathArray.length < 3)
-			sponsor = pathArray[1];
-		else
-			sponsor = pathArray[3];
-			
-		$.getJSON("http://localhost:8888/getEvents?sponsor="+sponsor, function(results){
-			if(results != null){
-				var length = results.length;
-				for(int i = 0; i < length; i++){
-					results[i].X = map(results[i].x,725.056,935.131,1,2000);
-					results[i].Y = map(results[i].y,701.865,850.945,1,1422);
-		            events.add(results[i]);
-				}
+void setUpEvents(String sponsor){
+	$.getJSON("http://localhost:8888/getEvents?sponsor="+sponsor, function(results){
+		if(results != null){
+			var length = results.length;
+			for(int i = 0; i < length; i++){
+				results[i].X = map(results[i].x,725.056,935.131,1,2000);
+				results[i].Y = map(results[i].y,701.865,850.945,1,1422);
+	            events.add(results[i]);
 			}
-		});
-	}
+		}
+	});
 }
 
 int minX, minY, maxX, maxY;
@@ -250,7 +250,6 @@ class Map{
 		ominy = minY = NYCy - ydif;//map(NYCy - ydif,0,1422,701.865,950.945);
 		maxY = NYCy + ydif;//map(NYCy + ydif,0,1422,701.865,950.945);*/
 		//531.749 231.083 853 810
-		setUpEvents();
 		rapper = loadShape("rapper.svg");
 		rapcircle = loadShape("bot.svg");
 		prep();
