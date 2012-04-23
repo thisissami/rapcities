@@ -264,8 +264,8 @@ class Map{
 	
 	void draw(){
 		drawMap();
-		drawArtists();
 		drawEvents();
+		drawArtists();
 		fill(0);
 		noStroke();
 		rectMode(CORNERS);
