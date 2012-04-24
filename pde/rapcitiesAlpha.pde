@@ -343,6 +343,10 @@ class Map{
 			else
 				ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),3,3);
 		}
+		for(int i = 0; i < events.size(); i++){
+			var cur = events.get(i);
+			ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),2,2);
+		}
 	//	fill(255); rect(PANEMAXX,PANEMAXY+270,10,10);
 		//rect(PANEMINX+minix,PANEMAXY+miniy,PANEMINX+maxix,PANEMAXY+maxiy);
 	}
@@ -443,10 +447,10 @@ class Map{
 		curehover = -1;
 		for(int i = 0; i < events.size(); i++){
 			var cur = events.get(i);
-			if(cur.x < maxX+15 && cur.x > minX-15 && cur.y < maxY+24 && cur.y > minY-24){
+			if(cur.x < maxX+18 && cur.x > minX-18 && cur.y < maxY+26 && cur.y > minY-26){
 				var x = map(cur.x,minX,maxX,0,WIDTH);
 				var y = map(cur.y,minY,maxY,0,HEIGHT);
-				if(mouseX < x+15 && mouseX > x-15 && mouseY < y+24 && mouseY > y-24){
+				if(mouseX < x+18 && mouseX > x-18 && mouseY < y+26 && mouseY > y-26){
 					curehover = i;
 				}
 				image(eventIcon,x,y);
@@ -524,12 +528,12 @@ void drawEventInfo(int i){
     String name = events.get(i).title;
     textSize(18);
     int xlength = textWidth(name);
-    stroke(colors[6]);
+    stroke(colors[2]);
     fill(0);
 	rectMode(CORNERS);
     rect(mouseX, mouseY-33,mouseX+xlength+12, mouseY-7,10);
 
-      fill(colors[6]);
+      fill(colors[2]);
     textAlign(LEFT,TOP);
     text(name, mouseX+6, mouseY-30);
 }
