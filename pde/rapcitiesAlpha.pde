@@ -1,4 +1,4 @@
-/* @pjs preload="facebook,youtube,info,heart,twitter,NYC.gif,rapper.svg,bot.svg,miniNYC.png,eventicon.png,logo";*/
+/* @pjs preload="facebook,youtube,info,heart,twitter,NYC.gif,rapper.svg,bot.svg,miniNYC.png,sponsoricon.png,cultureicon.png,logo";*/
 boolean started;
 PFont font;
 color[] colors;
@@ -33,21 +33,24 @@ int WIDTH,HEIGHT,YBASE,XBASE;
 int xgrid,ygrid;
 int bannerX, bannerY, bannerXFull, bannerYFull;
 int MINIMAXY; 
+var sponsor;
+var curehovertype = 0;
+var CULTURE = 0;
+var SPONSORS = 1;
 
 void setup(){
   WIDTH = max(700,$(window).width());//screen.width;//950;
   HEIGHT = max(870,$(window).height());//screen.height;// 635;
 setUpArtists();
-setUpEvents("culture");
 var pathArray = window.location.pathname.split( '/' );
-var sponsor;
 if(pathArray.length > 0){
 	if(pathArray.length < 3)
 		sponsor = pathArray[1];
 	else
 		sponsor = pathArray[3];
-	setUpEvents(sponsor);
+	//alert(sponsor);
 }
+setUpEvents();
   logo = loadImage("logo");
 $("#parent").css("width",WIDTH).css("height",HEIGHT);
   if(WIDTH == 700 || HEIGHT == 870){
@@ -171,11 +174,12 @@ current.draw();
   if(curhover > -1)
 		drawHoverInfo(curhover);
   if(curehover > -1)
-		drawEventInfo(curehover);
+		drawEventInfo();
 }
 
 var artists = new ArrayList();
-var events = new ArrayList();
+var culture = new ArrayList();
+var sponsors = new ArrayList();
 var artist = null;
 
 void setUpArtists(){
@@ -187,8 +191,6 @@ void setUpArtists(){
       if(results != null){
         var length = results.length;
         for(int i = 0; i < length; i++){
-			results[i].X = map(results[i].x,725.056,935.131,1,2000);
-			results[i].Y = map(results[i].y,701.865,850.945,1,1422);
             artists.add(results[i]);
 		}
       }
@@ -196,14 +198,15 @@ void setUpArtists(){
     });
   }
 
-void setUpEvents(String sponsor){
-	$.getJSON("http://localhost:8888/getEvents?sponsor="+sponsor, function(results){
+void setUpEvents(){
+	$.getJSON("http://localhost:8888/getEvents?sponsor=all", function(results){
 		if(results != null){
 			var length = results.length;
 			for(int i = 0; i < length; i++){
-				results[i].X = map(results[i].x,725.056,935.131,1,2000);
-				results[i].Y = map(results[i].y,701.865,850.945,1,1422);
-	            events.add(results[i]);
+				if(results[i].sponsor == "culture")
+	            	culture.add(results[i]);
+				else
+					sponsors.add(results[i]);
 			}
 		}
 	});
@@ -230,7 +233,7 @@ void keyPressed(){
 }
 class Map{
 	PShape rapper, rapcircle;
-	PImage NYC, miniNYC, eventIcon;
+	PImage NYC, miniNYC, cultureIcon, sponsorIcon;
 	int NYCx = 1000;
 	int NYCy = 711;
 	int ox, oy, ocx, ocy;
@@ -243,7 +246,8 @@ class Map{
 	Map(){
 		NYC = loadImage("NYC.gif");
 		miniNYC = loadImage("miniNYC.png");
-		eventIcon = loadImage("eventicon.png");
+		sponsorIcon = loadImage("sponsoricon.png");
+		cultureIcon = loadImage("cultureicon.png");
 		ox = oy = -1;
 		/*ominx = minX = NYCx - xdif;//map(NYCx - xdif,0,2000,725.056,935.131);
 		maxX = NYCx + xdif;//map(NYCx + xdif,0,2000,725.056,935.131);
@@ -343,8 +347,14 @@ class Map{
 			else
 				ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),3,3);
 		}
-		for(int i = 0; i < events.size(); i++){
-			var cur = events.get(i);
+		fill(colors[7]); stroke(colors[7]);
+		for(int i = 0; i < sponsors.size(); i++){
+			var cur = sponsors.get(i);
+			ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),2,2);
+		}
+		fill(colors[1]); stroke(colors[1]);
+		for(int i = 0; i < culture.size(); i++){
+			var cur = culture.get(i);
 			ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),2,2);
 		}
 	//	fill(255); rect(PANEMAXX,PANEMAXY+270,10,10);
@@ -441,19 +451,32 @@ class Map{
 			}
 		}
 	}
-	
+
 	void drawEvents(){
 		imageMode(CENTER);
 		curehover = -1;
-		for(int i = 0; i < events.size(); i++){
-			var cur = events.get(i);
+		for(int i = 0; i < culture.size(); i++){
+			var cur = culture.get(i);
 			if(cur.x < maxX+18 && cur.x > minX-18 && cur.y < maxY+26 && cur.y > minY-26){
 				var x = map(cur.x,minX,maxX,0,WIDTH);
 				var y = map(cur.y,minY,maxY,0,HEIGHT);
 				if(mouseX < x+18 && mouseX > x-18 && mouseY < y+26 && mouseY > y-26){
 					curehover = i;
+					curehovertype = CULTURE;
 				}
-				image(eventIcon,x,y);
+				image(cultureIcon,x,y);
+			}
+		}
+		for(int i = 0; i < sponsors.size(); i++){
+			var cur = sponsors.get(i);
+			if(cur.x < maxX+18 && cur.x > minX-18 && cur.y < maxY+26 && cur.y > minY-26){
+				var x = map(cur.x,minX,maxX,0,WIDTH);
+				var y = map(cur.y,minY,maxY,0,HEIGHT);
+				if(mouseX < x+18 && mouseX > x-18 && mouseY < y+26 && mouseY > y-26){
+					curehover = i;
+					curehovertype = SPONSORS;
+				}
+				image(sponsorIcon,x,y);
 			}
 		}
 	}
@@ -524,16 +547,24 @@ void drawHoverInfo(int i){
     text(name, mouseX+6, mouseY-30);
 }
 
-void drawEventInfo(int i){
-    String name = events.get(i).title;
+void drawEventInfo(){
+	String name; int i;
+	if(curehovertype == SPONSORS){
+    	name = sponsors.get(curehover).title;
+		i = 7;
+	}
+	else if(curehovertype == CULTURE){
+		name = culture.get(curehover).title;
+		i = 1;
+	}
     textSize(18);
     int xlength = textWidth(name);
-    stroke(colors[2]);
+    stroke(colors[i]);
     fill(0);
 	rectMode(CORNERS);
     rect(mouseX, mouseY-33,mouseX+xlength+12, mouseY-7,10);
 
-      fill(colors[2]);
+      fill(colors[i]);
     textAlign(LEFT,TOP);
     text(name, mouseX+6, mouseY-30);
 }
@@ -1732,7 +1763,10 @@ void startMusic(){
 	}
 }
 void loadEventVideo(){
-	player.loadVideoById(events.get(curehover).link);
+	if(curehovertype == SPONSORS)
+		player.loadVideoById(sponsors.get(curehover).link);
+	else if(curehovertype == CULTURE)
+		player.loadVideoById(culture.get(curehover).link);
 }
 
 void loadVideo(){

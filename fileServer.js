@@ -24,14 +24,14 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/artistupload.html';
         contentType = 'text/html';
       }
-	/*else if(req.url == '/indexold.html'){
+	else if(req.url == '/indexold.html'){
         folder = __dirname + '/pde/indexold.html';
         contentType = 'text/html';
       }
 	else if(req.url == '/rapcities.pde'){
         folder = __dirname + '/pde/rapcitiesAlpha.pde';
         contentType = 'text/processing';
-      }*/
+      }
 	else if(req.url == '/eventuploader'){
         folder = __dirname + '/pde/eventupload.html';
         contentType = 'text/html';
@@ -84,8 +84,12 @@ module.exports = function fileServer(maxage){
 		folder = __dirname + '/pde/SVG/applet_js/frame.svg';
         contentType = 'image/svg+xml';
       }
-	  else if(req.url == '/eventicon.png'){
-		folder = __dirname + '/pde/SVG/applet_js/eventicon.png';
+	  else if(req.url == '/sponsoricon.png'){
+		folder = __dirname + '/pde/SVG/applet_js/sponsoricon.png';
+        contentType = 'image/png';
+      }
+	  else if(req.url == '/cultureicon.png'){
+		folder = __dirname + '/pde/SVG/applet_js/cultureicon.png';
         contentType = 'image/png';
       }
 	  else if(req.url == '/logo'){
@@ -147,6 +151,17 @@ module.exports = function fileServer(maxage){
         });
       }
     }
+    var requrl = url.parse(req.url, true).pathname;
+    if(requrl.indexOf('/css/') == 0) {
+      var strippedString = requrl.replace('/', '');
+      if(files[strippedString]) sendfile(strippedString)
+      else readfile('/files' + requrl, 'text/css', strippedString, true);
+    } else if(requrl.indexOf('/js/') == 0) {
+      var strippedString = requrl.replace('/', '');
+      if(files[strippedString]) sendfile(strippedString)
+      else readfile('/files' + requrl, 'text/javascript', strippedString, true);
+    } else {
+    
     switch(req.url){
       case('/favicon.ico'):
         if (files.icon) {
@@ -236,8 +251,20 @@ module.exports = function fileServer(maxage){
 	    if (files.bg) sendfile('bg')
 	    else readfile('/files/images/ui-bg_highlight-soft_75_000000_1x100.png','image/png','bg',true)
 	    break;
+	  case('/heart.svg'):
+          if (files.heart) {
+            res.writeHead(200, files.heart.headers);
+            res.end(files.heart.body);
+          } else readfile('/files/heart.svg', 'image/svg+xml', 'heart', false);
+          break;
+        case('/greyHeart.svg'):
+          if (files.greyHeart) {
+            res.writeHead(200, files.greyHeart.headers);
+            res.end(files.greyHeart.body);
+          } else readfile('/files/greyHeart.svg', 'image/svg+xml', 'greyHeart', false);
+          break;
       default: next();
-    } 
+    } }
  //icon, index, sm2, sm2f, sm2f9, processing, info, fbook, ytube;   
     function sendfile(file){
       var acceptEncoding = req.headers['accept-encoding'];

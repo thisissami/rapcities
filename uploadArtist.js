@@ -58,7 +58,10 @@ function uploadEvent(response, query){
 
 function getEvents(response, query){
 	var sponsor = query.sponsor.toLowerCase();
-	events.find({'sponsor':sponsor}).toArray(function(err, results){
+	var query = {}
+	if(sponsor != "all")
+		query['sponsor'] = sponsor;
+	events.find(query).toArray(function(err, results){
         if(!err){
             response.writeHead(200, {'Content-Type': 'application/json'});
             response.end(JSON.stringify(results));

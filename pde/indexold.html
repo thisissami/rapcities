@@ -7,8 +7,12 @@
     <script type="text/javascript" src="http://xe-widgets.googlecode.com/svn-history/r10/trunk/widgets/xe_banner/skins/bannerSlider/js/slides.jquery.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="jquery-ui-1.8.18.custom.css" />
+	<!--<link rel="stylesheet" type="text/css" href="jquery-ui-1.8.18.custom.css" />-->
     <link rel='stylesheet' src="http://slidesjs.com/examples/images-with-captions/css/global.css">
+        <script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
+    
+    <link type="text/css" href="css/dark-hive/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+
     <style type="text/css">
       body {
         background-color: black;
@@ -156,7 +160,173 @@
 	#parent{
 		position:relative;
 	}
+    a {
+      color: #CCCCCC;
+      text-decoration: underline;
+    }
+    
+    a:hover {
+      color: #FFFFFF;
+    }
+    
+    #userFavs {
+	    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	    font-size: 12px;
+	    width: 480px;
+	    text-align: left;
+	    border-collapse: collapse;
+	    border: 1px solid #FFFFFF;
+	    background-color: #000;
+	    margin:0 auto;
+    }
+    
+    #userFavs th {
+	    padding: 12px 17px 12px 17px;
+	    font-weight: bold;
+	    font-size: 14px;
+	    color: #FFFFFF;
+	    border-bottom: 1px dashed #FFFFFF;
+    }
+    
+    #userFavs td {
+	    padding: 7px 17px 7px 17px;
+	    color: #FFFFFF;
+    }
+    
+    #userFavs tbody tr:hover td {
+	    color: #222222;
+	    background: #CCCCCC;
+    }
+    
+    #login-block {
+      text-align:right;
+      margin:0 auto;
+      //width:271px; // this is size of other panel
+      width:auto;
+      color: #FFFFFF;
+      background: #000000;
+      		z-index:5;
+		position:absolute;
+		right:18px;
+		top:10px;
+		border: 2px solid #EEEEEE;
+      padding: 6px 6px 6px 6px;
+    }
+    
+    #toolbox {
+      margin: 0 auto;
+      left: 0px;
+      top: 0px;
+      width: auto;
+      //height: 26px;
+      background: #000000;
+      z-index: 500;
+      position: relative;
+      overflow: hidden;
+      float: left;
+    }
+    
+    #fbLikeContainer {
+      width: 91px;
+      overflow: hidden;
+      display: inline-block;
+    }
+    
+    #fbLoginSpan {
+      float:right;
+    }
     </style>
+    
+    <script type="text/javascript">
+      var userid = '-1';
+      var accessToken = null;
+      
+      $(function() { //initiator constructor
+        $('#overlay').dialog({
+          autoOpen: false,
+          width: 'auto',
+          show: 'fade',
+          hide: 'fade',
+          maxHeight: '500',
+          close: function(event, ui) {
+            $('this').html("");
+            $('#show-favs').unbind().html("Favourites").click(function() { showAndFillOverlay(); });
+          }
+        });
+        $('#show-favs').click(function() { showAndFillOverlay(); });
+      });
+      
+      function showAndFillOverlay(sortBy, order) {  // shows favorite box and loads the favorites
+        if(userid == null) {
+          alert("Please log in to Facebook");
+        } else {
+          $.get('seeSongs', {"userid": userid, "sortBy": sortBy, "order": order}, function(data) {
+            $('#overlay').html(data).dialog('open');
+            $('#show-favs').unbind().click(function() {
+              $('#overlay').dialog('close');
+            });
+          });
+        }
+      }
+      
+      function toggleFav(element, songid) { //toggle favs
+        if(userid == null) {
+          alert("Please login to Facebook");
+        } else {
+          if(($(element).html().indexOf("greyHeart") > -1)) { // simulate xor with rev to reverse value
+            $(element).html("<img src=\"heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+            $.get('addSong', { "songid": songid, "userid": userid });
+          } else {
+            $(element).html("<img src=\"greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+            $.get('removeSong', { "songid": songid, "userid": userid });
+          }
+        }
+      }
+      
+      function showToolbox(songid, songName) {   // shows stuff
+        $('#toolbox').css('display', 'block');
+        if(userid != null) {
+          $.get('isFav', {'songid': songid, 'userid':userid}, function(data) {
+            if(data.value) {
+              $('#toolbox-favLink').html("<img src=\"heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+            } else {
+              $('#toolbox-favLink').html("<img src=\"greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+            }
+            $('#toolbox-favLink').unbind().click(function() {
+              toggleFav($('#toolbox-favLink'), songid);
+            });
+          });
+        } else {
+          $('#toolbox-favLink').html("<img src=\"greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>").unbind().click(function() {
+            alert("Please login to Facebook");
+          });
+        }
+        // Twitter
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+        $('#toolbox-twitter').attr('data-text'/*text of tweet*/, "I'm listening to " + songName + " at undanceableenergy.com!");
+      }
+      
+      function hideToolbox() {
+        $('#toolbox').css('display', 'none');
+      }
+      
+      function fbAuthHandler(response) {
+        if (response.status === 'connected') {
+          accessToken = response.authResponse.accessToken;
+          $.get('fbCreate', {"fbid": response.authResponse.userID, "accessToken": accessToken}, function(data) {
+            if(data.response == "success") {
+              userid = data.value;
+              $('#fbLoginSpan').css('display', 'none');
+	      showToolbox();
+            }
+          });
+        } else {
+          userid = null;
+          accessToken = null;
+          $('#fbLoginSpan').css('display', 'inline');
+        }
+      }
+    </script>
 	<script type="text/javascript">
 		function onYouTubePlayerReady(playerId){	document.getElementById('YouTubeP').addEventListener("onStateChange","onytplayerStateChange");
 		Processing.getInstanceById('canvas').prepPlayer();	
@@ -186,7 +356,35 @@
 	</script>
   </head>
   <body>
+    <div id="fb-root"></div>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '134659439991720', // App ID
+          channelUrl : '//rapcities.com/channel.html', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true  // parse XFBML
+        });
+        
+        FB.getLoginStatus(fbAuthHandler);
+        FB.Event.subscribe('auth.authResponseChange', fbAuthHandler);
+      };
+
+      // Load the SDK Asynchronously
+      (function(d){
+         var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement('script'); js.id = id; js.async = true;
+         js.src = "//connect.facebook.net/en_US/all.js";
+         ref.parentNode.insertBefore(js, ref);
+       }(document));
+    </script>
+    
+    <div id="overlay" title="Favs"></div>
+
     <div id="parent">
+      
       <canvas id="canvas" data-processing-sources="rapcities.pde">
         <font size="10" color="white">Your browser doesn't support HTML5! Please
           and use the latest version of Mozilla Firefox or Google Chrome.</font>
@@ -197,6 +395,15 @@
 
 		</div>
 	</div>
+    <div id="login-block">
+      <div id="toolbox">
+        <a href="javascript:void(0)" id="toolbox-favLink"><img src="heart.svg" height="20" width="20" /></a>
+	<a href="javascript:void(0);" id="show-favs">Favs</a>
+        <a href="https://twitter.com/share" id="toolbox-twitter" class="twitter-share-button" data-lang="en" data-count="none">Tweet</a>
+        <div id="fbLikeContainer"><fb:like href="http://undanceableenergy.com" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like></div>
+      </div>
+      <span id="fbLoginSpan"><fb:login-button show-faces="false" width="200" max-rows="1"></fb:login-button></span></div>
+
       <div id='artist-info'>
         <div id="top">
           <div class='type' data-type='biographies'>Biographies</div>

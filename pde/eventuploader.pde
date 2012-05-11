@@ -448,8 +448,8 @@ void mouseClicked(){
 		var yes = confirm("Upload these coordinates for video '" + link + "' by sponsor '" + sponsor + "'?");
 		if(yes){
 			$.ajax({
-			//url: "http://localhost:8888/addEvent", 
-			url: "http://rapcities.com/addEvent",
+			url: "http://localhost:8888/addEvent", 
+			//url: "http://rapcities.com/addEvent",
 			data: {link: link, sponsor: sponsor, title: title, x: map(mouseX, LIBMINX, LIBMAXX, minX, maxX), y: map(mouseY-28, LIBMINY, LIBMAXY, minY, maxY)}, 
 			success: function(data){if(data){alert("Successfully added video: '" + data.link + "'!")}}
 			});
