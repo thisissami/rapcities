@@ -283,7 +283,7 @@
         }
       }
       
-      function showToolbox(songid, artistid, songName) {   // shows stuff
+      function showToolbox(songid, artistid, songName, artistName) {   // shows stuff
         $('#toolbox').css('display', 'block');
         if(userid != null) {
           $.get('isFav', {'songid': artistid + ' ' + songid, 'userid':userid}, function(data) {
@@ -303,7 +303,8 @@
         }
         // Twitter
         !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-        $('#toolbox-twitter').attr('data-text'/*text of tweet*/, "I'm listening to " + songName + " at undanceableenergy.com!");
+        $('#toolbox-twitter').attr('data-text'/*text of tweet*/, "I'm listening to " + songName + " by " + artistName + " at RapCities.com!");
+        $("#fbLikeContainer").html('<fb:like href="http://rapcities.com/songid/'+artistid+'/'+songid+'" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like>');
       }
       
       function hideToolbox() {
@@ -400,7 +401,7 @@
         <a href="javascript:void(0)" id="toolbox-favLink"><img src="heart.svg" height="20" width="20" /></a>
 	<a href="javascript:void(0);" id="show-favs">Favs</a>
         <a href="https://twitter.com/share" id="toolbox-twitter" class="twitter-share-button" data-lang="en" data-count="none">Tweet</a>
-        <div id="fbLikeContainer"><fb:like href="http://undanceableenergy.com" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like></div>
+        <div id="fbLikeContainer"><fb:like href="http://rapcities.com" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like></div>
       </div>
       <span id="fbLoginSpan"><fb:login-button show-faces="false" width="200" max-rows="1"></fb:login-button></span></div>
 

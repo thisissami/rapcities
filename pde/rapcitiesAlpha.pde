@@ -1754,13 +1754,30 @@ void prepPlayer(){
 }
 
 void startMusic(){
-	for(int i = 0; i < artists.size(); i++){
-		if(artists.get(i).name=="Jay-Z"){
-			artist = artists.get(i);
-			playingSong = 0;
+  var pathArray = window.location.pathname.split('/');
+  var artID, songID;
+  if(pathArray[0] == "songid"){
+    artID = pathArray[1];
+    songID = pathArray[2];
+  }
+  else  artID = ARLGIX31187B9AE9A0;
+
+    for(int i = 0; i < artists.size(); i++){
+	  if(artists.get(i).RID==artID){
+		  artist = artists.get(i);
+		  if(songID){
+		    for(int j = 0; j < artist.topTracks.size(); j++){
+		      if(artist.topTracks[j].RID = songID){
+			playingSong = j;
 			loadVideo();
-		}
-	}
+		      }
+		    }
+		  } else{
+		    playingSong = 0;
+		    loadVideo();
+		  }
+	  }
+  }
 }
 void loadEventVideo(){
 	if(curehovertype == SPONSORS)
@@ -1772,6 +1789,7 @@ void loadEventVideo(){
 void loadVideo(){
    	if(artist.topTracks[playingSong].video_id){
 	    player.loadVideoById(artist.topTracks[playingSong].video_id);
+	    showToolbox(artist.topTracks[playingSong].RID, artist.RID, artist.topTracks[playingSong].title, artist.name);
 	  }
 	else{
 	 $("#ytplayer").html("<p>Couldn't find this song on YouTube</p>");

@@ -160,6 +160,9 @@ module.exports = function fileServer(maxage){
       var strippedString = requrl.replace('/', '');
       if(files[strippedString]) sendfile(strippedString)
       else readfile('/files' + requrl, 'text/javascript', strippedString, true);
+    } else if(requrl.indexOf('/songid/') == 0){ //songID
+	if (files.index) sendfile('index')
+        else readfile('/files/index.html','text/html','index',true)
     } else {
     
     switch(req.url){
