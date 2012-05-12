@@ -304,7 +304,10 @@
         // Twitter
         !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
         $('#toolbox-twitter').attr('data-text'/*text of tweet*/, "I'm listening to " + songName + " by " + artistName + " at RapCities.com!");
-        $("#fbLikeContainer").html('<fb:like href="http://rapcities.com/songid/'+artistid+'/'+songid+'" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like>');
+        $("#fbLikeContainer").html('<fb:like href="http://rapcities.com/song/'+artistid+'/'+songid+'" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like>');
+        document.title = "RapCities Alpha - " + artistName + ' - - ' + songName;
+        window.history.pushState(null,null, "song/"+artistid+'/'+songid);
+        FB.XFBML.parse(document.getElementById('fbLikeContainer'));
       }
       
       function hideToolbox() {
