@@ -26,6 +26,7 @@ else{
   uploader = require('./uploadArtist'),
   digital7 = require('./7Dconnect'),
   artistInfo = require('./artistInfo');
+  users = require('./user');
         
   function onRequest(req, res, next) {
     var parsed = url.parse(req.url,true);
@@ -39,6 +40,12 @@ else{
       case '/getEvents': console.log('OH SHIT GETTING AN EVENT!!!!'); uploader.getEvents(res, parsed.query); break;
 	  case '/getArtistInfo': console.log('getting artist info'); artistInfo.get(res, parsed.query); break;
 	  case '/getTrack': console.log('getting track'); digital7.getTrack(res, parsed.query); break;
+      case '/seeSongs': users.seeSongs(req, res, next); break;
+      case '/addSong': users.addSong(req, res, next); break;
+      case '/removeSong': users.removeSong(req, res, next); break;
+      case '/countSongs': users.countSongs(req, res, next); break;
+      case '/isFav': users.isFav(req, res, next); break;
+      case '/fbCreate': users.fbCreate(req, res, next); break;
       default: return;
     }
   }

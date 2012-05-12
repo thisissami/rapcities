@@ -250,7 +250,7 @@
           maxHeight: '500',
           close: function(event, ui) {
             $('this').html("");
-            $('#show-favs').unbind().html("Favourites").click(function() { showAndFillOverlay(); });
+            $('#show-favs').unbind().html("Favs").click(function() { showAndFillOverlay(); });
           }
         });
         $('#show-favs').click(function() { showAndFillOverlay(); });
@@ -269,31 +269,31 @@
         }
       }
       
-      function toggleFav(element, songid) { //toggle favs
+      function toggleFav(element, songid, artistid) { //toggle favs
         if(userid == null) {
           alert("Please login to Facebook");
         } else {
           if(($(element).html().indexOf("greyHeart") > -1)) { // simulate xor with rev to reverse value
             $(element).html("<img src=\"heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            $.get('addSong', { "songid": songid, "userid": userid });
+            $.get('addSong', { "songid": artistid + ' ' + songid, "userid": userid });
           } else {
             $(element).html("<img src=\"greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            $.get('removeSong', { "songid": songid, "userid": userid });
+            $.get('removeSong', { "songid": artistid + ' ' + songid, "userid": userid });
           }
         }
       }
       
-      function showToolbox(songid, songName) {   // shows stuff
+      function showToolbox(songid, artistid, songName) {   // shows stuff
         $('#toolbox').css('display', 'block');
         if(userid != null) {
-          $.get('isFav', {'songid': songid, 'userid':userid}, function(data) {
+          $.get('isFav', {'songid': artistid + ' ' + songid, 'userid':userid}, function(data) {
             if(data.value) {
               $('#toolbox-favLink').html("<img src=\"heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
             } else {
               $('#toolbox-favLink').html("<img src=\"greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
             }
             $('#toolbox-favLink').unbind().click(function() {
-              toggleFav($('#toolbox-favLink'), songid);
+              toggleFav($('#toolbox-favLink'), songid, artistid);
             });
           });
         } else {
