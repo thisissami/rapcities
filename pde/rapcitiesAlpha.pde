@@ -43,7 +43,7 @@ void setup(){
   HEIGHT = max(870,$(window).height());//screen.height;// 635;
 setUpArtists();
 var pathArray = window.location.pathname.split( '/' );
-if(pathArray.length > 0){
+if(pathArray.length > 0 && pathArray[0] != "songid"){
 	if(pathArray.length < 3)
 		sponsor = pathArray[1];
 	else
@@ -1760,7 +1760,7 @@ void startMusic(){
     artID = pathArray[1];
     songID = pathArray[2];
   }
-  else  artID = ARLGIX31187B9AE9A0;
+  else  artID = "ARLGIX31187B9AE9A0";
 
     for(int i = 0; i < artists.size(); i++){
 	  if(artists.get(i).RID==artID){
@@ -1776,6 +1776,7 @@ void startMusic(){
 		    playingSong = 0;
 		    loadVideo();
 		  }
+		break;
 	  }
   }
 }
