@@ -236,6 +236,10 @@
       float:right;
     }
     </style>
+    <meta property="og:title" content="RapCities" />
+    <meta property="og:type" content="song" />
+    <meta property="og:url" content="http://rapcities.com/jib" />
+    <meta property="og:image" content="http://icons.iconarchive.com/icons/nandostudio/be-the-dj/128/vinyl-icon.png" />
     
     <script type="text/javascript">
       var userid = '-1';
@@ -306,7 +310,7 @@
         $('#toolbox-twitter').attr('data-text'/*text of tweet*/, "I'm listening to " + songName + " by " + artistName + " at RapCities.com!");
         $("#fbLikeContainer").html('<fb:like href="http://rapcities.com/song/'+artistid+'/'+songid+'" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like>');
         document.title = "RapCities Alpha - " + artistName + ' - - ' + songName;
-        window.history.pushState(null,null, "song/"+artistid+'/'+songid);
+        window.history.pushState(songName,null, "http://rapcities.com/song/"+artistid+"/"+songid);
         FB.XFBML.parse(document.getElementById('fbLikeContainer'));
       }
       

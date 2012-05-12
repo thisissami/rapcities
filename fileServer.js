@@ -24,7 +24,7 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/artistupload.html';
         contentType = 'text/html';
       }
-	else if(req.url == '/indexold.html'){
+	else if(req.url == '/indexold.html' || req.url.indexOf('/song/') == 0){
         folder = __dirname + '/pde/indexold.html';
         contentType = 'text/html';
       }
