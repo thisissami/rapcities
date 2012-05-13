@@ -227,7 +227,7 @@ function seeSongs(req, res, next) {
         var loopThrough = function() {
           if(index < favs.length) {
             console.log("looping index " + index);
-            fullid = favs[index].split(" ");
+            fullid = favs[index].split(' ');
             artists.findOne({'RID': fullid[0]}, function(err, document) {
               if(document) {
                 var i, pos; 

@@ -24,7 +24,7 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/artistupload.html';
         contentType = 'text/html';
       }
-	else if(req.url == '/indexold.html' || req.url.indexOf('/song/') == 0){
+	else if(req.url == '/indexold.html'){
         folder = __dirname + '/pde/indexold.html';
         contentType = 'text/html';
       }
@@ -160,10 +160,14 @@ module.exports = function fileServer(maxage){
       var strippedString = requrl.replace('/', '');
       if(files[strippedString]) sendfile(strippedString)
       else readfile('/files' + requrl, 'text/javascript', strippedString, true);
-    } /*else if(requrl.indexOf('/song/') == 0){ //songID
-	if (files.index) sendfile('index')
-        else readfile('/files/index.html','text/html','index',true)
-    }*/ else {
+    } else if(requrl.indexOf('/song/') == 0){ //songID
+	fs.readFile(__dirname + '/pde/indexold.html', function(error,content){
+	  if(error){res.writeHead(500);res.end();}else{
+	    res.writeHead(200, {'Content-Type':'text/html'});
+	    res.end(content);
+	  }
+	});
+    } else {
     
     switch(req.url){
       case('/favicon.ico'):
