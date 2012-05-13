@@ -1756,9 +1756,9 @@ void prepPlayer(){
 void startMusic(){
   var pathArray = window.location.pathname.split('/');
   var artID, songID;
-  if(pathArray[0] == "song"){
-    artID = pathArray[1];
-    songID = pathArray[2];
+  if(pathArray[1] == "song"){
+    artID = pathArray[2];
+    songID = pathArray[3];
   }
   else  artID = "ARLGIX31187B9AE9A0";
 
