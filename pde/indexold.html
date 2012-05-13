@@ -269,16 +269,16 @@
         }
       }
       
-      function toggleFav(element, songid, artistid) { //toggle favs
+      function toggleFav(element, id) { //toggle favs
         if(userid == null) {
           alert("Please login to Facebook");
         } else {
           if(($(element).html().indexOf("greyHeart") > -1)) { // simulate xor with rev to reverse value
             $(element).html("<img src=\"http://rapcities.com/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            $.get('http://rapcities.com/addSong', { "songid": artistid + ' ' + songid, "userid": userid });
+            $.get('http://rapcities.com/addSong', { "songid": id, "userid": userid });
           } else {
             $(element).html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            $.get('http://rapcities.com/removeSong', { "songid": artistid + ' ' + songid, "userid": userid });
+            $.get('http://rapcities.com/removeSong', { "songid": id, "userid": userid });
           }
         }
       }
@@ -293,7 +293,7 @@
               $('#toolbox-favLink').html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
             }
             $('#toolbox-favLink').unbind().click(function() {
-              toggleFav($('#toolbox-favLink'), songid, artistid);
+              toggleFav($('#toolbox-favLink'), artistid+' '+songid);
             });
           });
         } else {

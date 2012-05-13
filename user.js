@@ -226,19 +226,18 @@ function seeSongs(req, res, next) {
         // Tail-recursive loop to get past asynchronous querying:
         var loopThrough = function() {
           if(index < favs.length) {
-            console.log("looping index " + index);
             fullid = favs[index].split(' ');
             artists.findOne({'RID': fullid[0]}, function(err, document) {
               if(document) {
                 var i, pos; 
                 for(i = 0; i < document.topTracks.length; i++){
                   if(document.topTracks[i].RID == fullid[1]){
-                    pos = i;
+                    pos = true;
                     break;
                   }
                 }
                 if(pos)
-                  documents.push({'artist':document.name,'song':document.topTracks[pos].title,'date':dates[index],'fullid':favs[index]});
+                  documents.push({'artist':document.name,'song':document.topTracks[i].title,'date':dates[index],'fullid':favs[index]});
                 ++index;
                 loopThrough();
               }
@@ -316,9 +315,9 @@ function seeSongs(req, res, next) {
               if(order == 'asc') return out;
               return out * -1;
             });
-            var d;
-            for(var i=0; i<documents.length; ++i) {
-              var d = documents[i];
+            var d,j;
+            for(j=0; j<documents.length; j++) {
+              var d = documents[j];
               res.write('<tr><td><a href="javascript:void(0)" onclick="toggleFav(this, \'' + d.fullid + '\')"><img src="http://rapcities.com/heart.svg" width="20" height="20" border="0" /></a></td>');
               res.write('<td>' + d.song + '</td>');
               res.write('<td>' + d.artist + '</td>');
