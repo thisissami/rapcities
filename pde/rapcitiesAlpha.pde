@@ -1,4 +1,4 @@
-/* @pjs preload="facebook,youtube,info,heart,twitter,NYC.gif,rapper.svg,bot.svg,miniNYC.png,sponsoricon.png,cultureicon.png,logo";*/
+/* @pjs preload="http://rapcities.com/facebook,http://rapcities.com/youtube,http://rapcities.com/info,http://rapcities.com/heart,http://rapcities.com/twitter,http://rapcities.com/NYC.gif,http://rapcities.com/rapper.svg,http://rapcities.com/bot.svg,http://rapcities.com/miniNYC.png,http://rapcities.com/sponsoricon.png,http://rapcities.com/cultureicon.png,http://rapcities.com/logo";*/
 boolean started;
 PFont font;
 color[] colors;
@@ -51,7 +51,7 @@ if(pathArray.length > 0 && pathArray[0] != "songid"){
 	//alert(sponsor);
 }
 setUpEvents();
-  logo = loadImage("logo");
+  logo = loadImage("http://rapcities.com/logo");
 $("#parent").css("width",WIDTH).css("height",HEIGHT);
   if(WIDTH == 700 || HEIGHT == 870){
 	$("body").css("overflow","visible");
@@ -93,11 +93,11 @@ recentlyPlayed = new ArrayList();
 			gridLoad[i][j] = false;
 	}
   artinfo = new ArtistInfo();
-  facebook = loadImage("facebook");
-  youtube = loadImage("youtube");
-  info = loadImage("info");
-  heart = loadImage("heart");
-  twitter = loadImage("twitter");
+  facebook = loadImage("http://rapcities.com/facebook");
+  youtube = loadImage("http://rapcities.com/youtube");
+  info = loadImage("http://rapcities.com/info");
+  heart = loadImage("http://rapcities.com/heart");
+  twitter = loadImage("http://rapcities.com/twitter");
   //money = loadImage("web_money.jpg")
 }
 
@@ -225,7 +225,7 @@ void loadMapPiece(int i, int j){
 	else
 		title = String(i*8+j+1)+'.grid';
 	gridLoad[i][j] = true;
-	grid[i][j] = loadImage(title);
+	grid[i][j] = loadImage('http://rapcities.com/'+title);
 }
 
 void keyPressed(){
@@ -244,18 +244,18 @@ class Map{
 	boolean opressed = false;
 	boolean miniPressed = false;
 	Map(){
-		NYC = loadImage("NYC.gif");
-		miniNYC = loadImage("miniNYC.png");
-		sponsorIcon = loadImage("sponsoricon.png");
-		cultureIcon = loadImage("cultureicon.png");
+		NYC = loadImage("http://rapcities.com/NYC.gif");
+		miniNYC = loadImage("http://rapcities.com/miniNYC.png");
+		sponsorIcon = loadImage("http://rapcities.com/sponsoricon.png");
+		cultureIcon = loadImage("http://rapcities.com/cultureicon.png");
 		ox = oy = -1;
 		/*ominx = minX = NYCx - xdif;//map(NYCx - xdif,0,2000,725.056,935.131);
 		maxX = NYCx + xdif;//map(NYCx + xdif,0,2000,725.056,935.131);
 		ominy = minY = NYCy - ydif;//map(NYCy - ydif,0,1422,701.865,950.945);
 		maxY = NYCy + ydif;//map(NYCy + ydif,0,1422,701.865,950.945);*/
 		//531.749 231.083 853 810
-		rapper = loadShape("rapper.svg");
-		rapcircle = loadShape("bot.svg");
+		rapper = loadShape("http://rapcities.com/rapper.svg");
+		rapcircle = loadShape("http://rapcities.com/bot.svg");
 		prep();
 	}
 //	2000 x 1422
