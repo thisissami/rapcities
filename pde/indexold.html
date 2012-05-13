@@ -236,11 +236,7 @@
       float:right;
     }
     </style>
-    <meta property="og:title" content="RapCities" />
-    <meta property="og:type" content="song" />
-    <meta property="og:url" content="http://rapcities.com/jib" />
-    <meta property="og:image" content="http://icons.iconarchive.com/icons/nandostudio/be-the-dj/128/vinyl-icon.png" />
-    
+
     <script type="text/javascript">
       var userid = '-1';
       var accessToken = null;
@@ -264,7 +260,7 @@
         if(userid == null) {
           alert("Please log in to Facebook");
         } else {
-          $.get('seeSongs', {"userid": userid, "sortBy": sortBy, "order": order}, function(data) {
+          $.get('http://rapcities.com/seeSongs', {"userid": userid, "sortBy": sortBy, "order": order}, function(data) {
             $('#overlay').html(data).dialog('open');
             $('#show-favs').unbind().click(function() {
               $('#overlay').dialog('close');
@@ -278,11 +274,11 @@
           alert("Please login to Facebook");
         } else {
           if(($(element).html().indexOf("greyHeart") > -1)) { // simulate xor with rev to reverse value
-            $(element).html("<img src=\"heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            $.get('addSong', { "songid": artistid + ' ' + songid, "userid": userid });
+            $(element).html("<img src=\"http://rapcities.com/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+            $.get('http://rapcities.com/addSong', { "songid": artistid + ' ' + songid, "userid": userid });
           } else {
-            $(element).html("<img src=\"greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            $.get('removeSong', { "songid": artistid + ' ' + songid, "userid": userid });
+            $(element).html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+            $.get('http://rapcities.com/removeSong', { "songid": artistid + ' ' + songid, "userid": userid });
           }
         }
       }
@@ -290,18 +286,18 @@
       function showToolbox(songid, artistid, songName, artistName) {   // shows stuff
         $('#toolbox').css('display', 'block');
         if(userid != null) {
-          $.get('isFav', {'songid': artistid + ' ' + songid, 'userid':userid}, function(data) {
+          $.get('http://rapcities.com/isFav', {'songid': artistid + ' ' + songid, 'userid':userid}, function(data) {
             if(data.value) {
-              $('#toolbox-favLink').html("<img src=\"heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+              $('#toolbox-favLink').html("<img src=\"http://rapcities.com/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
             } else {
-              $('#toolbox-favLink').html("<img src=\"greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+              $('#toolbox-favLink').html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
             }
             $('#toolbox-favLink').unbind().click(function() {
               toggleFav($('#toolbox-favLink'), songid, artistid);
             });
           });
         } else {
-          $('#toolbox-favLink').html("<img src=\"greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>").unbind().click(function() {
+          $('#toolbox-favLink').html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>").unbind().click(function() {
             alert("Please login to Facebook");
           });
         }
@@ -321,7 +317,7 @@
       function fbAuthHandler(response) {
         if (response.status === 'connected') {
           accessToken = response.authResponse.accessToken;
-          $.get('fbCreate', {"fbid": response.authResponse.userID, "accessToken": accessToken}, function(data) {
+          $.get('http://rapcities.com/fbCreate', {"fbid": response.authResponse.userID, "accessToken": accessToken}, function(data) {
             if(data.response == "success") {
               userid = data.value;
               $('#fbLoginSpan').css('display', 'none');
@@ -405,7 +401,7 @@
 	</div>
     <div id="login-block">
       <div id="toolbox">
-        <a href="javascript:void(0)" id="toolbox-favLink"><img src="heart.svg" height="20" width="20" /></a>
+        <a href="javascript:void(0)" id="toolbox-favLink"><img src="http://rapcities.com/heart.svg" height="20" width="20" /></a>
 	<a href="javascript:void(0);" id="show-favs">Favs</a>
         <a href="https://twitter.com/share" id="toolbox-twitter" class="twitter-share-button" data-lang="en" data-count="none">Tweet</a>
         <div id="fbLikeContainer"><fb:like href="http://rapcities.com" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like></div>

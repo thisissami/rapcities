@@ -160,10 +160,10 @@ module.exports = function fileServer(maxage){
       var strippedString = requrl.replace('/', '');
       if(files[strippedString]) sendfile(strippedString)
       else readfile('/files' + requrl, 'text/javascript', strippedString, true);
-    } else if(requrl.indexOf('/song/') == 0){ //songID
+    } /*else if(requrl.indexOf('/song/') == 0){ //songID
 	if (files.index) sendfile('index')
         else readfile('/files/index.html','text/html','index',true)
-    } else {
+    }*/ else {
     
     switch(req.url){
       case('/favicon.ico'):
