@@ -1,4 +1,4 @@
-    <script type="text/javascript" src="http://rapcities.com/processing-1.3.6.min.js"></script>
+<script type="text/javascript" src="http://rapcities.com/processing-1.3.6.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	    <script type="text/javascript" src="http://rapcities.com/soundmanager2.js"></script>
     <script type="text/javascript" src="http://xe-widgets.googlecode.com/svn-history/r10/trunk/widgets/xe_banner/skins/bannerSlider/js/slides.jquery.js"></script>
@@ -301,10 +301,10 @@
         // Twitter
         !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
         $('#toolbox-twitter').attr('data-text'/*text of tweet*/, "I'm listening to " + songName + " by " + artistName + " at rapcities.com!");
-        $("#fbLikeContainer").html('<fb:like href="http://rapcities.com/song/'+artistid+'/'+songid+'" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like>');
+        $("#fbLikeContainer").html('<div class="fb-like" data-href="http://rapcities.com/song/'+artistid+'/'+songid+ '" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-action="recommend" data-colorscheme="dark"></div>');
         document.title = "RapCities Alpha - " + artistName + ' - - ' + songName;
         window.history.pushState(songName,null, "http://rapcities.com/song/"+artistid+"/"+songid);
-        FB.XFBML.parse(document.getElementById('fbLikeContainer'));
+        //FB.XFBML.parse(document.getElementById('fbLikeContainer'));
       }
       
       function hideToolbox() {
@@ -364,8 +364,8 @@
           appId      : '134659439991720', // App ID
           channelUrl : '//rapcities.com/channel.html', // Channel File
           status     : true, // check login status
-          cookie     : true, // enable cookies to allow the server to access the session
-          xfbml      : true  // parse XFBML
+          cookie     : true // enable cookies to allow the server to access the session
+          //,xfbml      : true  // parse XFBML
         });
         
         FB.getLoginStatus(fbAuthHandler);
@@ -401,9 +401,8 @@
         <a href="javascript:void(0)" id="toolbox-favLink"><img src="http://rapcities.com/heart.svg" height="20" width="20" /></a>
 	<a href="javascript:void(0);" id="show-favs">Favs</a>
         <a href="https://twitter.com/share" id="toolbox-twitter" class="twitter-share-button" data-lang="en" data-count="none">Tweet</a>
-        <div id="fbLikeContainer"><fb:like href="http://rapcities.com" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like></div>
-      </div>
-      <span id="fbLoginSpan"><fb:login-button show-faces="false" width="200" scope="publish_actions" max-rows="1"></fb:login-button></span></div>
+        <div id="fbLikeContainer"> <div class="fb-like" data-href="http://rapcities.com" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-action="recommend" data-colorscheme="dark"></div></div>
+      <span id="fbLoginSpan"><div class="fb-login-button" data-show-faces="false" data-width="200" data-max-rows="1"></div></span></div>
 
       <div id='artist-info'>
         <div id="top">
