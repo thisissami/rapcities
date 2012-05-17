@@ -44,9 +44,9 @@
           }
           else{
       
-      var top = '<html><head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# samihost: http://ogp.me/ns/fb/samihost#">'
+      var top = '<html> <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# rapcities: http://ogp.me/ns/fb/rapcities#">'
   +'<meta property="fb:app_id" content="134659439991720" />'
-  +'<meta property="og:type"   content="samihost:song" />'
+  +'<meta property="og:type"   content="rapcities:song" />'
   +'<meta property="og:url"    content="http://rapcities.com/song/'+splitURL[2]+'/'+splitURL[3]+'" />' 
   +'<meta property="og:title"  content="'+songName+' by '+artistName+ '" />' 
   +'<meta property="og:image"  content="https://s-static.ak.fbcdn.net/images/devsite/attachment_blank.png" />'
