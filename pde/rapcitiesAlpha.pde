@@ -1791,12 +1791,33 @@ void loadEventVideo(){
 void loadVideo(){
    	if(artist.topTracks[playingSong].video_id){
 	    player.loadVideoById(artist.topTracks[playingSong].video_id);
-	    showToolbox(artist.topTracks[playingSong].RID, artist.RID, artist.topTracks[playingSong].title, artist.name);
+	    updateToolbox(artist.topTracks[playingSong].RID, artist.RID, artist.topTracks[playingSong].title, artist.name);
 	  }
 	else{
 	 $("#ytplayer").html("<p>Couldn't find this song on YouTube</p>");
 	}
 }
+
+void playSong(newartist, newsong){
+  for(int i = 0; i < artists.size(); i++){
+    if(newartist == artist.get(i).RID){
+      artist = artist.get(i);
+      if(newsong){
+	for(int j = 0; j < artist.topTracks.length; j++){
+	  if(artist.topTracks[j].RID == newsong){
+	    playingSong = j;
+	    loadVideo();
+	  }
+	}
+      }
+      else{
+	playingSong = 0;
+	loadVideo();
+      }
+    }
+  }
+}
+
 void oldloadVideo(){
   $.ajax({
     type: "GET",

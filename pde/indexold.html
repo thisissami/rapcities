@@ -39,6 +39,7 @@
       #artist-info {
         position: absolute;
         z-index: -1;
+        display: none;
         background-color: black;
         font: 15px Verdana, sans-serif;
 		left: 50%;
@@ -227,15 +228,24 @@
       background: #000000;
       z-index: 500;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
+      //display: none;
       float: left;
     }
     
     #fbLikeContainer {
       width: 91px;
-      overflow: hidden;
+      overflow: visible;
       display: inline-block;
     }
+    
+    #fbLikeContainer iframe {
+    width: 91px !important;
+}
+
+#fbLikeContainer .fb_edge_comment_widget iframe {
+    width: 400px !important;
+}
     
     #fbLoginSpan {
       float:right;
@@ -288,8 +298,14 @@
         }
       }
       
-      function showToolbox(songid, artistid, songName, artistName) {   // shows stuff
-        $('#toolbox').css('display', 'block');
+      function playSong(artist, fullid){
+        var splitid = fullid.split(' ');
+        var p = Processing.getInstanceById('canvas');
+        if(artst) p.playSong(splitid[0],0);
+        else p.playSong(splitid[0],splitid[1]);
+      }
+      
+      function updateToolbox(songid, artistid, songName, artistName) {   // updates toolbox
         if(userid != null) {
           $.get('http://rapcities.com/isFav', {'songid': artistid + ' ' + songid, 'userid':userid}, function(data) {
             if(data.value) {
@@ -312,7 +328,11 @@
         $("#fbLikeContainer").html('<div class="fb-like" data-href="http://rapcities.com/song/'+artistid+'/'+songid+ '" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-action="recommend" data-colorscheme="dark"></div>');
         document.title = "RapCities Alpha - " + artistName + ' - - ' + songName;
         window.history.pushState(songName,null, "http://rapcities.com/song/"+artistid+"/"+songid);
-        //FB.XFBML.parse(document.getElementById('fbLikeContainer'));
+        FB.XFBML.parse(document.getElementById('fbLikeContainer'));
+      }
+      
+      function showToolbox(){
+        $('#toolbox').css('display', 'inline-block');
       }
       
       function hideToolbox() {
@@ -326,7 +346,7 @@
             if(data.response == "success") {
               userid = data.value;
               $('#fbLoginSpan').css('display', 'none');
-	      //showToolbox();
+              //showToolbox();
             }
           });
         } else {
@@ -373,7 +393,7 @@
           channelUrl : '//rapcities.com/channel.html', // Channel File
           status     : true, // check login status
           cookie     : true // enable cookies to allow the server to access the session
-          //,xfbml      : true  // parse XFBML
+          ,xfbml      : true  // parse XFBML
         });
         
         FB.getLoginStatus(fbAuthHandler);
@@ -400,7 +420,7 @@
       </canvas>
 	<div id="dialogWindow">
 		<div id="ytplayer">
-			<p>Oops! Seems like you don't have Flash Player 8+ and/or JavaScript enabled!</p>
+			<p>Loading Site <br /> <br /> If it takes forever, you probably don't have Flash Player 8+ and/or JavaScript enabled.</p>
 
 		</div>
 	</div>
@@ -410,6 +430,7 @@
 	<a href="javascript:void(0);" id="show-favs">Favs</a>
         <a href="https://twitter.com/share" id="toolbox-twitter" class="twitter-share-button" data-lang="en" data-count="none">Tweet</a>
         <div id="fbLikeContainer"> <div class="fb-like" data-href="http://rapcities.com" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-action="recommend" data-colorscheme="dark"></div></div>
+      </div>
       <span id="fbLoginSpan"><div class="fb-login-button" data-show-faces="false" data-width="200" data-max-rows="1"></div></span></div>
 
       <div id='artist-info'>
