@@ -1,22 +1,14 @@
-<html>
-   <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# samihost: http://ogp.me/ns/fb/samihost#">
-  <meta property="fb:app_id" content="300271166724919" /> 
-  <meta property="og:type"   content="samihost:song" /> 
-  <meta property="og:url"    content="Put your own URL to the object here" /> 
-  <meta property="og:title"  content="Sample Song" /> 
-  <meta property="og:image"  content="https://s-static.ak.fbcdn.net/images/devsite/attachment_blank.png" />
-    <title>RapCities Pre-Alpha</title>
-    <script type="text/javascript" src="http://rapcities.com/processing-1.3.6.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8888/processing-1.3.6.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	    <script type="text/javascript" src="http://rapcities.com/soundmanager2.js"></script>
+	    <script type="text/javascript" src="http://localhost:8888/soundmanager2.js"></script>
     <script type="text/javascript" src="http://xe-widgets.googlecode.com/svn-history/r10/trunk/widgets/xe_banner/skins/bannerSlider/js/slides.jquery.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
 	<!--<link rel="stylesheet" type="text/css" href="jquery-ui-1.8.18.custom.css" />-->
     <link rel='stylesheet' src="http://slidesjs.com/examples/images-with-captions/css/global.css">
-        <script type="text/javascript" src="http://rapcities.com/js/jquery-ui-1.8.18.custom.min.js"></script>
+        <script type="text/javascript" src="http://localhost:8888/js/jquery-ui-1.8.18.custom.min.js"></script>
     
-    <link type="text/css" href="http://rapcities.com/css/dark-hive/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+    <link type="text/css" href="http://localhost:8888/css/dark-hive/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
 
     <style type="text/css">
       body {
@@ -265,7 +257,7 @@
         if(userid == null) {
           alert("Please log in to Facebook");
         } else {
-          $.get('http://rapcities.com/seeSongs', {"userid": userid, "sortBy": sortBy, "order": order}, function(data) {
+          $.get('http://localhost:8888/seeSongs', {"userid": userid, "sortBy": sortBy, "order": order}, function(data) {
             $('#overlay').html(data).dialog('open');
             $('#show-favs').unbind().click(function() {
               $('#overlay').dialog('close');
@@ -279,11 +271,11 @@
           alert("Please login to Facebook");
         } else {
           if(($(element).html().indexOf("greyHeart") > -1)) { // simulate xor with rev to reverse value
-            $(element).html("<img src=\"http://rapcities.com/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            $.get('http://rapcities.com/addSong', { "songid": id, "userid": userid });
+            $(element).html("<img src=\"http://localhost:8888/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+            $.get('http://localhost:8888/addSong', { "songid": id, "userid": userid });
           } else {
-            $(element).html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            $.get('http://rapcities.com/removeSong', { "songid": id, "userid": userid });
+            $(element).html("<img src=\"http://localhost:8888/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+            $.get('http://localhost:8888/removeSong', { "songid": id, "userid": userid });
           }
         }
       }
@@ -291,27 +283,27 @@
       function showToolbox(songid, artistid, songName, artistName) {   // shows stuff
         $('#toolbox').css('display', 'block');
         if(userid != null) {
-          $.get('http://rapcities.com/isFav', {'songid': artistid + ' ' + songid, 'userid':userid}, function(data) {
+          $.get('http://localhost:8888/isFav', {'songid': artistid + ' ' + songid, 'userid':userid}, function(data) {
             if(data.value) {
-              $('#toolbox-favLink').html("<img src=\"http://rapcities.com/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+              $('#toolbox-favLink').html("<img src=\"http://localhost:8888/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
             } else {
-              $('#toolbox-favLink').html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+              $('#toolbox-favLink').html("<img src=\"http://localhost:8888/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
             }
             $('#toolbox-favLink').unbind().click(function() {
               toggleFav($('#toolbox-favLink'), artistid+' '+songid);
             });
           });
         } else {
-          $('#toolbox-favLink').html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>").unbind().click(function() {
+          $('#toolbox-favLink').html("<img src=\"http://localhost:8888/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>").unbind().click(function() {
             alert("Please login to Facebook");
           });
         }
         // Twitter
         !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-        $('#toolbox-twitter').attr('data-text'/*text of tweet*/, "I'm listening to " + songName + " by " + artistName + " at rapcities.com!");
-        $("#fbLikeContainer").html('<fb:like href="http://rapcities.com/song/'+artistid+'/'+songid+'" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like>');
+        $('#toolbox-twitter').attr('data-text'/*text of tweet*/, "I'm listening to " + songName + " by " + artistName + " at localhost:8888!");
+        $("#fbLikeContainer").html('<fb:like href="http://localhost:8888/song/'+artistid+'/'+songid+'" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like>');
         document.title = "RapCities Alpha - " + artistName + ' - - ' + songName;
-        window.history.pushState(songName,null, "http://rapcities.com/song/"+artistid+"/"+songid);
+        window.history.pushState(songName,null, "http://localhost:8888/song/"+artistid+"/"+songid);
         FB.XFBML.parse(document.getElementById('fbLikeContainer'));
       }
       
@@ -322,7 +314,7 @@
       function fbAuthHandler(response) {
         if (response.status === 'connected') {
           accessToken = response.authResponse.accessToken;
-          $.get('http://rapcities.com/fbCreate', {"fbid": response.authResponse.userID, "accessToken": accessToken}, function(data) {
+          $.get('http://localhost:8888/fbCreate', {"fbid": response.authResponse.userID, "accessToken": accessToken}, function(data) {
             if(data.response == "success") {
               userid = data.value;
               $('#fbLoginSpan').css('display', 'none');
@@ -369,8 +361,8 @@
     <script>
       window.fbAsyncInit = function() {
         FB.init({
-          appId      : '134659439991720', // App ID
-          channelUrl : '//rapcities.com/channel.html', // Channel File
+          appId      : '300271166724919', // App ID
+          channelUrl : '//localhost:8888/channel.html', // Channel File
           status     : true, // check login status
           cookie     : true, // enable cookies to allow the server to access the session
           xfbml      : true  // parse XFBML
@@ -394,7 +386,7 @@
 
     <div id="parent">
       
-      <canvas id="canvas" data-processing-sources="http://rapcities.com/rapcities.pde">
+      <canvas id="canvas" data-processing-sources="http://localhost:8888/rapcities.pde">
         <font size="10" color="white">Your browser doesn't support HTML5! Please
           and use the latest version of Mozilla Firefox or Google Chrome.</font>
       </canvas>
@@ -406,10 +398,10 @@
 	</div>
     <div id="login-block">
       <div id="toolbox">
-        <a href="javascript:void(0)" id="toolbox-favLink"><img src="http://rapcities.com/heart.svg" height="20" width="20" /></a>
+        <a href="javascript:void(0)" id="toolbox-favLink"><img src="http://localhost:8888/heart.svg" height="20" width="20" /></a>
 	<a href="javascript:void(0);" id="show-favs">Favs</a>
         <a href="https://twitter.com/share" id="toolbox-twitter" class="twitter-share-button" data-lang="en" data-count="none">Tweet</a>
-        <div id="fbLikeContainer"><fb:like href="http://rapcities.com" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like></div>
+        <div id="fbLikeContainer"><fb:like href="http://localhost:8888" send="false" width="450" show_faces="false" data-layout="button_count" action="recommend" colorscheme="dark"></fb:like></div>
       </div>
       <span id="fbLoginSpan"><fb:login-button show-faces="false" width="200" scope="publish_actions" max-rows="1"></fb:login-button></span></div>
 

@@ -4,7 +4,8 @@ var fs = require('fs'),
   zlib = require('zlib'),
   gzip = zlib.createGzip(),
   url = require('url'),
-  files = {};
+  files = {},
+  indexCreator = require('./indexCreator');
 
 /**
  *   - `maxAge`  cache-control max-age directive, defaulting to 1 day
@@ -161,12 +162,7 @@ module.exports = function fileServer(maxage){
       if(files[strippedString]) sendfile(strippedString)
       else readfile('/files' + requrl, 'text/javascript', strippedString, true);
     } else if(requrl.indexOf('/song/') == 0){ //songID
-	fs.readFile(__dirname + '/pde/indexold.html', function(error,content){
-	  if(error){res.writeHead(500);res.end();}else{
-	    res.writeHead(200, {'Content-Type':'text/html'});
-	    res.end(content);
-	  }
-	});
+	indexCreator.returnSongIndex(requrl.split('/'),res);
     } else {
     
     switch(req.url){

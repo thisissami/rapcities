@@ -1766,10 +1766,11 @@ void startMusic(){
 	  if(artists.get(i).RID==artID){
 		  artist = artists.get(i);
 		  if(songID){
-		    for(int j = 0; j < artist.topTracks.size(); j++){
-		      if(artist.topTracks[j].RID = songID){
+		    for(int j = 0; j < artist.topTracks.length; j++){
+		      if(artist.topTracks[j].RID == songID){
 			playingSong = j;
 			loadVideo();
+			break;
 		      }
 		    }
 		  } else{
