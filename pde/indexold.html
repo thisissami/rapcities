@@ -301,7 +301,7 @@
       function playSong(artist, fullid){
         var splitid = fullid.split(' ');
         var p = Processing.getInstanceById('canvas');
-        if(artst) p.playSong(splitid[0],0);
+        if(artist) p.playSong(splitid[0],0);
         else p.playSong(splitid[0],splitid[1]);
       }
       

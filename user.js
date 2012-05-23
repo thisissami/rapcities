@@ -319,8 +319,8 @@ function seeSongs(req, res, next) {
             for(j=0; j<documents.length; j++) {
               var d = documents[j];
               res.write('<tr><td><a href="javascript:void(0)" onclick="toggleFav(this, \'' + d.fullid + '\')"><img src="http://rapcities.com/heart.svg" width="20" height="20" border="0" /></a></td>');
-              res.write('<td><a href="javascript:void(0)" onclick="playSong(0,\''+d.fullid+'\')>' + d.song + '</a></td>');
-              res.write('<td><a href="javascript:void(0)" onclick="playSong(1,\''+d.fullid+'\')>' + d.artist + '</a></td>');
+              res.write('<td><a href="javascript:void(0)" onclick="playSong(0,\''+d.fullid+'\')">' + d.song + '</a></td>');
+              res.write('<td><a href="javascript:void(0)" onclick="playSong(1,\''+d.fullid+'\')">' + d.artist + '</a></td>');
               //res.write('<td>' + d.song.genre + '</td>');
               res.write('<td>' + (d.date.getMonth()+1) + '/' + d.date.getDate() + '/' + d.date.getFullYear() + '</td>');
               res.write('</tr>');

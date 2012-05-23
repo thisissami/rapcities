@@ -1800,8 +1800,8 @@ void loadVideo(){
 
 void playSong(newartist, newsong){
   for(int i = 0; i < artists.size(); i++){
-    if(newartist == artist.get(i).RID){
-      artist = artist.get(i);
+    if(newartist == artists.get(i).RID){
+      artist = artists.get(i);
       if(newsong){
 	for(int j = 0; j < artist.topTracks.length; j++){
 	  if(artist.topTracks[j].RID == newsong){
