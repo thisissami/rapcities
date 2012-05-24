@@ -3,8 +3,8 @@
   <meta property="fb:app_id" content="134659439991720" /> 
   <meta property="og:type"   content="rapcities:song" /> 
   <meta property="og:url"    content="Put your own URL to the object here" /> 
-  <meta property="og:title"  content="Sample Song" /> 
-  <meta property="og:image"  content="https://s-static.ak.fbcdn.net/images/devsite/attachment_blank.png" />
+  <meta property="og:title"  content="RapCities" /> 
+  <meta property="og:image"  content="http://rapcities.com/frlogo.png" />
     <title>RapCities Pre-Alpha</title>
     <script type="text/javascript" src="http://rapcities.com/processing-1.3.6.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
@@ -299,6 +299,7 @@
       }
       
       function playSong(artist, fullid){
+		alert('got here');
         var splitid = fullid.split(' ');
         var p = Processing.getInstanceById('canvas');
         if(artist) p.playSong(splitid[0],0);

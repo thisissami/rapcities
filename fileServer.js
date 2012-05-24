@@ -89,6 +89,10 @@ module.exports = function fileServer(maxage){
 		folder = __dirname + '/pde/SVG/applet_js/sponsoricon.png';
         contentType = 'image/png';
       }
+	  else if(req.url == '/frlogo.png'){
+		folder = __dirname + '/pde/SVG/applet_js/frlogo.png';
+        contentType = 'image/png';
+      }
 	  else if(req.url == '/cultureicon.png'){
 		folder = __dirname + '/pde/SVG/applet_js/cultureicon.png';
         contentType = 'image/png';

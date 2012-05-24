@@ -197,20 +197,6 @@
 			<key>firstVisibleLine</key>
 			<integer>37</integer>
 		</dict>
-		<key>fileServerLATER.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
 		<key>files/index.html</key>
 		<dict>
 			<key>caret</key>
@@ -476,7 +462,7 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>21</integer>
+				<integer>37</integer>
 				<key>line</key>
 				<integer>349</integer>
 			</dict>
@@ -741,7 +727,6 @@
 		<string>pde/rapcities.pde</string>
 		<string>pde/rapcities-small.pde</string>
 		<string>files/index.html</string>
-		<string>fileServerLATER.js</string>
 		<string>pde/uploader.pde</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>

@@ -1,456 +1,457 @@
 <script type="text/javascript" src="http://rapcities.com/processing-1.3.6.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	    <script type="text/javascript" src="http://rapcities.com/soundmanager2.js"></script>
-    <script type="text/javascript" src="http://xe-widgets.googlecode.com/svn-history/r10/trunk/widgets/xe_banner/skins/bannerSlider/js/slides.jquery.js"></script>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-	<!--<link rel="stylesheet" type="text/css" href="jquery-ui-1.8.18.custom.css" />-->
-    <link rel='stylesheet' src="http://slidesjs.com/examples/images-with-captions/css/global.css">
-        <script type="text/javascript" src="http://rapcities.com/js/jquery-ui-1.8.18.custom.min.js"></script>
-    
-    <link type="text/css" href="http://rapcities.com/css/dark-hive/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://rapcities.com/soundmanager2.js"></script>
+<script type="text/javascript" src="http://xe-widgets.googlecode.com/svn-history/r10/trunk/widgets/xe_banner/skins/bannerSlider/js/slides.jquery.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+<!--<link rel="stylesheet" type="text/css" href="jquery-ui-1.8.18.custom.css" />-->
+<link rel='stylesheet' src="http://slidesjs.com/examples/images-with-captions/css/global.css">
+    <script type="text/javascript" src="http://rapcities.com/js/jquery-ui-1.8.18.custom.min.js"></script>
 
-    <style type="text/css">
-      body {
-        background-color: black;
-        color: white;
-		margin:0px;overflow:hidden;
-      }
-      h2 {
-        font-size: 16px;
-      }
-      #canvas {
-        /*width: 1158px;
-        height: 635px;*/
-        position: absolute;
-        z-index: 0;
-		/*left: 50%;
-		margin-left:-479px;*/
-		/*margin: auto;*/
-      }
-      #artist-info {
-        position: absolute;
-        z-index: -1;
-        display: none;
-        background-color: black;
-        font: 15px Verdana, sans-serif;
-		left: 50%;
-		margin-left:-479px;
-      }
-      #top  {
-        width: 700px;
-        margin: 0 auto;
-      }
-      #top li {
-        display: inline;
-      }
-      #center {
-        float: left;
-      }
-      #popup {
-        z-index: 2;
-        float: left;
-        display: none;
-      }
-      #popup a{
-        color: white;
-      }
-      #popup-nav {
-        height: 50px;
-      }
-      #popup-close {
-        float: left;
-      }
-      #popup-url {
-        float: right;
-      }
-      #center div {
-        display: none;
-      }
-      #center div div {
-        display: block;
-      }
-      td.square-td {
-        width: 33%;
-      }
-      div.square {
-        height: 166px;
-        margin: 10px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        padding: 12px;
-      }
-      div.square-hover {
-        border: 2px solid white;
-        padding: 10px;
-      }
-      .square a {
-        text-decoration: underline;
-        color: white;
-      }
-      .square p {
-        font-size: 14px;
-      }
-      .type {
-        float: left;
-        width: 100px;
-        height: 36px;
-        padding-top: 16px;
-        text-align: center;
-        border: 2px solid white;
-      }
-      #close {
-        font-weight: bold;
-      }
-      .selected-type {
-        background-color: white;
-        color: black;
-      }
-      .hover-type {
-        background-color: white;
-        color: black;
-      }
-      .never-hover-square {
-        padding: 12px !important;
-        border: none !important;
-      }
-      .square h2 {
-        font-size: 16px;
-        font-weight: bold;
-      }
-      .video {
-        text-align: center;
-      }
-      .clear {
-        clear: both;
-      }
-      iframe.popup {
-        z-index: 2;
-      }
-      .video-thumbnail {
-        width: 120px;
-      }
-      
-      
-      
-      /* slides */
-      .slides_container {
-        width:570px;
-        overflow:hidden;
-        position:relative;
-        display:none;
-      }
-      
-      .slides_container div.slide {
-        width:570px;
-        display:block;
-      }
+<link type="text/css" href="http://rapcities.com/css/dark-hive/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
 
-	#dialogWindow{
-		z-index:1;
-		position:absolute;
-		right:21px;
-		top:350px;
-	}
-	#YouTubeP{
-		z-index:1;
-	}
-	#parent{
-		position:relative;
-	}
-    a {
-      color: #CCCCCC;
-      text-decoration: underline;
-    }
-    
-    a:hover {
-      color: #FFFFFF;
-    }
-    
-    #userFavs {
-	    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-	    font-size: 12px;
-	    width: 480px;
-	    text-align: left;
-	    border-collapse: collapse;
-	    border: 1px solid #FFFFFF;
-	    background-color: #000;
-	    margin:0 auto;
-    }
-    
-    #userFavs th {
-	    padding: 12px 17px 12px 17px;
-	    font-weight: bold;
-	    font-size: 14px;
-	    color: #FFFFFF;
-	    border-bottom: 1px dashed #FFFFFF;
-    }
-    
-    #userFavs td {
-	    padding: 7px 17px 7px 17px;
-	    color: #FFFFFF;
-    }
-    
-    #userFavs tbody tr:hover td {
-	    color: #222222;
-	    background: #CCCCCC;
-    }
-    
-    #login-block {
-      text-align:right;
-      margin:0 auto;
-      //width:271px; // this is size of other panel
-      width:auto;
-      color: #FFFFFF;
-      background: #000000;
-      		z-index:5;
-		position:absolute;
-		right:18px;
-		top:10px;
-		border: 2px solid #EEEEEE;
-      padding: 6px 6px 6px 6px;
-    }
-    
-    #toolbox {
-      margin: 0 auto;
-      left: 0px;
-      top: 0px;
-      width: auto;
-      //height: 26px;
-      background: #000000;
-      z-index: 500;
-      position: relative;
-      overflow: visible;
-      //display: none;
-      float: left;
-    }
-    
-    #fbLikeContainer {
-      width: 91px;
-      overflow: visible;
-      display: inline-block;
-    }
-    
-    #fbLikeContainer iframe {
-    width: 91px !important;
+<style type="text/css">
+  body {
+    background-color: black;
+    color: white;
+	margin:0px;overflow:hidden;
+  }
+  h2 {
+    font-size: 16px;
+  }
+  #canvas {
+    /*width: 1158px;
+    height: 635px;*/
+    position: absolute;
+    z-index: 0;
+	/*left: 50%;
+	margin-left:-479px;*/
+	/*margin: auto;*/
+  }
+  #artist-info {
+    position: absolute;
+    z-index: -1;
+    display: none;
+    background-color: black;
+    font: 15px Verdana, sans-serif;
+	left: 50%;
+	margin-left:-479px;
+  }
+  #top  {
+    width: 700px;
+    margin: 0 auto;
+  }
+  #top li {
+    display: inline;
+  }
+  #center {
+    float: left;
+  }
+  #popup {
+    z-index: 2;
+    float: left;
+    display: none;
+  }
+  #popup a{
+    color: white;
+  }
+  #popup-nav {
+    height: 50px;
+  }
+  #popup-close {
+    float: left;
+  }
+  #popup-url {
+    float: right;
+  }
+  #center div {
+    display: none;
+  }
+  #center div div {
+    display: block;
+  }
+  td.square-td {
+    width: 33%;
+  }
+  div.square {
+    height: 166px;
+    margin: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding: 12px;
+  }
+  div.square-hover {
+    border: 2px solid white;
+    padding: 10px;
+  }
+  .square a {
+    text-decoration: underline;
+    color: white;
+  }
+  .square p {
+    font-size: 14px;
+  }
+  .type {
+    float: left;
+    width: 100px;
+    height: 36px;
+    padding-top: 16px;
+    text-align: center;
+    border: 2px solid white;
+  }
+  #close {
+    font-weight: bold;
+  }
+  .selected-type {
+    background-color: white;
+    color: black;
+  }
+  .hover-type {
+    background-color: white;
+    color: black;
+  }
+  .never-hover-square {
+    padding: 12px !important;
+    border: none !important;
+  }
+  .square h2 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .video {
+    text-align: center;
+  }
+  .clear {
+    clear: both;
+  }
+  iframe.popup {
+    z-index: 2;
+  }
+  .video-thumbnail {
+    width: 120px;
+  }
+  
+  
+  
+  /* slides */
+  .slides_container {
+    width:570px;
+    overflow:hidden;
+    position:relative;
+    display:none;
+  }
+  
+  .slides_container div.slide {
+    width:570px;
+    display:block;
+  }
+
+#dialogWindow{
+	z-index:1;
+	position:absolute;
+	right:21px;
+	top:350px;
+}
+#YouTubeP{
+	z-index:1;
+}
+#parent{
+	position:relative;
+}
+a {
+  color: #CCCCCC;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #FFFFFF;
+}
+
+#userFavs {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    width: 480px;
+    text-align: left;
+    border-collapse: collapse;
+    border: 1px solid #FFFFFF;
+    background-color: #000;
+    margin:0 auto;
+}
+
+#userFavs th {
+    padding: 12px 17px 12px 17px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #FFFFFF;
+    border-bottom: 1px dashed #FFFFFF;
+}
+
+#userFavs td {
+    padding: 7px 17px 7px 17px;
+    color: #FFFFFF;
+}
+
+#userFavs tbody tr:hover td {
+    color: #222222;
+    background: #CCCCCC;
+}
+
+#login-block {
+  text-align:right;
+  margin:0 auto;
+  //width:271px; // this is size of other panel
+  width:auto;
+  color: #FFFFFF;
+  background: #000000;
+  		z-index:5;
+	position:absolute;
+	right:18px;
+	top:10px;
+	border: 2px solid #EEEEEE;
+  padding: 6px 6px 6px 6px;
+}
+
+#toolbox {
+  margin: 0 auto;
+  left: 0px;
+  top: 0px;
+  width: auto;
+  //height: 26px;
+  background: #000000;
+  z-index: 500;
+  position: relative;
+  overflow: visible;
+  //display: none;
+  float: left;
+}
+
+#fbLikeContainer {
+  width: 91px;
+  overflow: visible;
+  display: inline-block;
+}
+
+#fbLikeContainer iframe {
+width: 91px !important;
 }
 
 #fbLikeContainer .fb_edge_comment_widget iframe {
-    width: 400px !important;
+width: 400px !important;
 }
-    
-    #fbLoginSpan {
-      float:right;
-    }
-    </style>
 
-    <script type="text/javascript">
-      var userid = '-1';
-      var accessToken = null;
-      
-      $(function() { //initiator constructor
-        $('#overlay').dialog({
-          autoOpen: false,
-          width: 'auto',
-          show: 'fade',
-          hide: 'fade',
-          maxHeight: '500',
-          close: function(event, ui) {
-            $('this').html("");
-            $('#show-favs').unbind().html("Favs").click(function() { showAndFillOverlay(); });
-          }
+#fbLoginSpan {
+  float:right;
+}
+</style>
+
+<script type="text/javascript">
+  var userid = '-1';
+  var accessToken = null;
+  
+  $(function() { //initiator constructor
+    $('#overlay').dialog({
+      autoOpen: false,
+      width: 'auto',
+      show: 'fade',
+      hide: 'fade',
+      maxHeight: '500',
+      close: function(event, ui) {
+        $('this').html("");
+        $('#show-favs').unbind().html("Favs").click(function() { showAndFillOverlay(); });
+      }
+    });
+    $('#show-favs').click(function() { showAndFillOverlay(); });
+  });
+  
+  function showAndFillOverlay(sortBy, order) {  // shows favorite box and loads the favorites
+    if(userid == null) {
+      alert("Please log in to Facebook");
+    } else {
+      $.get('http://rapcities.com/seeSongs', {"userid": userid, "sortBy": sortBy, "order": order}, function(data) {
+        $('#overlay').html(data).dialog('open');
+        $('#show-favs').unbind().click(function() {
+          $('#overlay').dialog('close');
         });
-        $('#show-favs').click(function() { showAndFillOverlay(); });
       });
-      
-      function showAndFillOverlay(sortBy, order) {  // shows favorite box and loads the favorites
-        if(userid == null) {
-          alert("Please log in to Facebook");
+    }
+  }
+  
+  function toggleFav(element, id) { //toggle favs
+    if(userid == null) {
+      alert("Please login to Facebook");
+    } else {
+      if(($(element).html().indexOf("greyHeart") > -1)) { // simulate xor with rev to reverse value
+        $(element).html("<img src=\"http://rapcities.com/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+        $.get('http://rapcities.com/addSong', { "songid": id, "userid": userid });
+      } else {
+        $(element).html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
+        $.get('http://rapcities.com/removeSong', { "songid": id, "userid": userid });
+      }
+    }
+  }
+  
+  function playSong(artist, fullid){
+	alert('got here');
+    var splitid = fullid.split(' ');
+    var p = Processing.getInstanceById('canvas');
+    if(artist) p.playSong(splitid[0],0);
+    else p.playSong(splitid[0],splitid[1]);
+  }
+  
+  function updateToolbox(songid, artistid, songName, artistName) {   // updates toolbox
+    if(userid != null) {
+      $.get('http://rapcities.com/isFav', {'songid': artistid + ' ' + songid, 'userid':userid}, function(data) {
+        if(data.value) {
+          $('#toolbox-favLink').html("<img src=\"http://rapcities.com/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
         } else {
-          $.get('http://rapcities.com/seeSongs', {"userid": userid, "sortBy": sortBy, "order": order}, function(data) {
-            $('#overlay').html(data).dialog('open');
-            $('#show-favs').unbind().click(function() {
-              $('#overlay').dialog('close');
-            });
-          });
+          $('#toolbox-favLink').html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
         }
-      }
-      
-      function toggleFav(element, id) { //toggle favs
-        if(userid == null) {
-          alert("Please login to Facebook");
-        } else {
-          if(($(element).html().indexOf("greyHeart") > -1)) { // simulate xor with rev to reverse value
-            $(element).html("<img src=\"http://rapcities.com/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            $.get('http://rapcities.com/addSong', { "songid": id, "userid": userid });
-          } else {
-            $(element).html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            $.get('http://rapcities.com/removeSong', { "songid": id, "userid": userid });
-          }
-        }
-      }
-      
-      function playSong(artist, fullid){
-        var splitid = fullid.split(' ');
-        var p = Processing.getInstanceById('canvas');
-        if(artist) p.playSong(splitid[0],0);
-        else p.playSong(splitid[0],splitid[1]);
-      }
-      
-      function updateToolbox(songid, artistid, songName, artistName) {   // updates toolbox
-        if(userid != null) {
-          $.get('http://rapcities.com/isFav', {'songid': artistid + ' ' + songid, 'userid':userid}, function(data) {
-            if(data.value) {
-              $('#toolbox-favLink').html("<img src=\"http://rapcities.com/heart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            } else {
-              $('#toolbox-favLink').html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>");
-            }
-            $('#toolbox-favLink').unbind().click(function() {
-              toggleFav($('#toolbox-favLink'), artistid+' '+songid);
-            });
-          });
-        } else {
-          $('#toolbox-favLink').html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>").unbind().click(function() {
-            alert("Please login to Facebook");
-          });
-        }
-        // Twitter
-        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-        $('#toolbox-twitter').attr('data-text'/*text of tweet*/, "I'm listening to " + songName + " by " + artistName + " at rapcities.com!");
-        $("#fbLikeContainer").html('<div class="fb-like" data-href="http://rapcities.com/song/'+artistid+'/'+songid+ '" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-action="recommend" data-colorscheme="dark"></div>');
-        document.title = "RapCities Alpha - " + artistName + ' - - ' + songName;
-        window.history.pushState(songName,null, "http://rapcities.com/song/"+artistid+"/"+songid);
-        FB.XFBML.parse(document.getElementById('fbLikeContainer'));
-      }
-      
-      function showToolbox(){
-        $('#toolbox').css('display', 'inline-block');
-      }
-      
-      function hideToolbox() {
-        $('#toolbox').css('display', 'none');
-      }
-      
-      function fbAuthHandler(response) {
-        if (response.status === 'connected') {
-          accessToken = response.authResponse.accessToken;
-          $.get('http://rapcities.com/fbCreate', {"fbid": response.authResponse.userID, "accessToken": accessToken}, function(data) {
-            if(data.response == "success") {
-              userid = data.value;
-              $('#fbLoginSpan').css('display', 'none');
-              //showToolbox();
-            }
-          });
-        } else {
-          userid = null;
-          accessToken = null;
-          $('#fbLoginSpan').css('display', 'inline');
-        }
-      }
-    </script>
-	<script type="text/javascript">
-		function onYouTubePlayerReady(playerId){	document.getElementById('YouTubeP').addEventListener("onStateChange","onytplayerStateChange");
-		Processing.getInstanceById('canvas').prepPlayer();	
-		}
-		
-		function onytplayerStateChange(newState) {
-		   if(newState == 0){
-			Processing.getInstanceById('canvas').videoEnded();
-		   }
-		}	
-	</script>
-	<script>
-	$(window).resize(function(){
-		if($(window).width() < 700 || $(window).height() < 870){
-			var p = Processing.getInstanceById('canvas');
-			p.setUpSize(Math.max($(window).width(),700),Math.max(870,$(window).height()));
-			//$("#dialogWindow").css("position","fixed");
-			$("body").css("overflow","visible");
-		}
-		else{
-			var p = Processing.getInstanceById('canvas');
-			p.setUpSize($(window).width(),$(window).height());
-			$("body").css("overflow","hidden");
-			$("#parent").css("width",$(window).width()).css("height",$(window).height());
-		}
-	});
-	</script>
-  </head>
-  <body>
-    <div id="fb-root"></div>
-    <script>
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '134659439991720', // App ID
-          channelUrl : '//rapcities.com/channel.html', // Channel File
-          status     : true, // check login status
-          cookie     : true // enable cookies to allow the server to access the session
-          ,xfbml      : true  // parse XFBML
+        $('#toolbox-favLink').unbind().click(function() {
+          toggleFav($('#toolbox-favLink'), artistid+' '+songid);
         });
-        
-        FB.getLoginStatus(fbAuthHandler);
-        FB.Event.subscribe('auth.authResponseChange', fbAuthHandler);
-      };
-
-      // Load the SDK Asynchronously
-      (function(d){
-         var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement('script'); js.id = id; js.async = true;
-         js.src = "//connect.facebook.net/en_US/all.js";
-         ref.parentNode.insertBefore(js, ref);
-       }(document));
-    </script>
+      });
+    } else {
+      $('#toolbox-favLink').html("<img src=\"http://rapcities.com/greyHeart.svg\" width=\"20\" height=\"20\" border=\"0\" /\>").unbind().click(function() {
+        alert("Please login to Facebook");
+      });
+    }
+    // Twitter
+    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    $('#toolbox-twitter').attr('data-text'/*text of tweet*/, "I'm listening to " + songName + " by " + artistName + " at rapcities.com!");
+    $("#fbLikeContainer").html('<div class="fb-like" data-href="http://rapcities.com/song/'+artistid+'/'+songid+ '" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-action="recommend" data-colorscheme="dark"></div>');
+    document.title = "RapCities Alpha - " + artistName + ' - - ' + songName;
+    window.history.pushState(songName,null, "http://rapcities.com/song/"+artistid+"/"+songid);
+    FB.XFBML.parse(document.getElementById('fbLikeContainer'));
+  }
+  
+  function showToolbox(){
+    $('#toolbox').css('display', 'inline-block');
+  }
+  
+  function hideToolbox() {
+    $('#toolbox').css('display', 'none');
+  }
+  
+  function fbAuthHandler(response) {
+    if (response.status === 'connected') {
+      accessToken = response.authResponse.accessToken;
+      $.get('http://rapcities.com/fbCreate', {"fbid": response.authResponse.userID, "accessToken": accessToken}, function(data) {
+        if(data.response == "success") {
+          userid = data.value;
+          $('#fbLoginSpan').css('display', 'none');
+          //showToolbox();
+        }
+      });
+    } else {
+      userid = null;
+      accessToken = null;
+      $('#fbLoginSpan').css('display', 'inline');
+    }
+  }
+</script>
+<script type="text/javascript">
+	function onYouTubePlayerReady(playerId){	document.getElementById('YouTubeP').addEventListener("onStateChange","onytplayerStateChange");
+	Processing.getInstanceById('canvas').prepPlayer();	
+	}
+	
+	function onytplayerStateChange(newState) {
+	   if(newState == 0){
+		Processing.getInstanceById('canvas').videoEnded();
+	   }
+	}	
+</script>
+<script>
+$(window).resize(function(){
+	if($(window).width() < 700 || $(window).height() < 870){
+		var p = Processing.getInstanceById('canvas');
+		p.setUpSize(Math.max($(window).width(),700),Math.max(870,$(window).height()));
+		//$("#dialogWindow").css("position","fixed");
+		$("body").css("overflow","visible");
+	}
+	else{
+		var p = Processing.getInstanceById('canvas');
+		p.setUpSize($(window).width(),$(window).height());
+		$("body").css("overflow","hidden");
+		$("#parent").css("width",$(window).width()).css("height",$(window).height());
+	}
+});
+</script>
+</head>
+<body>
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '134659439991720', // App ID
+      channelUrl : '//rapcities.com/channel.html', // Channel File
+      status     : true, // check login status
+      cookie     : true // enable cookies to allow the server to access the session
+      ,xfbml      : true  // parse XFBML
+    });
     
-    <div id="overlay" title="Favs"></div>
+    FB.getLoginStatus(fbAuthHandler);
+    FB.Event.subscribe('auth.authResponseChange', fbAuthHandler);
+  };
 
-    <div id="parent">
-      
-      <canvas id="canvas" data-processing-sources="http://rapcities.com/rapcities.pde">
-        <font size="10" color="white">Your browser doesn't support HTML5! Please
-          and use the latest version of Mozilla Firefox or Google Chrome.</font>
-      </canvas>
-	<div id="dialogWindow">
-		<div id="ytplayer">
-			<p>Loading Site <br /> <br /> If it takes forever, you probably don't have Flash Player 8+ and/or JavaScript enabled.</p>
+  // Load the SDK Asynchronously
+  (function(d){
+     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     ref.parentNode.insertBefore(js, ref);
+   }(document));
+</script>
 
-		</div>
+<div id="overlay" title="Favs"></div>
+
+<div id="parent">
+  
+  <canvas id="canvas" data-processing-sources="http://rapcities.com/rapcities.pde">
+    <font size="10" color="white">Your browser doesn't support HTML5! Please
+      and use the latest version of Mozilla Firefox or Google Chrome.</font>
+  </canvas>
+<div id="dialogWindow">
+	<div id="ytplayer">
+		<p>Loading Site <br /> <br /> If it takes forever, you probably don't have Flash Player 8+ and/or JavaScript enabled.</p>
+
 	</div>
-    <div id="login-block">
-      <div id="toolbox">
-        <a href="javascript:void(0)" id="toolbox-favLink"><img src="http://rapcities.com/heart.svg" height="20" width="20" /></a>
-	<a href="javascript:void(0);" id="show-favs">Favs</a>
-        <a href="https://twitter.com/share" id="toolbox-twitter" class="twitter-share-button" data-lang="en" data-count="none">Tweet</a>
-        <div id="fbLikeContainer"> <div class="fb-like" data-href="http://rapcities.com" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-action="recommend" data-colorscheme="dark"></div></div>
-      </div>
-      <span id="fbLoginSpan"><div class="fb-login-button" data-show-faces="false" data-width="200" data-max-rows="1"></div></span></div>
+</div>
+<div id="login-block">
+  <div id="toolbox">
+    <a href="javascript:void(0)" id="toolbox-favLink"><img src="http://rapcities.com/heart.svg" height="20" width="20" /></a>
+<a href="javascript:void(0);" id="show-favs">Favs</a>
+    <a href="https://twitter.com/share" id="toolbox-twitter" class="twitter-share-button" data-lang="en" data-count="none">Tweet</a>
+    <div id="fbLikeContainer"> <div class="fb-like" data-href="http://rapcities.com" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-action="recommend" data-colorscheme="dark"></div></div>
+  </div>
+  <span id="fbLoginSpan"><div class="fb-login-button" data-show-faces="false" data-width="200" data-max-rows="1"></div></span></div>
 
-      <div id='artist-info'>
-        <div id="top">
-          <div class='type' data-type='biographies'>Biographies</div>
-          <div class='type' data-type='blogs'>Blogs</div>
-          <div class='type' data-type='images'>Images</div>
-          <div class='type' data-type='news'>News</div>
-          <div class='type' data-type='videos'>Videos</div>
-          <div class='type' id='close'>Close</div>
-          <div class='clear'></div>
-        </div>
-        <div id="center">
-          <div id="biographies"></div>
-          <div id="blogs"></div>
-          <div id="images"></div>
-          <div id="news"></div>
-          <div id="videos"></div>
-        </div>
-        <div id="popup">
-          <div id="popup-nav">
-            <a id="popup-close" href="#">Close</a>
-            <a id="popup-url" href="#">Go to site</a>
-          </div>
-          <iframe id="popup-content" src="">
-        </div>
-        <div class="clear"></div>
-      </div>
+  <div id='artist-info'>
+    <div id="top">
+      <div class='type' data-type='biographies'>Biographies</div>
+      <div class='type' data-type='blogs'>Blogs</div>
+      <div class='type' data-type='images'>Images</div>
+      <div class='type' data-type='news'>News</div>
+      <div class='type' data-type='videos'>Videos</div>
+      <div class='type' id='close'>Close</div>
+      <div class='clear'></div>
     </div>
-  </body>
+    <div id="center">
+      <div id="biographies"></div>
+      <div id="blogs"></div>
+      <div id="images"></div>
+      <div id="news"></div>
+      <div id="videos"></div>
+    </div>
+    <div id="popup">
+      <div id="popup-nav">
+        <a id="popup-close" href="#">Close</a>
+        <a id="popup-url" href="#">Go to site</a>
+      </div>
+      <iframe id="popup-content" src="">
+    </div>
+    <div class="clear"></div>
+  </div>
+</div>
+</body>
 </html>
