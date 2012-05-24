@@ -36,7 +36,7 @@ var artists;
 			}
 			else{
 				for(var i = 0; i < object.biographies.length; i++){
-					if(object.biographies[i].site == 'last.fm'){
+					if(object.biographies[i].site == 'wikipedia'){
 						res.writeHead(200, {
 					          'Content-Type' : 'application/json'
 					        });

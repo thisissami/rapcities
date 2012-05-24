@@ -1830,7 +1830,7 @@ void playSong(newartist, newsong){
 void prepareBio(){
     $.getJSON('http://rapcities.com/getBio?id='+artist.RID, function(results){      
       if(results != null){
-        $("div#biolog").html('<p>' + results.text + '<br /><br />Source: <a href="' + results.url + '">Last.FM</a></p>');
+        $("div#biolog").html('<b>'+artist.name+'</b><br /><br /><p>' + results.text + '<br /><br />Source: <a href="' + results.url + '">Wikipedia</a></p>');
 	  }
 	});
     
