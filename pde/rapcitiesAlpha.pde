@@ -347,7 +347,7 @@ class Map{
 			else
 				ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),3,3);
 		}
-		fill(colors[7]); stroke(colors[7]);
+		fill(colors[8]); stroke(colors[8]);
 		for(int i = 0; i < sponsors.size(); i++){
 			var cur = sponsors.get(i);
 			ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),2,2);
@@ -551,7 +551,7 @@ void drawEventInfo(){
 	String name; int i;
 	if(curehovertype == SPONSORS){
     	name = sponsors.get(curehover).title;
-		i = 7;
+		i = 8;
 	}
 	else if(curehovertype == CULTURE){
 		name = culture.get(curehover).title;
@@ -922,6 +922,7 @@ void nextArtist(){
 				//getSong(artist.topTracks[0].id);
 				playingSong = 0;
 				loadVideo();
+				prepareBio();
 			}
 			
 		}
@@ -1770,12 +1771,14 @@ void startMusic(){
 		      if(artist.topTracks[j].RID == songID){
 			playingSong = j;
 			loadVideo();
+			prepareBio();
 			break;
 		      }
 		    }
 		  } else{
 		    playingSong = 0;
 		    loadVideo();
+			prepareBio();
 		  }
 		break;
 	  }
@@ -1799,6 +1802,12 @@ void loadVideo(){
 }
 
 void playSong(newartist, newsong){
+	var newart;
+	if(newartist == artist.RID)
+		newart = false;
+	else
+		newart = true;
+		
   for(int i = 0; i < artists.size(); i++){
     if(newartist == artists.get(i).RID){
       artist = artists.get(i);
@@ -1806,16 +1815,28 @@ void playSong(newartist, newsong){
 	for(int j = 0; j < artist.topTracks.length; j++){
 	  if(artist.topTracks[j].RID == newsong){
 	    playingSong = j;
-	    loadVideo();
+	    loadVideo(); if(newart)prepareBio();
 	  }
 	}
       }
       else{
 	playingSong = 0;
-	loadVideo();
+	loadVideo(); if(newart)prepareBio();
       }
     }
   }
+}
+
+void prepareBio(){
+    $.getJSON('http://rapcities.com/getBio?id='+artist.RID, function(results){      
+      if(results != null){
+        $("div#biolog").html('<p>' + results.text + '<br /><br />Source: <a href="' + results.url + '">Last.FM</a></p>');
+	  }
+	});
+    
+	if( !$("div#biolog").dialog("isOpen") ) {
+		$("div#biolog").dialog("open");
+	  }
 }
 
 void oldloadVideo(){

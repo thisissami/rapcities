@@ -49,7 +49,7 @@
   +'<meta property="og:type"   content="rapcities:song" />'
   +'<meta property="og:url"    content="http://rapcities.com/song/'+splitURL[2]+'/'+splitURL[3]+'" />' 
   +'<meta property="og:title"  content="'+songName+' by '+artistName+ '" />' 
-  +'<meta property="og:description" content="Broadcasting Hip-Hop 24/7 from a virtual city of music and culture: rapcities.com" />'
+  +'<meta property="og:description" content="Broadcasting Hip-Hop 24/7 from a virtual city of music and culture." />'
   +'<meta property="og:image"  content="http://rapcities.com/frlogo.png" />'
    +' <title>RapCities - '+artistName+' -- '+songName+'</title>';
       

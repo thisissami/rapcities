@@ -39,6 +39,7 @@ else{
 	  case '/addEvent': console.log('OH SHIT ADDING AN EVENT!!!!'); uploader.uploadEvent(res, parsed.query); break;
       case '/getEvents': console.log('OH SHIT GETTING AN EVENT!!!!'); uploader.getEvents(res, parsed.query); break;
 	  case '/getArtistInfo': console.log('getting artist info'); artistInfo.get(res, parsed.query); break;
+	  case '/getBio': artistInfo.getBio(res, parsed.query); break;
 	  case '/getTrack': console.log('getting track'); digital7.getTrack(res, parsed.query); break;
       case '/seeSongs': users.seeSongs(req, res, next); break;
       case '/addSong': users.addSong(req, res, next); break;

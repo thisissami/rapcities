@@ -5,7 +5,7 @@
   <meta property="og:url"    content="Put your own URL to the object here" /> 
   <meta property="og:title"  content="RapCities" /> 
   <meta property="og:image"  content="http://rapcities.com/frlogo.png" />
-    <title>RapCities Pre-Alpha</title>
+    <title>RapCities Alpha</title>
     <script type="text/javascript" src="http://rapcities.com/processing-1.3.6.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	    <script type="text/javascript" src="http://rapcities.com/soundmanager2.js"></script>
@@ -157,7 +157,7 @@
 	#dialogWindow{
 		z-index:1;
 		position:absolute;
-		right:21px;
+		right:20px;
 		top:350px;
 	}
 	#YouTubeP{
@@ -299,7 +299,6 @@
       }
       
       function playSong(artist, fullid){
-		alert('got here');
         var splitid = fullid.split(' ');
         var p = Processing.getInstanceById('canvas');
         if(artist) p.playSong(splitid[0],0);
@@ -369,6 +368,15 @@
 		}	
 	</script>
 	<script>
+	$(document).ready(function() {
+		$("div#biolog").dialog({
+			autoOpen: false,
+			resizable: false,
+			height: 360,
+			width: 385
+		});
+	});
+	
 	$(window).resize(function(){
 		if($(window).width() < 700 || $(window).height() < 870){
 			var p = Processing.getInstanceById('canvas');
@@ -425,6 +433,7 @@
 
 		</div>
 	</div>
+	<div id="biolog"></div>
     <div id="login-block">
       <div id="toolbox">
         <a href="javascript:void(0)" id="toolbox-favLink"><img src="http://rapcities.com/heart.svg" height="20" width="20" /></a>
