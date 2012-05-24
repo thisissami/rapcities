@@ -574,7 +574,7 @@ void mouseClicked(){
     artist = artists.get(curhover);
 	//getSong(artist.topTracks[0].id);
 	playingSong = 0;
-	loadVideo();
+	loadVideo(); prepareBio();
   }
   else if(curehover >= 0){
 	//togglePlayer();
@@ -1830,7 +1830,7 @@ void playSong(newartist, newsong){
 void prepareBio(){
     $.getJSON('http://rapcities.com/getBio?id='+artist.RID, function(results){      
       if(results != null){
-        $("div#biolog").html('<b>'+artist.name+'</b><br /><br /><p>' + results.text + '<br /><br />Source: <a href="' + results.url + '">Wikipedia</a></p>');
+        $("div#biolog").html('<b>'+artist.name+'</b><br /><p>' + results.text + '<br /><br />Source: <a href="' + results.url + '">Wikipedia</a></p>');
 	  }
 	});
     
