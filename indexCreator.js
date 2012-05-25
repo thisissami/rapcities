@@ -38,7 +38,7 @@
     
     function returnSongPage(splitURL, res, artistName, songName){
       //fs.readFile(__dirname + '/pde/indexoldhalf.html', function(error, content){
-	  fs.readFile(__dirname + '/pde/indexhalf.html', function(error, content){
+	  fs.readFile(__dirname + '/files/indexhalf.html', function(error, content){
           if(error){
             res.writeHead(500);
             res.end();
