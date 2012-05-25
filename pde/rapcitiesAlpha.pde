@@ -231,6 +231,7 @@ void loadMapPiece(int i, int j){
 void keyPressed(){
 	nyc.keyPressed();
 }
+int miniMidX,miniMidY,midX,midY;
 class Map{
 	PShape rapper, rapcircle;
 	PImage NYC, miniNYC, cultureIcon, sponsorIcon;
@@ -239,7 +240,7 @@ class Map{
 	int ox, oy, ocx, ocy;
 	int allX, allY;//grid
 	var widths, heights;//lengths
-	int ominx, ominy, miniMidX,miniMidY,midX,midY;
+	int ominx, ominy;
 	int minix, miniy, maxix, maxiy;
 	boolean opressed = false;
 	boolean miniPressed = false;
@@ -1772,6 +1773,11 @@ void startMusic(){
 			playingSong = j;
 			loadVideo();
 			prepareBio();
+			midX = map(artist.x,531.749,531.749+853,0,xgrid);
+			midY = map(artist.y,231.083,231.083+810,0,ygrid);
+			miniMidX = map(midX,0,xgrid,0,284);
+			miniMidY = map(midY,0,ygrid,0,270);
+			nyc.setMins();
 			break;
 		      }
 		    }
@@ -1811,6 +1817,11 @@ void playSong(newartist, newsong){
   for(int i = 0; i < artists.size(); i++){
     if(newartist == artists.get(i).RID){
       artist = artists.get(i);
+			midX = map(artist.x,531.749,531.749+853,0,xgrid);
+			midY = map(artist.y,231.083,231.083+810,0,ygrid);
+			miniMidX = map(midX,0,xgrid,0,284);
+			miniMidY = map(midY,0,ygrid,0,270);
+			nyc.setMins(); 			
       if(newsong){
 	for(int j = 0; j < artist.topTracks.length; j++){
 	  if(artist.topTracks[j].RID == newsong){
@@ -1831,6 +1842,7 @@ void prepareBio(){
     $.getJSON('http://rapcities.com/getBio?id='+artist.RID, function(results){      
       if(results != null){
         $("div#biolog").html('<b>'+artist.name+'</b><br /><p>' + results.text + '<br /><br />Source: <a href="' + results.url + '">Wikipedia</a></p>');
+	  	$('div#biolog', window.parent.document).scrollTop(0);
 	  }
 	});
     

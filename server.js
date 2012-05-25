@@ -27,6 +27,7 @@ else{
   digital7 = require('./7Dconnect'),
   artistInfo = require('./artistInfo');
   users = require('./user');
+  http = require('http');
         
   function onRequest(req, res, next) {
     var parsed = url.parse(req.url,true);
@@ -50,8 +51,17 @@ else{
       default: return;
     }
   }
+
+	function checkWWW(req, res, next){
+		if(req.headers.host.match(/^www/)){
+			console.log('www');
+			res.writeHead(301, {'location':'http://'+req.headers.host.replace(/^www\./,'')+req.url});
+			res.end();
+		} else	next();
+	}
     
   connect.createServer(
+	checkWWW,
     require('./fileServer')(),
     //remove this once connect reaches v2.0.0 - connect.compress({memLevel:9}),
     connect.logger(),

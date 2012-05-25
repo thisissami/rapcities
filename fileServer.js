@@ -25,14 +25,14 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/artistupload.html';
         contentType = 'text/html';
       }
-	else if(req.url == '/indexold.html'){
+	/*else if(req.url == '/indexold.html'){
         folder = __dirname + '/pde/indexold.html';
         contentType = 'text/html';
       }
 	else if(req.url == '/rapcities.pde'){
         folder = __dirname + '/pde/rapcitiesAlpha.pde';
         contentType = 'text/processing';
-      }
+      }*/
 	else if(req.url == '/eventuploader'){
         folder = __dirname + '/pde/eventupload.html';
         contentType = 'text/html';
@@ -87,6 +87,10 @@ module.exports = function fileServer(maxage){
       }
 	  else if(req.url == '/sponsoricon.png'){
 		folder = __dirname + '/pde/SVG/applet_js/sponsoricon.png';
+        contentType = 'image/png';
+      }
+	  else if(req.url == '/favsicon.png'){
+		folder = __dirname + '/pde/SVG/applet_js/favsicon.png';
         contentType = 'image/png';
       }
 	  else if(req.url == '/frlogo.png'){
