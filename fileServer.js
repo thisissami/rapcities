@@ -125,6 +125,10 @@ module.exports = function fileServer(maxage){
 		folder = __dirname + '/files/icons/thumb_COLOURBOX2702046.jpeg';
         contentType = 'image/jpeg';
       }
+	  else if(req.url == '/heartbasket.png'){
+		folder = __dirname + '/files/icons/heartbasket.png';
+        contentType = 'image/png';
+      }
 	  else if(req.url == '/twitter'){
 		folder = __dirname + '/files/icons/twitter_metal_grunge_icon_7_by_highaltitudes-d3dzum9.png';
         contentType = 'image/png';
