@@ -1,4 +1,4 @@
-/* @pjs preload="facebook,youtube,info,heart,twitter,NYC.gif,rapper.svg,bot.svg,miniNYC.png,banner.png;";*/
+/* @pjs preload="http://localhost:8888/facebook,http://localhost:8888/youtube,http://localhost:8888/info,http://localhost:8888/heart,http://localhost:8888/twitter,http://localhost:8888/NYC.gif,http://localhost:8888/rapper.svg,http://localhost:8888/bot.svg,http://localhost:8888/miniNYC.png,http://localhost:8888/sponsoricon.png,http://localhost:8888/cultureicon.png,http://localhost:8888/logo";*/
 boolean started;
 PFont font;
 color[] colors;
@@ -27,33 +27,47 @@ Song song;
 var grid,gridLoad;
 
 //positions of different sections of the screen
-int LIBMINX, LIBMINY, LIBMAXY, LIBMAXX;
 final int ZOOM = 0;
 final int SCROLL = 1;
 int WIDTH,HEIGHT,YBASE,XBASE;
 int xgrid,ygrid;
-PImage banner;
 int bannerX, bannerY, bannerXFull, bannerYFull;
+int MINIMAXY; 
+var sponsor;
+var curehovertype = 0;
+var CULTURE = 0;
+var SPONSORS = 1;
 
 void setup(){
-  WIDTH = max(1300,$(window).width());//screen.width;//950;
-  HEIGHT = max(800,$(window).height());//screen.height;// 635;
-  if(WIDTH == 1024 || HEIGHT == 800)
+  WIDTH = max(700,$(window).width());//screen.width;//950;
+  HEIGHT = max(870,$(window).height());//screen.height;// 635;
+setUpArtists();
+var pathArray = window.location.pathname.split( '/' );
+if(pathArray.length > 0 && pathArray[0] != "songid"){
+	if(pathArray.length < 3)
+		sponsor = pathArray[1];
+	else
+		sponsor = pathArray[3];
+	//alert(sponsor);
+}
+setUpEvents();
+  logo = loadImage("http://localhost:8888/logo");
+$("#parent").css("width",WIDTH).css("height",HEIGHT);
+  if(WIDTH == 700 || HEIGHT == 870){
 	$("body").css("overflow","visible");
+	//$("#dialogWindow").css("position","fixed");
+  }
+//else $("#dialogWindow").css("position","absolute");
   bannerXFull = 1920;
   bannerYFull = 1000;
-  bannerX = WIDTH/bannerXFull*300;
-  bannerY = HEIGHT/bannerYFull*300;
-  LIBMINX = bannerX;
-  LIBMINY = bannerY;
-  LIBMAXX = WIDTH - bannerX - 294;
-  LIBMAXY = HEIGHT-30;
-  YBASE = LIBMINY-100;
-  XBASE = LIBMINX-10;
+  bannerX = 20;//WIDTH/bannerXFull*300;
+  bannerY = 30;//HEIGHT/bannerYFull*300;
+  YBASE = 30;
+  XBASE = 0;
   ygrid = 7757;
   xgrid = 8189;
+togglePlayer();
 recentlyPlayed = new ArrayList();
-banner = loadImage("banner.png");
 		
 	
   size(WIDTH, HEIGHT);
@@ -67,7 +81,7 @@ banner = loadImage("banner.png");
   setUpColors();
   songs = new ArrayList();
   longText = new HashMap();
-  sidePane = new SidePane(LIBMAXX+10,LIBMINY);
+  sidePane = new SidePane(WIDTH-bannerX-284,bannerY);
   current = new Current();
   nyc = new Map();
 	grid = new Array(8);
@@ -78,43 +92,46 @@ banner = loadImage("banner.png");
 		for(int j = 0; j < 8; j++)
 			gridLoad[i][j] = false;
 	}
-	loadMapPiece(4,4);
   artinfo = new ArtistInfo();
-  facebook = loadImage("facebook");
-  youtube = loadImage("youtube");
-  info = loadImage("info");
-  heart = loadImage("heart");
-  twitter = loadImage("twitter");
+  facebook = loadImage("http://localhost:8888/facebook");
+  youtube = loadImage("http://localhost:8888/youtube");
+  info = loadImage("http://localhost:8888/info");
+  heart = loadImage("http://localhost:8888/heart");
+  twitter = loadImage("http://localhost:8888/twitter");
   //money = loadImage("web_money.jpg")
 }
+
 
 void setUpSize(width,height){
 	if(width != WIDTH || height != HEIGHT){
 		WIDTH = width;
 		HEIGHT = height;
-		bannerX = WIDTH/bannerXFull*300;
-		 bannerY = HEIGHT/bannerYFull*300;
-		 LIBMINX = bannerX;
-		 LIBMINY = bannerY;
-		 LIBMAXX = WIDTH - bannerX - 294;
-		 LIBMAXY = HEIGHT-30;
-		 YBASE = LIBMINY-100;
-		 XBASE = LIBMINX-10;
+		$("#parent").css("width",width).css("height",height);
+		 YBASE = 30;
+		 XBASE = 0;
+		//MINIMAXY = HEIGHT-30;
 		size(WIDTH,HEIGHT);
-		xlength = (LIBMAXX-LIBMINX);
-		ylength = (LIBMAXY-LIBMINY);
-		PANEMINX = LIBMAXX+10;
-	    INFOMINY = LIBMINY;
-	    PANEMINY = INFOMINY-controlLength;
+		xlength = WIDTH;
+		ylength = HEIGHT;
+		PANEMINX = WIDTH-bannerX-284;
+	    //INFOMINY = PANEMINY+controlLength;
+	    //PANEMINY = bannerY;
 		PANEMAXX = WIDTH-bannerX;
-		PANEMAXY = LIBMAXY-270;
+		//PANEMAXY = HEIGHT-300;
 		miniRedX = map(xlength,0,xgrid,0,284);
 		miniRedY = map(ylength,0,ygrid,0,270);
 		nyc.setMins();
-		seekLeft = LIBMAXX-10-timeDisplacement-WIDTH/bannerXFull*150;
-	    current.play.newPos(seekLeft - 100, YBASE+50);
-	    current.ffwd.newPos(seekLeft - 50, YBASE+50);
-		volX = seekLeft - 150;
+		volX = PANEMINX+40;
+		
+		//yloc = PANEMAXY - 15;
+	    current.play.newPos(PANEMINX+72, yloc);
+	    current.ffwd.newPos(PANEMAXX-20, yloc);
+		seekLeft = PANEMINX+95;
+		volX = PANEMINX+40;
+		seekRight = PANEMAXX - 40 - timeDisplacement;
+	
+		curLeft = PANEMINX; curRight = PANEMAXX; //curTop = PANEMAXY - 230; curBottom = PANEMAXY;
+	  //$('#dialogWindow').css('right',bannerX + "px").css('top',PANEMAXY-200+"px");
 	}
 }
 
@@ -150,33 +167,50 @@ void setUpColors(){
 void draw(){
   nyc.draw();
   imageMode(CORNER);
-	image(banner,0,0,WIDTH,HEIGHT);
-  current.draw(); //draws the current song controller
+  image(logo,0,0);//,logo.width,logo.height);
+  //draws the current song controller
   sidePane.draw();
+current.draw();
   if(curhover > -1)
 		drawHoverInfo(curhover);
+  if(curehover > -1)
+		drawEventInfo();
 }
 
 var artists = new ArrayList();
+var culture = new ArrayList();
+var sponsors = new ArrayList();
 var artist = null;
 
 void setUpArtists(){
     artists.clear();
-    String jsonstring = "http://localhost:8888/getArtists";/*?maxX="+maxX+"&minX="+minX+
+    String jsonstring = "http://localhost:8888/getArtists?all=7";/*+maxX+"&minX="+minX+
               "&minY="+minY+"&maxY="+maxY;*/
     if(sortSongs){jsonstring+="&sort="+sortSongs;}
-    if(genreMode){jsonstring+="&genre="+curGenre;}
     $.getJSON(jsonstring, function(results){      
       if(results != null){
         var length = results.length;
         for(int i = 0; i < length; i++){
-			results[i].X = map(results[i].x,725.056,935.131,1,2000);
-			results[i].Y = map(results[i].y,701.865,850.945,1,1422);
             artists.add(results[i]);
 		}
       }
     });
   }
+
+void setUpEvents(){
+	$.getJSON("http://localhost:8888/getEvents?sponsor=all", function(results){
+		if(results != null){
+			var length = results.length;
+			for(int i = 0; i < length; i++){
+				if(results[i].sponsor == "culture")
+	            	culture.add(results[i]);
+				else
+					sponsors.add(results[i]);
+			}
+		}
+	});
+}
+
 int minX, minY, maxX, maxY;
 int xlength, ylength, miniRedX,miniRedY;
 
@@ -190,37 +224,38 @@ void loadMapPiece(int i, int j){
 	else
 		title = String(i*8+j+1)+'.grid';
 	gridLoad[i][j] = true;
-	grid[i][j] = loadImage(title);
+	grid[i][j] = loadImage('http://localhost:8888/'+title);
 }
 
+void keyPressed(){
+	nyc.keyPressed();
+}
+int miniMidX,miniMidY,midX,midY;
 class Map{
 	PShape rapper, rapcircle;
-	PImage NYC, miniNYC;
+	PImage NYC, miniNYC, cultureIcon, sponsorIcon;
 	int NYCx = 1000;
 	int NYCy = 711;
-	int xdif = (LIBMAXX-LIBMINX)/2;
-	int ydif = (LIBMAXY-LIBMINY)/2;
-	int curNYCx = LIBMINX + xdif;
-	int curNYCy = LIBMINY + ydif;
 	int ox, oy, ocx, ocy;
 	int allX, allY;//grid
 	var widths, heights;//lengths
-	int ominx, ominy, miniMidX,miniMidY,midX,midY;
+	int ominx, ominy;
 	int minix, miniy, maxix, maxiy;
 	boolean opressed = false;
 	boolean miniPressed = false;
 	Map(){
-		NYC = loadImage("NYC.gif");
-		miniNYC = loadImage("miniNYC.png");
+		NYC = loadImage("http://localhost:8888/NYC.gif");
+		miniNYC = loadImage("http://localhost:8888/miniNYC.png");
+		sponsorIcon = loadImage("http://localhost:8888/sponsoricon.png");
+		cultureIcon = loadImage("http://localhost:8888/cultureicon.png");
 		ox = oy = -1;
 		/*ominx = minX = NYCx - xdif;//map(NYCx - xdif,0,2000,725.056,935.131);
 		maxX = NYCx + xdif;//map(NYCx + xdif,0,2000,725.056,935.131);
 		ominy = minY = NYCy - ydif;//map(NYCy - ydif,0,1422,701.865,950.945);
 		maxY = NYCy + ydif;//map(NYCy + ydif,0,1422,701.865,950.945);*/
 		//531.749 231.083 853 810
-		//setUpArtists();
-		rapper = loadShape("rapper.svg");
-		rapcircle = loadShape("bot.svg");
+		rapper = loadShape("http://localhost:8888/rapper.svg");
+		rapcircle = loadShape("http://localhost:8888/bot.svg");
 		prep();
 	}
 //	2000 x 1422
@@ -229,21 +264,15 @@ class Map{
 	{ "name" : "top left", "x" : "725.0560652572382", "y" : "701.8649879537509", "_id" : ObjectId("4f6509e2a0651c0372000004") }
 	
 	*/
-	
+
 	
 	void draw(){
 		drawMap();
+		drawEvents();
 		drawArtists();
 		fill(0);
 		noStroke();
 		rectMode(CORNERS);
-		rect(0,0,LIBMINX,HEIGHT);
-		rect(0,0,width,LIBMINY);
-		rect(width,height,0,LIBMAXY);
-		rect(width,height,LIBMAXX,0);
-		noFill();
-		stroke(255);
-		rect(LIBMINX,LIBMINY,LIBMAXX,LIBMAXY);
 		drawMini();
 	}
 	
@@ -265,23 +294,23 @@ class Map{
 					break;
 //				print(grid[j][0].height + " ");
 		}
-		grimage(j,i,LIBMINX+xlength/2-(widths[i]/2-(totX-midX)),LIBMINY+ylength/2-(heights[j]/2-(totY-midY)));
+		grimage(j,i,0+xlength/2-(widths[i]/2-(totX-midX)),0+ylength/2-(heights[j]/2-(totY-midY)));
 		if(j > 0)
-			grimage(j-1,i,LIBMINX+xlength/2-(widths[i]/2-(totX-midX)),LIBMINY+ylength/2-heights[j] - (heights[j-1]/2-(totY-midY))+1);
+			grimage(j-1,i,0+xlength/2-(widths[i]/2-(totX-midX)),0+ylength/2-heights[j] - (heights[j-1]/2-(totY-midY))+1);
 		if(i > 0)
-			grimage(j,i-1,LIBMINX+xlength/2-widths[i]-(widths[i-1]/2-(totX-midX))+1,LIBMINY+ylength/2-(heights[j]/2-(totY-midY)));
+			grimage(j,i-1,0+xlength/2-widths[i]-(widths[i-1]/2-(totX-midX))+1,0+ylength/2-(heights[j]/2-(totY-midY)));
 		if(j < 7)
-			grimage(j+1,i,LIBMINX+xlength/2-(widths[i]/2-(totX-midX)),LIBMINY+ylength/2+heights[j+1]/2+(totY-midY)-1);
+			grimage(j+1,i,0+xlength/2-(widths[i]/2-(totX-midX)),0+ylength/2+heights[j+1]/2+(totY-midY)-1);
 		if(i < 7)
-			grimage(j,i+1,LIBMINX+xlength/2+widths[i+1]/2+(totX-midX)-1,LIBMINY+ylength/2-(heights[j]/2-(totY-midY)));
+			grimage(j,i+1,0+xlength/2+widths[i+1]/2+(totX-midX)-1,0+ylength/2-(heights[j]/2-(totY-midY)));
 		if(j>0 && i>0)
-			grimage(j-1,i-1,LIBMINX+xlength/2-widths[i]-(widths[i-1]/2-(totX-midX))+1,LIBMINY+ylength/2-heights[j] - (heights[j-1]/2-(totY-midY))+1);
+			grimage(j-1,i-1,0+xlength/2-widths[i]-(widths[i-1]/2-(totX-midX))+1,0+ylength/2-heights[j] - (heights[j-1]/2-(totY-midY))+1);
 		if(j>0 && i<7)
-			grimage(j-1,i+1,LIBMINX+xlength/2+widths[i+1]/2+(totX-midX)-1,LIBMINY+ylength/2-heights[j] - (heights[j-1]/2-(totY-midY))+1);
+			grimage(j-1,i+1,0+xlength/2+widths[i+1]/2+(totX-midX)-1,0+ylength/2-heights[j] - (heights[j-1]/2-(totY-midY))+1);
 		if(j<7 && i<7)
-			grimage(j+1,i+1,LIBMINX+xlength/2+widths[i+1]/2+(totX-midX)-1,LIBMINY+ylength/2+heights[j+1]/2+(totY-midY)-1);
+			grimage(j+1,i+1,0+xlength/2+widths[i+1]/2+(totX-midX)-1,0+ylength/2+heights[j+1]/2+(totY-midY)-1);
 		if(j<7 && i>0)
-			grimage(j+1,i-1,LIBMINX+xlength/2-widths[i]-(widths[i-1]/2-(totX-midX))+1,LIBMINY+ylength/2+heights[j+1]/2+(totY-midY)-1);
+			grimage(j+1,i-1,0+xlength/2-widths[i]-(widths[i-1]/2-(totX-midX))+1,0+ylength/2+heights[j+1]/2+(totY-midY)-1);
 		//println("x: "+midX+"  y: "+midY);
 		//println("i: " + i + "j: " + j);*/
 	}
@@ -289,13 +318,17 @@ class Map{
 	void grimage(int j, int i, int one, int two){
 		if(grid[j][i])
 			image(grid[j][i],one,two);
-		else if(!gridLoad[j][i])
+		else if(!gridLoad[j][i]){
 			loadMapPiece(j,i);
+			rectMode(CENTER);
+			fill(150); noStroke();
+			rect(one, two, 1000,1000);
+		}
 	}
 	
 	void drawMini(){
 		imageMode(CORNERS);
-		image(miniNYC,PANEMINX,PANEMAXY,PANEMAXX,LIBMAXY);
+		image(miniNYC,PANEMINX,PANEMAXY,PANEMAXX,MINIMAXY);
 		/*minix = map(minX, 0, 2000, 0, 284);
 		maxix = map(maxX, 0, 2000, 0, 284);
 		miniy = map(minY, 0, 1422, 0, 270);
@@ -305,6 +338,25 @@ class Map{
 		strokeWeight(1);
 		stroke(colors[0]);
 		rect(PANEMINX+miniMidX,PANEMAXY+miniMidY,miniRedX,miniRedY);
+		ellipseMode(CENTER);
+		fill(colors[2]); stroke(colors[2]); 
+		for(int i = 0; i < artists.size(); i++){
+			var cur = artists.get(i);
+			if(cur == artist)
+				ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),5,5);
+			else
+				ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),3,3);
+		}
+		fill(colors[8]); stroke(colors[8]);
+		for(int i = 0; i < sponsors.size(); i++){
+			var cur = sponsors.get(i);
+			ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),2,2);
+		}
+		fill(colors[1]); stroke(colors[1]);
+		for(int i = 0; i < culture.size(); i++){
+			var cur = culture.get(i);
+			ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),2,2);
+		}
 	//	fill(255); rect(PANEMAXX,PANEMAXY+270,10,10);
 		//rect(PANEMINX+minix,PANEMAXY+miniy,PANEMINX+maxix,PANEMAXY+maxiy);
 	}
@@ -316,12 +368,12 @@ class Map{
 	totx:9207toty: 8707
 	*/
 	void prep(){
-		xlength = (LIBMAXX-LIBMINX);
-		ylength = (LIBMAXY-LIBMINY);
+		xlength = WIDTH;
+		ylength = HEIGHT;
 		miniRedX = map(xlength,0,xgrid,0,284);
 		miniRedY = map(ylength,0,ygrid,0,270);
-		midX = xgrid/2;
-		midY = ygrid/2;
+		midX = 3095.5;
+		midY = 5033.5;
 		miniMidX = map(midX,0,xgrid,0,284);
 		miniMidY = map(midY,0,ygrid,0,270);
 		widths = new Array(1018,1027, 1017, 1028, 1017, 1028, 1017,1037);
@@ -330,14 +382,11 @@ class Map{
 		setMins();
 	}
 	void miniMousePressed(){
-		if(mouseX>PANEMINX && mouseY>PANEMAXY && mouseX<PANEMAXX && mouseY<LIBMAXY){
+		if(mouseX>PANEMINX && mouseY>PANEMAXY && mouseX<PANEMAXX && mouseY<MINIMAXY){
 			miniPressed = true;
 			miniMidX = min(max(miniRedX/2,mouseX - PANEMINX),284-miniRedX/2);
 			miniMidY = min(max(miniRedY/2,mouseY - PANEMAXY),270-miniRedY/2);
-			midX = map(miniMidX,0,284,0,xgrid);
-			midY = map(miniMidY,0,270,0,ygrid);
-			setMins();
-			//alert(miniRedX);
+			miniToMaxi();
 		}
 	}
 	
@@ -345,10 +394,13 @@ class Map{
 		if(miniPressed){
 			miniMidX = min(max(miniRedX/2,mouseX - PANEMINX),284-miniRedX/2);
 			miniMidY = min(max(miniRedY/2,mouseY - PANEMAXY),270-miniRedY/2);
-			midX = map(miniMidX,0,284,0,xgrid);
-			midY = map(miniMidY,0,270,0,ygrid);
-			setMins();
+			miniToMaxi();
 		}
+	}
+	void miniToMaxi(){
+		midX = map(miniMidX,0,284,0,xgrid);
+		midY = map(miniMidY,0,270,0,ygrid);
+		setMins();
 	}
 	
 	void miniMouseReleased(){
@@ -356,20 +408,75 @@ class Map{
 	}
 	boolean once = false;
 	
+	void keyPressed(){
+		if(key == CODED){
+			switch(keyCode){
+				case(UP): miniMidY = max(miniMidY-1,miniRedY/2); miniToMaxi(); break;
+				case(DOWN): miniMidY = min(miniMidY+1,270-miniRedY/2); miniToMaxi();break;
+				case(LEFT): miniMidX = max(miniMidX-1, miniRedX/2); miniToMaxi();break;
+				case(RIGHT): miniMidX = min(miniMidX+1, 284-miniRedX/2); miniToMaxi();break;
+			}
+		}
+	}
+	
 	void drawArtists(){
 		shapeMode(CENTER);
 		curhover = -1;
 		for(int i = 0; i < artists.size(); i++){
 			var cur = artists.get(i);
 			if(cur.x < maxX+10 && cur.x > minX-10 && cur.y < maxY+15 && cur.y > minY-15){
-				var x = map(cur.x,minX,maxX,LIBMINX,LIBMAXX);
-				var y = map(cur.y,minY,maxY,LIBMINY,LIBMAXY);
-				if(mouseX < x+15 && mouseX > x-15 && mouseY < y+15 && mouseY > y-15){
+				var x = map(cur.x,minX,maxX,0,WIDTH);
+				var y = map(cur.y,minY,maxY,0,HEIGHT);
+				if(mouseX < x+15 && mouseX > x-15 && mouseY < y+15 && mouseY > y-15
+					&& (mouseX < PANEMINX || mouseX > PANEMAXX || mouseY < PANEMINY || mouseY > MINIMAXY)){
 					shape(rapcircle,x,y,30,30);
 					curhover = i;
 				}
+				else if(cur==artist){
+					shape(rapcircle,x,y,30,30);
+				    textSize(18);
+				    int xlength = textWidth(artist.name);
+				    stroke(colors[2]);
+				    fill(0);
+					rectMode(CENTER);
+				    rect(x, y-40,xlength+12, 26,10);
+
+				      fill(colors[2]);
+				     // fill(outlineColors[genres.get(songs.get(hoverSong).genre)]);
+				    textAlign(LEFT,TOP);
+				    text(artist.name, x-xlength/2, y-50);
+			    }
 				else
 					shape(rapper,x,y,20,30);
+			}
+		}
+	}
+
+	void drawEvents(){
+		imageMode(CENTER);
+		curehover = -1;
+		for(int i = 0; i < culture.size(); i++){
+			var cur = culture.get(i);
+			if(cur.x < maxX+18 && cur.x > minX-18 && cur.y < maxY+26 && cur.y > minY-26){
+				var x = map(cur.x,minX,maxX,0,WIDTH);
+				var y = map(cur.y,minY,maxY,0,HEIGHT);
+				if(mouseX < x+18 && mouseX > x-18 && mouseY < y+26 && mouseY > y-26){
+					curehover = i;
+					curehovertype = CULTURE;
+				}
+				image(cultureIcon,x,y);
+			}
+		}
+		for(int i = 0; i < sponsors.size(); i++){
+			var cur = sponsors.get(i);
+			if(cur.x < maxX+18 && cur.x > minX-18 && cur.y < maxY+26 && cur.y > minY-26){
+				var x = map(cur.x,minX,maxX,0,WIDTH);
+				var y = map(cur.y,minY,maxY,0,HEIGHT);
+				if(mouseX < x+18 && mouseX > x-18 && mouseY < y+26 && mouseY > y-26){
+					curehover = i;
+					curehovertype = SPONSORS;
+				}
+				image(sponsorIcon,x,y);
 			}
 		}
 	}
@@ -440,19 +547,85 @@ void drawHoverInfo(int i){
     text(name, mouseX+6, mouseY-30);
 }
 
+void drawEventInfo(){
+	String name; int i;
+	if(curehovertype == SPONSORS){
+    	name = sponsors.get(curehover).title;
+		i = 8;
+	}
+	else if(curehovertype == CULTURE){
+		name = culture.get(curehover).title;
+		i = 1;
+	}
+    textSize(18);
+    int xlength = textWidth(name);
+    stroke(colors[i]);
+    fill(0);
+	rectMode(CORNERS);
+    rect(mouseX, mouseY-33,mouseX+xlength+12, mouseY-7,10);
+
+      fill(colors[i]);
+    textAlign(LEFT,TOP);
+    text(name, mouseX+6, mouseY-30);
+}
+
 void mouseClicked(){
-  if(mouseX > LIBMINX && mouseX < LIBMAXX && mouseY > LIBMINY && mouseY < LIBMAXY){
-		var artist = document.input.artist.value;
-		var yes = confirm("Upload these coordinates for artist: '" + artist + "'?");
-		if(yes){
-			$.ajax({
-			url: "http://rapcities.com/addArtist", 
-			//url: "http://localhost:8888/addArtist",
-			data: {name: artist, x: map(mouseX, LIBMINX, LIBMAXX, minX, maxX), y: map(mouseY, LIBMINY, LIBMAXY, minY, maxY)}, 
-			success: function(data){if(data){alert("Successfully added artist: '" + data.name + "'!")}}
-			});
-		}
+  if(curhover >= 0){
+    artist = artists.get(curhover);
+	//getSong(artist.topTracks[0].id);
+	playingSong = 0;
+	loadVideo(); //prepareBio();
   }
+  else if(curehover >= 0){
+	//togglePlayer();
+	loadEventVideo();
+	//song.pause();
+  }
+  /*else if(curMenu >= 0){
+	switch(curMenu){
+		case 0: //info
+			artinfo.showArtistInfo(artist.echoID);
+			return;
+		case 1: //heart
+		case 4: //twitter
+		case 2://facebook
+			link(artist.facebook, "_new");
+		    return;
+		case 3://youtube
+			/*togglePlayer();
+			loadVideo();
+			song.pause();*/
+			//link("http://www.youtube.com/results?search_query=" + song.title.replace(/ /g, '+') + "+" +
+		      //    song.artist.replace(/ /g, '+'), "_new");
+	/*	    return;
+	}
+	}*/
+	else if(curSong >= 0){
+		playingSong = curSong;
+		loadVideo();
+		//getSong(artist.topTracks[curSong].id);
+	}
+	else if(mouseX < PANEMINX || mouseX > PANEMAXX || mouseY < PANEMINY || mouseY > MINIMAXY){
+			var joobjoob = document.input.artist.value;
+			var yes = confirm("Upload these coordinates for artist: '" + joobjoob + "'?");
+			if(yes){
+				$.ajax({
+				url: "http://localhost:8888/addArtist", 
+				//url: "http://localhost:8888/addArtist",
+				data: {name: joobjoob, x: map(mouseX, 0, width, minX, maxX), y: map(mouseY, 0, height, minY, maxY)}, 
+				success: function(data){if(data){
+					if(data.success){
+						alert("Successfully added artist: '" + data.name + "'!");
+						artists.add(data);
+					}
+					else{
+						alert("FAILED! Error: " + data.error);
+					}
+				}}
+				});
+			}
+		
+	}
 }	
 void getSong(int id){
 	$.getJSON('http://localhost:8888/getTrack?id=' + id, function(data){
@@ -481,18 +654,17 @@ void startSong(String url){
 	  }
 
 void mousePressed(){
-  if(mouseY < YBASE+145-70){//145 = LIBMINY original
+  if(mouseY < curBottom && mouseY > curTop && mouseX < curRight && mouseX > curLeft){
     current.mousePressed();
   }
-  else if(mouseX > LIBMAXX){
+  else if(mouseX > PANEMINX && mouseX < PANEMAXX && mouseY > PANEMINY && mouseY < MINIMAXY){
 	if(mouseY < PANEMAXY)
     	sidePane.mousePressed();
  	else
 		nyc.miniMousePressed();
   }
-  else if(mouseX>LIBMINX && mouseY>LIBMINY && mouseY<LIBMAXY){
+  else
 	nyc.mousePressed();
-	}
 }
 
 
@@ -503,7 +675,9 @@ void mouseDragged(){
 }
 void mouseOut(){
 	nyc.mouseOut();
+	current.mouseReleased();
 }
+
 void mouseReleased(){
   current.mouseReleased();
   nyc.mouseReleased();
@@ -590,8 +764,14 @@ class Play extends Button{
   void mouseReleased()
   {
     if(invert && pressedHere){
-      if(started)
+      if(started && playMode == AUDIO)
         song.togglePause();
+	  else if(playMode == VIDEO){
+		if(player.getPlayerState()==2)
+			player.playVideo();
+		else
+			player.pauseVideo();
+	  }
       invert = false;
     }
     pressedHere = false;
@@ -600,7 +780,7 @@ class Play extends Button{
   // play is a boolean value used to determine what to draw on the button
   void update()
   {
-    if(started){
+    if(playMode == AUDIO && started){
       if (song != null && song.playState==1){
         if(song.paused){
           if(!changingPosition)
@@ -612,6 +792,14 @@ class Play extends Button{
       else 
         play = true;
     }
+	else if(playMode == VIDEO){
+      if (player.getPlayerState()==2||player.getPlayerState()==-1){
+          if(!changingPosition)
+            play = true;
+        }
+        else
+          play = false;
+      }
   }
   
   void draw()
@@ -631,7 +819,7 @@ class Play extends Button{
     if ( invert )
     {
       fill(0);
-      stroke(255);
+      noStroke();
     }
     else
     {
@@ -640,12 +828,12 @@ class Play extends Button{
     }
     if ( play )
     {
-      triangle(x - hw/3, y - hh/2, x - hw/3, y + hh/2, x + hw/2, y);
+      triangle(x - hw/2, y - hh/2, x - hw/2, y + hh/2, x + hw/2, y);
     }
     else
     {
-      rect(x - hw/3, y - hh/2, x-1, y + hh/2);
-      rect(x + hw/3, y - hh/2, x +1, y + hh/2);
+      rect(x - hw/2, y - hh/2, x-1, y + hh/2);
+      rect(x + hw/2, y - hh/2, x +1, y + hh/2);
     }
   }
 }
@@ -692,25 +880,33 @@ class Forward extends Button{
       noStroke();
     }
     else{
-      noFill();
-      if(super.pressed())
-        stroke(255);
-      else
+      if(super.pressed()){
+		textSize(14);
+		var twidth = textWidth("Next Artist");
+		fill(0); stroke(255);
+		rect(x-twidth/2-3,y+15,x+twidth/2+3,y+35);
+		textAlign(CENTER,TOP);
+        fill(255); text("Next Artist",x,y+17);
+		noFill();
+	}
+      else{
         noStroke();
+		noFill();
+		}
     }
     rect(x - hw, y - hh, x + hw, y+hh);
     if ( invert )
     {
       fill(0);
-      stroke(255);
+      noStroke();
     }
     else
     {
       fill(255);
       noStroke();
     }
-    rect(x-3, y-hh/2, x-8, y + hh/2); 
-    triangle(x, y - hh/2, x, y + hh/2, x + hw/2, y);    
+    rect(x-3, y-hh/2, x-6, y + hh/2); 
+    triangle(x, y - hh/2, x, y + hh/2, x + hw/2 +1, y);    
   }  
 }
 
@@ -719,7 +915,8 @@ void createNext(){
   stopSong();
   if(playingSong < artist.topTracks.length-1){
   	playingSong++;
-	getSong(artist.topTracks[playingSong].id);
+	loadVideo();
+	//getSong(artist.topTracks[playingSong].id);
   }
   else
 	nextArtist();
@@ -743,8 +940,10 @@ void nextArtist(){
 		if(cur.x > minX && cur.x < maxX && cur.y > minY && cur.y < maxY){
 			if(!recentlyPlayed.contains(cur.name)){
 				artist = cur;
-				getSong(artist.topTracks[0].id);
+				//getSong(artist.topTracks[0].id);
 				playingSong = 0;
+				loadVideo();
+				prepareBio();
 			}
 			
 		}
@@ -809,7 +1008,6 @@ void checkText(String string, int x, int y,int max,color col, int ybelow){
 final int BASICINFO = 0;
 final int SETTINGS = 1;
 
-boolean genreMode = false;
 int curGenre = 0;
 int PANEMINY, PANEMINX, PANEMAXY, PANEMAXX, controlLength, INFOMINY;
 class SidePane{  
@@ -830,69 +1028,49 @@ class SidePane{
 
   SidePane(minx, miny){
     PANEMINX = minx;
-    INFOMINY = miny;
+    PANEMINY = miny;
     controlLength = 57;
-    PANEMINY = INFOMINY-controlLength;
+    INFOMINY = PANEMINY+controlLength;
 	PANEMAXX = WIDTH-bannerX;
-	PANEMAXY = LIBMAXY-270;
+	PANEMAXY = PANEMINY + 555;
+	MINIMAXY = PANEMAXY + 270;
     num = names.length;
     textSize(16);
   }
   
   void draw(){
-	if(!artist){printNoSong();}else{printTopSongs();}
-    drawControl();		
-	}
+    drawControl();
+	if(!artist){printNoSong();}else{printTopSongs();}		
+  }
 
  
 	
 			
   void mousePressed(){
-    if(mouseMainPaneControl >= 0)
-      panel = mouseMainPaneControl;
-    else if(mouseSort >= 0){
-      sortSongs = mouseSort;
-      resetSongs();
-    }
-    else if(mouseFilter){
-      filterPopRock = ++filterPopRock%2;
-      if(!genreMode)
-        resetSongs();
-    }
-    else if(genreFilter){
-      genreMode = !genreMode;
-      if(genreMode)
-        genreDisplay = STYLE;
-      else
-        genreDisplay = MOOD;
-      if(started){
-        song.stopSong();
-        started = false;
-      }
-      resetSongs();
-    }
-    else if(mouseGenre >= 0){
-      curGenre = mouseGenre;
-      if(genreMode){
-        resetSongs();
-      }
-    }
+
   }
   
   void mouseReleased(){}
   
   void drawControl(){
-    strokeWeight(2);
+	fill(0);
+	//noStroke();
+	strokeWeight(2);
     stroke(255);
+	rectMode(CORNERS);
+	//rect(PANEMINX,PANEMINY,PANEMAXX,PANEMAXY);
+	rect(PANEMINX,INFOMINY,PANEMAXX+1,PANEMAXY);
+    
     textSize(15);
-    line(PANEMINX,PANEMINY,PANEMAXX,PANEMINY);
+	//line(PANEMAXX+1,INFOMINY,PANEMAXX+1,PANEMAXY);
+    /*line(PANEMINX,PANEMINY,PANEMAXX,PANEMINY);
     line(PANEMINX, INFOMINY, PANEMAXX, INFOMINY);
     line(PANEMINX,PANEMINY,PANEMINX, PANEMAXY-1);
-    line(PANEMAXX+1,PANEMINY,PANEMAXX+1,PANEMAXY-1);
+    line(PANEMAXX+1,PANEMINY,PANEMAXX+1,PANEMAXY-1);*/
 	rectMode(CORNERS);
 	noFill();
-	rect(PANEMINX, LIBMAXY, PANEMAXX+1, PANEMAXY);
-    for(int i = 0; i < 5; i++)
+	rect(PANEMINX, MINIMAXY, PANEMAXX+1, PANEMAXY);
+    /*for(int i = 0; i < 5; i++)
       line(PANEMINX + controlLength*(i+1), PANEMINY, PANEMINX + controlLength*(i+1),INFOMINY-1);
 	imageMode(CORNERS);
 	image(info, PANEMINX, PANEMINY,PANEMINX+controlLength,INFOMINY);
@@ -901,7 +1079,7 @@ class SidePane{
 	image(youtube,PANEMINX+controlLength*3,PANEMINY,PANEMINX+controlLength*4,INFOMINY);
 	image(twitter,PANEMINX+controlLength*4,PANEMINY,PANEMINX+controlLength*5,INFOMINY);
     ellipseMode(CENTER_RADIUS);
-    noStroke();
+    noStroke();*/
     /*for(int i = 0; i < 10; i++){
       fill(colors[(colorIcon.start + i)%10]);
       ellipse(PANEMINX+length+colorIcon.places[i*2],PANEMINY+colorIcon.places[i*2+1],4,4);
@@ -911,7 +1089,7 @@ class SidePane{
       line(PANEMINX+length*2+7,PANEMINY+sortIcon.places[i], PANEMINX+length*3-8,PANEMINY+sortIcon.places[i]);
     }*/
     //checking da mouse
-    mouseMainPaneControl = -1;
+    /*mouseMainPaneControl = -1;
     stroke(255);
     noFill();
     //rect(PANEMINX+length*panel+2,PANEMINY+1,PANEMINX+length*(panel+1)-2,INFOMINY-2);
@@ -929,10 +1107,10 @@ class SidePane{
         }
       }
     }
-	else curMenu = -1;
+	else curMenu = -1;*/
   }
   
-	void title(int x, int y){
+	/*void title(int x, int y){
 		switch(curMenu){
 			case 0: text("Artist Info",x,y);break;
 			case 1: text("Heart Artist",x,y);break;
@@ -940,7 +1118,7 @@ class SidePane{
 			case 3: text("View Current Song Video",x,y);break;
 			case 4: text("Tweet About Song",x,y); break;
 		}
-	}
+	}*/
 	void printTopSongs(){
 		textAlign(LEFT,TOP);
 		textSize(22);
@@ -953,17 +1131,17 @@ class SidePane{
 		for(int i = 0; i < tot; i++){
 			if(i == playingSong){
 				fill(colors[2]);
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,250,colors[2],30);
+				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,248,colors[2],30);
 				fill(255);
 			}
 			else if(mouseX>PANEMINX+20 && mouseY < INFOMINY+35+(i+1)*22&& mouseY>INFOMINY+35+i*22){
 				fill(colors[2]);
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,250,colors[2],30);
+				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,248,colors[2],30);
 				curSong = i;
 				fill(255);
 			}
 			else
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,250,color(255),30);
+				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,248,color(255),30);
 		}
 	}
   //Basic Song Information
@@ -984,24 +1162,32 @@ boolean changingPosition = false; // used to alter where the drawing happens
 int volume = 50;
 boolean muted = false;
 int timeDisplacement, seekLeft, volX;
+int curRight, curLeft, curTop, curBottom, yloc;
   
 //class used to control the current song. also displays current song info
 class Current{
   Play play; //play button
         //Rewind rewind; //rewind button
   Forward ffwd; //ffwd button
+
   Current(){
+	curLeft = PANEMINX; curRight = PANEMAXX; curTop = PANEMAXY - 230; curBottom = PANEMAXY;
     timeDisplacement = textWidth("0:00/0:00");
-	seekLeft = LIBMAXX-10-timeDisplacement-WIDTH/bannerXFull*150;
-    play = new Play(seekLeft - 100, YBASE+50, 20, 10);
+	seekLeft = PANEMINX+95;
+	yloc = PANEMAXY-18;
+    play = new Play(PANEMINX+72, yloc, 10, 10);
              //rewind = new Rewind(250, 50, 20, 10);
-    ffwd = new Forward(seekLeft - 50, YBASE+50, 20, 10);
-	volX = seekLeft - 150;
+    ffwd = new Forward(PANEMAXX-20, yloc, 10, 10);
+	volX = PANEMINX+40;
+	volY = 15; volD = 0.3; //divider (make it twice volY divided by 100)
+	volS = 20; // separatedeness of volume setter
+	seekRight = PANEMAXX - 40 - timeDisplacement;
     textSize(15);
   }
   
   void draw(){
-    if(started){
+    if(playMode == VIDEO || (playMode == AUDIO && started)){
+	
 	rectMode(CORNERS);
       // draw the controls
       play.update();
@@ -1009,9 +1195,9 @@ class Current{
               //rewind.draw();
       ffwd.draw();  
       
-      // draw the seekbar
+     // draw the seekbar
       drawSeekBar();
-      drawSongInfo();
+    //  drawSongInfo();
       
      drawVolume();
       if(onVolGen)
@@ -1027,24 +1213,24 @@ class Current{
     color currentColor = colors[2];
     fill(currentColor);
     int maxt,maxa;
-    if(textWidth(artist.topTracks[playingSong].title+" by "+artist.name) <= (volX- 50 - LIBMINX)){
+    if(textWidth(artist.topTracks[playingSong].title+" by "+artist.name) <= (volX- 50 - curLeft+20)){
       maxt = maxa = WIDTH;
     }
-    else if(textWidth(artist.topTracks[playingSong].title) > (volX- 50 - LIBMINX)/2-16 && textWidth(artist.name) > (volX - 50- LIBMINX)/2-16){
-      maxt = maxa = (volX - 50 - LIBMINX)/2-16;
+    else if(textWidth(artist.topTracks[playingSong].title) > (volX- 50 - curLeft+20)/2-16 && textWidth(artist.name) > (volX - 50- curLeft+20)/2-16){
+      maxt = maxa = (volX - 50 - curLeft+20)/2-16;
     }
     else if(textWidth(artist.topTracks[playingSong].title) > textWidth(artist.name)){
       maxa = WIDTH;
-      maxt = volX - 50 - LIBMINX - textWidth(song.artist+" by ");
+      maxt = volX - 50 - curLeft+20 - textWidth(song.artist+" by ");
     }
     else{
       maxt = WIDTH;
-      maxa = volX- 50 - LIBMINX- textWidth(artist.topTracks[playingSong].title+" by ");
+      maxa = volX- 50 - curLeft+20- textWidth(artist.topTracks[playingSong].title+" by ");
     }
-    checkText(artist.topTracks[playingSong].title, LIBMINX, YBASE+37,maxt,currentColor,24);
-    checkText(artist.name, LIBMINX+textWidth(" by ") + min(maxt,textWidth(artist.topTracks[playingSong].title)),YBASE+37,maxa,currentColor,24);
+    checkText(artist.topTracks[playingSong].title, curLeft+20, YBASE+37,maxt,currentColor,24);
+    checkText(artist.name, curLeft+20+textWidth(" by ") + min(maxt,textWidth(artist.topTracks[playingSong].title)),YBASE+37,maxa,currentColor,24);
     fill(255);
-    text(" by ", LIBMINX+min(maxt,textWidth(artist.topTracks[playingSong].title)),YBASE+37);
+    text(" by ", curLeft+20+min(maxt,textWidth(artist.topTracks[playingSong].title)),YBASE+37);
     //fill(currentColor);
     //textSize(18);
     //text(song.genre, 30, 37);
@@ -1085,12 +1271,12 @@ class Current{
   }
   
   boolean onVolume(){
-    if(mouseX > volX-10 && mouseX < volX+2 && mouseY > YBASE+44 && mouseY < YBASE+56)
+    if(mouseX > volX-10 && mouseX < volX+2 && mouseY > yloc-6 && mouseY < yloc+6)
       return true;
     return false;
   }
   boolean onVolumeSetter(){
-    if(mouseX > volX-45 && mouseX < volX+20 && mouseY > YBASE+15 && mouseY < YBASE+85)
+    if(mouseX > volX-volS-10 && mouseX < volX+20 && mouseY > yloc-volY && mouseY < yloc+volY)
       return true;
     return false;
   }
@@ -1109,24 +1295,25 @@ class Current{
       onVol = false;
     }
     fill(255);
-    triangle(volX-10, YBASE+50, volX, YBASE+43, volX, YBASE+57);
-    rect(volX-10,YBASE+53,volX-3, YBASE+47);
+    triangle(volX-10, yloc, volX, yloc-7, volX, yloc+7);
+    rect(volX-10,yloc+3,volX-3, yloc-3);
     stroke(255);
     strokeWeight(2);
     noFill();
+	ellipseMode(RADIUS);
     if(!muted){
       if(volume > 80)
-        arc(volX+6, YBASE+50, 12, 12, -(PI/3), PI/3);
+        arc(volX+6, yloc, 12, 12, -(PI/3), PI/3);
       if(volume > 60)
-        arc(volX+5, YBASE+50, 9, 9, -(PI/3), PI/3);
+        arc(volX+5, yloc, 9, 9, -(PI/3), PI/3);
       if(volume > 40)
-        arc(volX+4, YBASE+50, 6, 6, -(PI/3), PI/3);
+        arc(volX+4, yloc, 6, 6, -(PI/3), PI/3);
       if(volume > 20)
-        arc(volX+3, YBASE+50, 3, 3, -(PI/3), PI/3);
+        arc(volX+3, yloc, 3, 3, -(PI/3), PI/3);
     }
     else{
       stroke(colors[0]);
-      line(volX-9,YBASE+42,volX+2,YBASE+57);
+      line(volX-9,yloc-8,volX+2,yloc+7);
     }
     if(onVolumeSetter())
       onVolGen = true;
@@ -1137,31 +1324,28 @@ class Current{
   void checkVol(){
     if(onVol)
       toggleMute();
-    else if(onVolGen && mouseX > volX-40 && mouseX < volX-20 && mouseY > YBASE+20 && mouseY < YBASE+80){
-      volDragged = true;
-      volume = (YBASE+80 - mouseY)/0.6;
-      song.setVolume(volume);
+    else if(onVolGen && mouseX > volX-volS-5 && mouseX < volX-volS+5 && mouseY > yloc -volY && mouseY < yloc+volY){
+		volDragged = true;
+      volume = (yloc+volY - mouseY)/volD;
+		if(playMode == AUDIO)
+      		song.setVolume(volume);
+		else if(playMode == VIDEO)
+  			player.setVolume(volume);			
     }
   }
-  /* FUUUUUUCK WASTE OF TIIIIIIIIIIIIIIIIIIME
-  void volClicked(){
-    if(onVol)
-      toggleMute();
-    else if(onVolGen && mouseX > 232 && mouseX < 242 && mouseY > 20 && mouseY < 80){
-      volume = (80 - mouseY)/0.6;
-      songs.get(curSong).song.setVolume(volume);
-    }
-  }
-  */
+
   void dragVol(){
     if(volDragged){
-      if(mouseY > YBASE+80)
+      if(mouseY > yloc+volY)
         volume = 0;
-      else if(mouseY < YBASE+20)
+      else if(mouseY < yloc-volY)
         volume = 100;
       else
-        volume = (YBASE+80 - mouseY)/0.6;
-      song.setVolume(volume);
+        volume = (yloc+volY - mouseY)/volD;
+	  	if(playMode == AUDIO)
+      		song.setVolume(volume);
+		else if(playMode == VIDEO)
+  			player.setVolume(volume);			
     }
   }
   
@@ -1175,16 +1359,23 @@ class Current{
     stroke(255);
     strokeWeight(2);
     fill(0);
-    rect(volX-35, YBASE+20, volX-25, YBASE+80);
+    rect(volX-volS-5, yloc-volY, volX-volS+5, yloc+volY);
     if(volume > 0){
       fill(colors[2]);
       noStroke();
-      rect(volX-34, YBASE+79, volX-26, YBASE+81 - volume*0.6);
+      rect(volX-volS-4, yloc+volY-1, volX-volS+4, yloc+volY+1 - volume*volD);
     }
   }
   //toggle both real mute and our variable
   void toggleMute(){
-    song.toggleMute();
+	if(playMode == AUDIO && started)
+    	song.toggleMute();
+	else if(playMode == VIDEO){
+		if(player.isMuted())
+			player.unMute();
+		else
+			player.mute();
+	}	
     muted = !muted;
   }
   
@@ -1193,16 +1384,19 @@ class Current{
   //checks to see if user clicked somewhere in the seek bar
   void checkSeekBar(){
     //if song is loaded
-    if(started){
+    if((playMode == AUDIO && started)||playMode == VIDEO){
       //if it is within the seekbar range
-      if(mouseX>seekLeft && mouseX<LIBMAXX-10-timeDisplacement && mouseY>YBASE+40 && mouseY<YBASE+60){
+      if(mouseX>seekLeft && mouseX<seekRight && mouseY>yloc-10 && mouseY<yloc+10){
         changingPosition = true;
         stillWithinSeekBar = true;
-        if(song.paused) //save whatever state it was in
+        if((playMode == AUDIO && song.paused) || (playMode == VIDEO && player.getPlayerState() == 2)) //save whatever state it was in
           songPausedToBeginWith = true;
         else
           songPausedToBeginWith = false;
-        song.pause();
+		if(playMode == AUDIO)
+        	song.pause();
+		else
+			player.pauseVideo();
       }
     }
   }
@@ -1227,27 +1421,40 @@ class Current{
   //checks to see if user let go of the mouse will in seekbar land
   void releaseSeekBar(){
     //if song is loaded
-    if(started){
+    if(playMode == VIDEO || (playMode == AUDIO && started)){
       //if click was initiated in seekbar
       if(changingPosition){
         //if within range still
-        if(mouseX>seekLeft && mouseX<LIBMAXX-10-timeDisplacement && mouseY>YBASE+40 && mouseY<YBASE+60){
+        if(mouseX>seekLeft && mouseX<seekRight && mouseY>yloc-10 && mouseY<yloc+10){
           int total;
-          if(song != null && song.readyState == 1)
-            total = song.durationEstimate;
-          //if song is fully loaded
-          else if(song != null && song.readyState == 3)
-            total = song.duration;
-          int seekPosition = (int)map(mouseX,seekLeft,LIBMAXX-10-timeDisplacement, 0, total);
-          if(!songPausedToBeginWith)
-            song.resume();
-          song.setPosition(seekPosition);
+		  if(playMode == AUDIO){
+          	if(song != null && song.readyState == 1)
+	            total = song.durationEstimate;
+	          //if song is fully loaded
+	          else if(song != null && song.readyState == 3)
+	            total = song.duration;
+			 int seekPosition = (int)map(mouseX,seekLeft,seekRight, 0, total);
+	          if(!songPausedToBeginWith)
+	            song.resume();
+	          song.setPosition(seekPosition);
+		  }
+		  else{
+			int seekPosition = (int)map(mouseX,seekLeft,seekRight, 0, player.getDuration());
+	          player.seekTo(seekPosition, true);
+			  if(!songPausedToBeginWith)
+	            player.playVideo();
+			} 
+          
         }
         changingPosition = false;
         stillWithinSeekBar = false;
         //make it play again if it's been paused in the transition process
-        if(!songPausedToBeginWith)
-          song.resume();
+        if(!songPausedToBeginWith){
+			if(playMode == AUDIO)
+          		song.resume();
+			else
+				player.playVideo();
+		}
       }
     }
   }
@@ -1256,11 +1463,11 @@ class Current{
   //makes the line follow where the mouse is while dragging around
   void dragSeekBar(){
     //if song is loaded
-    if(started){
+    if(playMode == VIDEO || (playMode == AUDIO && started)){
       //if click was initiated in seekbar
       if(changingPosition){
         //if within range still
-        if(mouseX>seekLeft && mouseX<LIBMAXX-10-timeDisplacement && mouseY>YBASE+40 && mouseY<YBASE+60)
+        if(mouseX>seekLeft && mouseX<seekRight && mouseY>yloc-10 && mouseY<yloc+10)
           stillWithinSeekBar = true;
         else
           stillWithinSeekBar = false;
@@ -1275,49 +1482,74 @@ class Current{
   void drawSeekBar(){
     stroke(255);
     strokeWeight(3);
-    if(song != null && song.readyState == 1){
-      //draw song duration
+	if(playMode == VIDEO && player.getPlayerState() == -1){
+		fill(255);
+	      textSize(19);
+	      textAlign(LEFT,CENTER);
+			text("-:--/-:--",curRight-28-timeDisplacement,yloc);
+		
+	}
+    if((playMode == AUDIO && song != null && song.readyState == 1) || playMode == VIDEO && player.getPlayerState() == 3){
+		//draw song duration
       strokeWeight(1);
-      line(seekLeft, YBASE+50, LIBMAXX-10-timeDisplacement, YBASE+50);
+      line(seekLeft, yloc, seekRight, yloc);
       //draw amount loaded
       strokeWeight(3);
-      float x = map(song.bytesLoaded, 0, song.bytesTotal, seekLeft, LIBMAXX-10-timeDisplacement);
+	float x;
+		if(playMode == AUDIO)
+      		 x = map(song.bytesLoaded, 0, song.bytesTotal, seekLeft, seekRight);
+		else
+			 x = map(player.getVideoBytesLoaded(), 0, player.getVideoBytesTotal(),seekLeft,seekRight);
       if(x>=0)
-        line(seekLeft, YBASE+50, x, YBASE+50);
+        line(seekLeft, yloc, x, yloc);
     }
     else
-      line(seekLeft, YBASE+50, LIBMAXX-10-timeDisplacement, YBASE+50);
+      line(seekLeft, yloc, seekRight, yloc);
     //if song is loaded/loading, draw position
-    if(song != null && song.readyState == 1 || song.readyState == 3){
+    if((playMode == AUDIO && song != null && (song.readyState == 1 || song.readyState == 3)) || 
+		(playMode == VIDEO && player.getPlayerState() > 0)){
       //take seek changes into account
       String curTime;
 
       if(!changingPosition || !stillWithinSeekBar){
-        //if song is currently loading
-        if(song.readyState == 1){
-          total = song.durationEstimate;
-          totTime = makeTime(total/1000);
-        }
-        //if song is fully loaded
-        else if(song.readyState == 3){
-          total = song.duration;
-          totTime = makeTime(total/1000);
-        }
-        curTime = makeTime(song.position/1000);
-        float x = map(song.position, 0, total, seekLeft, LIBMAXX-10-timeDisplacement);
+		float x;
+		if(playMode == AUDIO){
+	        //if song is currently loading
+	        if(song.readyState == 1){
+	          total = song.durationEstimate;
+	          totTime = makeTime(total/1000);
+	        }
+	        //if song is fully loaded
+	        else if(song.readyState == 3){
+	          total = song.duration;
+	          totTime = makeTime(total/1000);
+	        }
+			curTime = makeTime(song.position/1000);
+	        x = map(song.position, 0, total, seekLeft, seekRight);
+		}
+		else if(playMode == VIDEO){
+			total = player.getDuration();
+			totTime = makeTime(total);
+			curTime = makeTime(player.getCurrentTime());
+	        x = map(player.getCurrentTime(), 0, total, seekLeft, seekRight);
+	        
+		}
         if(x>=0)
-          line(x, YBASE+40, x, YBASE+60);
+          line(x, yloc-10, x, yloc+10);
       }
       else{
-        line(mouseX, YBASE+40, mouseX, YBASE+60);
-        curTime = makeTime(map(mouseX,seekLeft,LIBMAXX-10-timeDisplacement,0,total)/1000);
+        line(mouseX, yloc-10, mouseX, yloc+10);
+		float time = map(mouseX,seekLeft,seekRight,0,total);
+		if(playMode == AUDIO)
+			time /= 1000;
+        curTime = makeTime(time);
       }
       fill(255);
       textSize(15);
       textAlign(LEFT,CENTER);
       //if(total != 0)
         //curTime += "/" + totTime;
-      text(curTime+"/"+totTime,LIBMAXX-timeDisplacement,YBASE+50);
+      text(curTime+"/"+totTime,curRight-30-timeDisplacement,yloc);
     }
     strokeWeight(1);
   }
@@ -1518,24 +1750,101 @@ class ArtistInfo{
 	}
 }
 
-void togglePlayer(){
-  if( $("div#dialogWindow").dialog("isOpen") ) {
-	$("div#dialogWindow").dialog("close");
-  } else {
-	$("div#dialogWindow").dialog("open");
+void videoEnded(){
+	if(playingSong < artist.topTracks.length-1){
+	  	playingSong++;
+		loadVideo();
   }
+  else
+	nextArtist();
+}
+
+void togglePlayer(){
+	$("#ytplayer").html('<script type="text/javascript">var params = { allowScriptAccess: "always" };var atts = { id: "YouTubeP" };swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&version=3", "ytplayer", "283", "200", "8", null, null, params, atts);</script>');
+}
+
+var player; 
+boolean playMode;
+int AUDIO = 1;
+int VIDEO = 2;
+
+void prepPlayer(){
+	player = document.getElementById('YouTubeP');
+	playMode = VIDEO;
+	player.setVolume(volume);
+}
+
+void loadEventVideo(){
+	if(curehovertype == SPONSORS)
+		player.loadVideoById(sponsors.get(curehover).link);
+	else if(curehovertype == CULTURE)
+		player.loadVideoById(culture.get(curehover).link);
 }
 
 void loadVideo(){
+   	if(artist.topTracks[playingSong].video_id){
+	    player.loadVideoById(artist.topTracks[playingSong].video_id);
+	    updateToolbox(artist.topTracks[playingSong].RID, artist.RID, artist.topTracks[playingSong].title, artist.name);
+	  }
+	else{
+	 $("#ytplayer").html("<p>Couldn't find this song on YouTube</p>");
+	}
+}
+
+void playSong(newartist, newsong){
+	var newart;
+	if(newartist == artist.RID)
+		newart = false;
+	else
+		newart = true;
+		
+  for(int i = 0; i < artists.size(); i++){
+    if(newartist == artists.get(i).RID){
+      artist = artists.get(i);
+			midX = map(artist.x,531.749,531.749+853,0,xgrid);
+			midY = map(artist.y,231.083,231.083+810,0,ygrid);
+			miniMidX = map(midX,0,xgrid,0,284);
+			miniMidY = map(midY,0,ygrid,0,270);
+			nyc.setMins(); 			
+      if(newsong){
+	for(int j = 0; j < artist.topTracks.length; j++){
+	  if(artist.topTracks[j].RID == newsong){
+	    playingSong = j;
+	    loadVideo(); if(newart)prepareBio();
+	  }
+	}
+      }
+      else{
+	playingSong = 0;
+	loadVideo(); if(newart)prepareBio();
+      }
+    }
+  }
+}
+
+void prepareBio(){
+    $.getJSON('http://localhost:8888/getBio?id='+artist.RID, function(results){      
+      if(results != null){
+        $("div#biolog").html('<b>'+artist.name+'</b><br /><p>' + results.text + '<br /><br />Source: <a href="' + results.url + '">Wikipedia</a></p>');
+	  	$('div#biolog', window.parent.document).scrollTop(0);
+	  }
+	});
+    
+	if( !$("div#biolog").dialog("isOpen") ) {
+		$("div#biolog").dialog("open");
+	  }
+}
+
+void oldloadVideo(){
   $.ajax({
     type: "GET",
 	dataType:'jsonp',
-	//url:"http://gdata.youtube.com/feeds/api/videos?q=felix+cartal+world+class+driver&v=2&alt=jsonc&max-results=1&format=5",
 	url: "http://gdata.youtube.com/feeds/api/videos?q="+artist.topTracks[playingSong].title.replace(/ /g,'+')+"+"+artist.name.replace(/ /g, '+')+"&v=2&alt=jsonc&max-results=1&format=5",
     success: function (response) {
       if(response.data.items.length>0){
         var video_id = response.data.items[0].id;
-        $("#ytplayer").html('<script type="text/javascript">var params={allowScriptAccess:"always"};var atts={id:"ytplayer"};var url="http://www.youtube.com/v/'+video_id+'?enablejsapi=1&playerapiid=ytplayer&version=3&autoplay=1&controls=1";swfobject.embedSWF(url,"ytplayer","350","300","8",null,null,params,atts);</script>');
+        $("#ytplayer").html('<script type="text/javascript">var params={allowScriptAccess:"always"};var atts={id:"YouTubeP"};var url="http://www.youtube.com/v/'+video_id+'?enablejsapi=1&playerapiid=YouTubeP&version=3&autoplay=1&controls=1";swfobject.embedSWF(url,"ytplayer","350","300","8",null,null,params,atts);</script>');
+
       }
 	  else{
 	    $("#ytplayer").html("<p>Couldn't find this song on YouTube</p>");

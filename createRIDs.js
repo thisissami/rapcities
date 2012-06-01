@@ -14,7 +14,7 @@
 				console.log(err);
 			}
 			else{
-				var cursor = col.find({});
+				var cursor = col.find({'RID':{'$exists':false}});
 				cursor.count(function(err,count){
 					if(err) console.log('count error');
 				console.log(count + ' artists');
@@ -22,21 +22,28 @@
 					if(err) console.log(err)
 					else if(artist != null){
 						var top = artist.topTracks;
-						var i;
+						var i; var flag = false;
 						for(i = 0; i < top.length; i++){
 							if(top[i].RID == null){
 								top[i]['RID'] = top[i].video_id;
+								flag = true;
 							}
 						}
+						var settingness = {}
+						if(flag)
+							settingness['topTracks'] = top;
+						if(artist.RID == null){
+							settingness['RID'] = artist.echoID;
+							flag = true;
+						}
+						if(flag){
 						col.findAndModify({'echoID' : artist.echoID}, [['_id', 'asc']], {
-			              $set : {
-			                'topTracks' : top, 'RID':artist.echoID
-			              }},{safe:true}, function(err) {
+			              $set : settingness},{safe:true}, function(err) {
 			              if(err) {
 			                console.log(err.message);
 			              }
 							else{ console.log(artist.name + ' = success'); count--; if(count == 0) process.exit();}
-						});
+						});}
 					}
 				});});
 			}

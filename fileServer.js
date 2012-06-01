@@ -21,7 +21,7 @@ module.exports = function fileServer(maxage){
 	  
 	  
       
-	   if(req.url == '/uploader'){
+	   if(req.url == '/upl0dder'){
         folder = __dirname + '/pde/artistupload.html';
         contentType = 'text/html';
       }
@@ -33,7 +33,7 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/rapcitiesAlpha.pde';
         contentType = 'text/processing';
       }*/
-	else if(req.url == '/eventuploader'){
+	else if(req.url == '/eventupl0dder'){
         folder = __dirname + '/pde/eventupload.html';
         contentType = 'text/html';
       }
