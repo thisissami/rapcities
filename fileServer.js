@@ -27,7 +27,7 @@ module.exports = function fileServer(maxage){
       }
 	/*else if(req.url == '/indexold.html'){
         folder = __dirname + '/pde/indexold.html';
-        contentType = 'text/html';
+        contentType = 'text/html; charset=utf-8';
       }
 	else if(req.url == '/rapcities.pde'){
         folder = __dirname + '/pde/rapcitiesAlpha.pde';
@@ -35,10 +35,6 @@ module.exports = function fileServer(maxage){
       }*/
 	else if(req.url == '/eventupl0dder'){
         folder = __dirname + '/pde/eventupload.html';
-        contentType = 'text/html';
-      }
-	  else if(req.url == '/tester'){
-        folder = __dirname + '/pde/artisttester.html';
         contentType = 'text/html';
       }
       else if(req.url == '/vyuzik.pde'){
@@ -205,7 +201,7 @@ module.exports = function fileServer(maxage){
 	//culture
 	case('/culture'):
         if (files.index) sendfile('index')
-        else readfile('/files/index.html','text/html','index',true)
+        else readfile('/files/index.html','text/html; charset=utf-8','index',true)
         break;
       case('/processing-1.3.6.min.js'):
         if (files.processing) sendfile('processing')
