@@ -125,7 +125,7 @@ passport.use(new fpass({
 					return;
 				}
 				else if(req.url.split('?')[0] == '/auth/facebook/callback'){
-					passport.authenticate('facebook', {failureRedirect: '/failbook', 'successRedirect':'/'})(req, res, next);
+					passport.authenticate('facebook', {failureRedirect: '/failbook', 'successRedirect':'http://rapcities.com/'})(req, res, next);
 					return;
 				}
 				else if(req.url.split('?')[0] == '/failbook'){
