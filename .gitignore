@@ -3,3 +3,4 @@ db/
 bin/
 fileServerLATER.js
 pdeLATER/
+redis/

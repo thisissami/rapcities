@@ -167,8 +167,8 @@ passport.use(new fpass({
 	checkLoggedIn,
     require('./fileServer')(),
     connect.compress({memLevel:9}),
-    //onRequest).listen(80);
-	onRequest).listen(8888);
+    onRequest).listen(80);
+	//onRequest).listen(8888);
   console.log('Server has started.');
 }
 
