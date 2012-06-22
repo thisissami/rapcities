@@ -372,12 +372,12 @@ class Map{
 		ylength = HEIGHT;
 		miniRedX = map(xlength,0,xgrid,0,284);
 		miniRedY = map(ylength,0,ygrid,0,270);
-		midX = 3095.5;
-		midY = 5033.5;
+		midX = 2600;
+		midY = 4100;
 		miniMidX = map(midX,0,xgrid,0,284);
 		miniMidY = map(midY,0,ygrid,0,270);
-		widths = new Array(1018,1027, 1017, 1028, 1017, 1028, 1017,1037);
-		heights = new Array(950 ,970 ,970 ,969 ,979 ,970 ,970 ,979);
+		widths = new Array(848,848,856,848,848,856,848,848);
+		heights = new Array(792,792,792,792,800,792,792,800);
 		allX = 9207; allY = 8707;
 		setMins();
 	}
