@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>artistInfo.js</string>
+	<string>replaceYouTubeURL.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -118,14 +118,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>2</integer>
+				<integer>6</integer>
 				<key>line</key>
-				<integer>3</integer>
+				<integer>8</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>9</integer>
+			</dict>
 		</dict>
 		<key>artistLocs.js</key>
 		<dict>
@@ -183,20 +199,6 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>createRIDs.js~</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
 		<key>facebook.js</key>
 		<dict>
 			<key>caret</key>
@@ -232,51 +234,97 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>7</integer>
-				<key>line</key>
 				<integer>27</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>320</integer>
-		</dict>
-		<key>files/index.html</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>56</integer>
 				<key>line</key>
-				<integer>11</integer>
+				<integer>145</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>99</integer>
 		</dict>
-		<key>files/indexhalf.html</key>
+		<key>files/heart.svg</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>524</integer>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>470</integer>
+			<integer>0</integer>
 		</dict>
-		<key>indexCreator.js</key>
+		<key>files/index-old.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>47</integer>
+				<integer>7</integer>
 				<key>line</key>
-				<integer>2</integer>
+				<integer>329</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>289</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>6</integer>
+				<key>line</key>
+				<integer>317</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>7</integer>
+				<key>line</key>
+				<integer>329</integer>
+			</dict>
+		</dict>
+		<key>files/index.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>20</integer>
+				<key>line</key>
+				<integer>404</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>359</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>447</integer>
+			</dict>
+		</dict>
+		<key>files/indexhalf.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>28</integer>
+				<key>line</key>
+				<integer>14</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
@@ -287,17 +335,45 @@
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>41</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>2</integer>
+				<integer>12</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>47</integer>
+				<integer>28</integer>
 				<key>line</key>
-				<integer>2</integer>
+				<integer>14</integer>
 			</dict>
+		</dict>
+		<key>files/landing.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>61</integer>
+				<key>line</key>
+				<integer>30</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>indexCreator.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>1</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>moveYouTubeURL.js</key>
 		<dict>
@@ -318,9 +394,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>22</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>9</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -441,35 +517,49 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>pde/indexold.html</key>
+		<key>pde/indexold-small.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>2</integer>
+				<integer>65</integer>
 				<key>line</key>
-				<integer>164</integer>
+				<integer>162</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>125</integer>
+			<integer>122</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>1</integer>
+				<integer>26</integer>
 				<key>line</key>
-				<integer>156</integer>
+				<integer>162</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>2</integer>
+				<integer>66</integer>
 				<key>line</key>
-				<integer>164</integer>
+				<integer>162</integer>
 			</dict>
+		</dict>
+		<key>pde/indexold.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>50</integer>
+				<key>line</key>
+				<integer>405</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>358</integer>
 		</dict>
 		<key>pde/indexoldhalf.html</key>
 		<dict>
@@ -518,60 +608,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>11</integer>
+				<integer>22</integer>
 				<key>line</key>
-				<integer>152</integer>
+				<integer>23</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>116</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>1</integer>
-				<key>line</key>
-				<integer>152</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>11</integer>
-				<key>line</key>
-				<integer>152</integer>
-			</dict>
-		</dict>
-		<key>pde/rapcitiesAlpha.pde</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>34</integer>
-				<key>line</key>
-				<integer>1754</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
 			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>1698</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>24</integer>
-				<key>line</key>
-				<integer>1754</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>34</integer>
-				<key>line</key>
-				<integer>1754</integer>
-			</dict>
 		</dict>
 		<key>pde/uploader.pde</key>
 		<dict>
@@ -615,19 +659,65 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>removeEvent.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>58</integer>
+				<key>line</key>
+				<integer>3</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>3</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>4</integer>
+			</dict>
+		</dict>
 		<key>removeYouTubeURL.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>8</integer>
+				<integer>26</integer>
 				<key>line</key>
-				<integer>35</integer>
+				<integer>31</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>31</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>34</integer>
+			</dict>
 		</dict>
 		<key>replaceYouTubeURL.js</key>
 		<dict>
@@ -643,107 +733,75 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>server-everyauth.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>13</integer>
+				<key>line</key>
+				<integer>46</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>45</integer>
+		</dict>
 		<key>server.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>3</integer>
+				<integer>32</integer>
 				<key>line</key>
-				<integer>68</integer>
+				<integer>79</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>60</integer>
 		</dict>
 		<key>topTracks.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>3</integer>
+				<integer>31</integer>
 				<key>line</key>
-				<integer>55</integer>
+				<integer>14</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>40</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>6</integer>
-				<key>line</key>
-				<integer>93</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>3</integer>
-				<key>line</key>
-				<integer>55</integer>
-			</dict>
+			<integer>0</integer>
 		</dict>
 		<key>uploadArtist.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>44</integer>
+				<integer>4</integer>
 				<key>line</key>
-				<integer>5</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>38</integer>
-				<key>line</key>
-				<integer>5</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>44</integer>
-				<key>line</key>
-				<integer>5</integer>
-			</dict>
-		</dict>
-		<key>uploadArtist.js~</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
+				<integer>4</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>39</integer>
 		</dict>
 		<key>user.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>4</integer>
+				<integer>32</integer>
 				<key>line</key>
-				<integer>3</integer>
+				<integer>374</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>322</integer>
 		</dict>
 		<key>youtubeTopTracks.js</key>
 		<dict>
@@ -778,31 +836,38 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>fileServer.js</string>
 		<string>moveYouTubeURL.js</string>
 		<string>indexCreator.js</string>
 		<string>pde/artistupload.html</string>
 		<string>youtubeTopTracks.js</string>
 		<string>pde/uploader.pde</string>
-		<string>files/index.html</string>
+		<string>files/index-old.html</string>
+		<string>files/landing.html</string>
 		<string>files/indexhalf.html</string>
+		<string>files/heart.svg</string>
 		<string>pde/indexold.html</string>
+		<string>pde/rapcities.pde</string>
+		<string>pde/indexold-small.html</string>
+		<string>server-everyauth.js</string>
 		<string>server.js</string>
+		<string>README.txt</string>
 		<string>artist_info_populate.js</string>
 		<string>uploadArtist.js</string>
 		<string>pde/eventupload.html</string>
 		<string>pde/artisttester.html</string>
 		<string>pde/index.html</string>
 		<string>facebook.js</string>
-		<string>createRIDs.js~</string>
+		<string>fileServer.js</string>
 		<string>config.json</string>
 		<string>createRIDs.js</string>
 		<string>topTracks.js</string>
 		<string>user.js</string>
+		<string>package.json</string>
 		<string>removeYouTubeURL.js</string>
-		<string>uploadArtist.js~</string>
 		<string>pde/indexoldhalf.html</string>
-		<string>pde/rapcitiesAlpha.pde</string>
+		<string>removeEvent.js</string>
+		<string>files/index.html</string>
+		<string>replaceYouTubeURL.js</string>
 		<string>pde/eventuploader.pde</string>
 		<string>pde/eventuploaderold.pde</string>
 		<string>artistIDs.js</string>
@@ -810,6 +875,7 @@
 		<string>artistLocs.js</string>
 		<string>prepareGeoNYC.js</string>
 		<string>addYouTubeURL.js</string>
+		<string>7Dconnect.js</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>

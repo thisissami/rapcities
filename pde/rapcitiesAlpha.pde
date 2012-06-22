@@ -1,4 +1,4 @@
-/* @pjs preload="http://rapcities.com/facebook,http://rapcities.com/youtube,http://rapcities.com/info,http://rapcities.com/heart,http://rapcities.com/twitter,http://rapcities.com/NYC.gif,http://rapcities.com/rapper.svg,http://rapcities.com/bot.svg,http://rapcities.com/miniNYC.png,http://rapcities.com/sponsoricon.png,http://rapcities.com/cultureicon.png,http://rapcities.com/logo";*/
+/* @pjs preload="http://localhost:8888/heartbasket.png, http://localhost:8888/heart.svg, http://localhost:8888/greyHeart.svg, http://localhost:8888/facebook,http://localhost:8888/info,http://localhost:8888/twitter,http://localhost:8888/NYC.gif,http://localhost:8888/rapper.svg,http://localhost:8888/bot.svg,http://localhost:8888/miniNYC.png,http://localhost:8888/sponsoricon.png,http://localhost:8888/cultureicon.png,http://localhost:8888/logo";*/
 boolean started;
 PFont font;
 color[] colors;
@@ -40,7 +40,7 @@ var SPONSORS = 1;
 
 void setup(){
   WIDTH = max(700,$(window).width());//screen.width;//950;
-  HEIGHT = max(870,$(window).height());//screen.height;// 635;
+  HEIGHT = max(770,$(window).height());//screen.height;// 635;
 setUpArtists();
 var pathArray = window.location.pathname.split( '/' );
 if(pathArray.length > 0 && pathArray[0] != "songid"){
@@ -51,9 +51,9 @@ if(pathArray.length > 0 && pathArray[0] != "songid"){
 	//alert(sponsor);
 }
 setUpEvents();
-  logo = loadImage("http://rapcities.com/logo");
+  logo = loadImage("http://localhost:8888/logo");
 $("#parent").css("width",WIDTH).css("height",HEIGHT);
-  if(WIDTH == 700 || HEIGHT == 870){
+  if(WIDTH == 700 || HEIGHT == 770){
 	$("body").css("overflow","visible");
 	//$("#dialogWindow").css("position","fixed");
   }
@@ -64,12 +64,12 @@ $("#parent").css("width",WIDTH).css("height",HEIGHT);
   bannerY = 30;//HEIGHT/bannerYFull*300;
   YBASE = 30;
   XBASE = 0;
-  ygrid = 7757;
-  xgrid = 8189;
+  ygrid = 6352;
+  xgrid = 6800;
 togglePlayer();
 recentlyPlayed = new ArrayList();
-		
-	
+songsToShow = 10;		
+artmode = false;
   size(WIDTH, HEIGHT);
   frameRate(30);
   smooth();
@@ -82,23 +82,29 @@ recentlyPlayed = new ArrayList();
   songs = new ArrayList();
   longText = new HashMap();
   sidePane = new SidePane(WIDTH-bannerX-284,bannerY);
+  toolBox = new Toolbox();
   current = new Current();
   nyc = new Map();
 	grid = new Array(8);
 	gridLoad = new Array(8);
+	artgrid = new Array(8);
+	artgridLoad = new Array(8);
 	for(int i = 0; i < 8; i++){
 		grid[i] = new Array(8);
 		gridLoad[i] = new Array(8);
-		for(int j = 0; j < 8; j++)
+		artgrid[i] = new Array(8);
+		artgridLoad[i] = new Array(8);
+		for(int j = 0; j < 8; j++){
 			gridLoad[i][j] = false;
+			artgridLoad[i][j] = false;
+		}
 	}
   artinfo = new ArtistInfo();
-  facebook = loadImage("http://rapcities.com/facebook");
-  youtube = loadImage("http://rapcities.com/youtube");
-  info = loadImage("http://rapcities.com/info");
-  heart = loadImage("http://rapcities.com/heart");
-  twitter = loadImage("http://rapcities.com/twitter");
-  //money = loadImage("web_money.jpg")
+  facebook = loadImage("http://localhost:8888/facebook");
+  heartBasket = loadImage("http://localhost:8888/heartbasket.png");
+  heart = loadShape("http://localhost:8888/heart.svg");
+  greyHeart = loadShape("http://localhost:8888/greyHeart.svg");
+  twitter = loadImage("http://localhost:8888/twitter");
 }
 
 
@@ -114,9 +120,29 @@ void setUpSize(width,height){
 		xlength = WIDTH;
 		ylength = HEIGHT;
 		PANEMINX = WIDTH-bannerX-284;
+		toolLeft = PANEMINX;
 	    //INFOMINY = PANEMINY+controlLength;
 	    //PANEMINY = bannerY;
 		PANEMAXX = WIDTH-bannerX;
+		if(HEIGHT < 870){
+			int x = 870;
+			int i = 0;
+			while(x>HEIGHT && i < 5){
+				x -= 22;
+				i++;
+			}
+			PANEMAXY = PANEMINY + 555 - i*22;
+			MINIMAXY = PANEMAXY + 270;
+			songsToShow = 10-i;
+			yloc = PANEMAXY-18;
+			$('#dialogWindow').css('top',350-i*22);
+		}else{
+			PANEMAXY = PANEMINY + 555;
+			MINIMAXY = PANEMAXY + 270;
+			songsToShow = 10;
+			yloc = PANEMAXY-18;
+			$('#dialogWindow').css('top',350);
+		}
 		//PANEMAXY = HEIGHT-300;
 		miniRedX = map(xlength,0,xgrid,0,284);
 		miniRedY = map(ylength,0,ygrid,0,270);
@@ -130,13 +156,13 @@ void setUpSize(width,height){
 		volX = PANEMINX+40;
 		seekRight = PANEMAXX - 40 - timeDisplacement;
 	
-		curLeft = PANEMINX; curRight = PANEMAXX; //curTop = PANEMAXY - 230; curBottom = PANEMAXY;
+		curLeft = PANEMINX; curRight = PANEMAXX; curTop = PANEMAXY - 230; curBottom = PANEMAXY;
 	  //$('#dialogWindow').css('right',bannerX + "px").css('top',PANEMAXY-200+"px");
 	}
 }
 
-//PShapeSVG info;
-PImage facebook, youtube, money,info,heart,facebook2,twitter;
+PShapeSVG heart,greyHeart;
+PImage facebook,info,facebook2,twitter,heartBasket;
 
 void setUpColors(){
   colorMode(RGB);
@@ -170,6 +196,7 @@ void draw(){
   image(logo,0,0);//,logo.width,logo.height);
   //draws the current song controller
   sidePane.draw();
+if(artist)  toolBox.draw();
 current.draw();
   if(curhover > -1)
 		drawHoverInfo(curhover);
@@ -184,7 +211,7 @@ var artist = null;
 
 void setUpArtists(){
     artists.clear();
-    String jsonstring = "http://rapcities.com/getArtists";/*?maxX="+maxX+"&minX="+minX+
+    String jsonstring = "http://localhost:8888/getArtists";/*?maxX="+maxX+"&minX="+minX+
               "&minY="+minY+"&maxY="+maxY;*/
     if(sortSongs){jsonstring+="&sort="+sortSongs;}
     $.getJSON(jsonstring, function(results){      
@@ -199,7 +226,7 @@ void setUpArtists(){
   }
 
 void setUpEvents(){
-	$.getJSON("http://rapcities.com/getEvents?sponsor=all", function(results){
+	$.getJSON("http://localhost:8888/getEvents?sponsor=all", function(results){
 		if(results != null){
 			var length = results.length;
 			for(int i = 0; i < length; i++){
@@ -212,6 +239,98 @@ void setUpEvents(){
 	});
 }
 
+class Toolbox{	
+	boolean overlay;
+	int HEART = 0;
+	int BASKET = 1;
+	int FACEREC = 2;
+	Toolbox(){
+		overlay = false;
+		toolHover =  -1;
+		toolTop = 10;
+		toolFull = 40;
+		toolHalf = toolFull/2;
+		toolWidth = 120;
+		toolLeft = PANEMINX;
+	}
+	
+	void draw(){
+		fill(0); stroke(255);
+		rectMode(CORNERS);
+		rect(toolLeft, toolTop, toolLeft+toolWidth, toolTop+toolFull);
+		
+		shapeMode(CENTER);
+		if(artist.topTracks[playingSong].fav)
+			shape(heart,toolLeft+toolHalf,toolTop+toolHalf,toolHalf+4, toolHalf+2);
+		else
+			shape(greyHeart,toolLeft+toolHalf,toolTop+toolHalf,toolHalf+4, toolHalf+2);
+
+		imageMode(CENTER);
+		image(heartBasket,toolLeft+toolHalf*3,toolTop+toolHalf);
+		image(facebook, toolLeft+toolHalf*5, toolTop+toolHalf, toolFull -5, toolFull -5);
+		
+		if(mouseY>toolTop && mouseY<toolTop+toolFull&&mouseX>toolLeft&&mouseX<toolLeft+toolWidth){
+			textSize(14); fill(0); stroke(255); rectMode(CORNERS);
+			if(mouseX<toolLeft+toolFull){//heart
+				var heartext;
+				if(artist.topTracks[playingSong].fav) heartext = "Un-Heart Song";
+				else heartext = "Heart Song";
+				rect(PANEMINX, toolTop+toolFull+3, PANEMINX+textWidth(heartext)+4,toolTop+toolFull+23);
+				fill(255);
+				text(heartext,PANEMINX+2,toolTop+toolFull+5);
+				toolHover = HEART;
+			}
+			else if(mouseX>toolLeft+toolFull && mouseX<toolLeft+toolFull*2){//basket
+				rect(PANEMINX, toolTop+toolFull+3, PANEMINX+textWidth('View Hearted Songs')+4,toolTop+toolFull+23);
+				fill(255);
+				text('View Hearted Songs',PANEMINX+2,toolTop+toolFull+5);
+				toolHover = BASKET;
+			}
+			else if(mouseX>toolLeft+toolFull*2&&mouseX<toolLeft+toolWidth){//facebook
+				rect(PANEMINX, toolTop+toolFull+3, PANEMINX+textWidth('Recommend Song on Facebook')+4,toolTop+toolFull+23);
+				fill(255);
+				text('Recommend Song on Facebook',PANEMINX+2,toolTop+toolFull+5);
+				toolHover = FACEREC;
+			}
+		}
+		else toolHover = -1;
+	}
+	
+	void mouseClicked(){
+		switch(toolHover){
+			case(HEART):
+			console.log('heart');
+				if(artist.topTracks[playingSong].fav){
+					$.get('http://localhost:8888/removeSong', { "songid": artist.RID+" "+artist.topTracks[playingSong].RID});
+					artist.topTracks[playingSong].fav = false;
+				}
+				else{
+					$.get('http://localhost:8888/addSong', { "songid": artist.RID+" "+artist.topTracks[playingSong].RID});
+					artist.topTracks[playingSong].fav = true;
+				}
+				break;
+			case(BASKET):
+				showAndFillOverlay();
+				break;
+			case(FACEREC):
+				break;
+		}
+	}
+	
+	void showAndFillOverlay() {  // shows favorite box and loads the favorites
+		console.log('here');
+		if(overlay){
+			$('#overlay').dialog('close');
+			overlay = true;
+		}
+		else{
+          $.get('http://localhost:8888/seeSongs', function(data) {
+            $('#overlay').html(data).dialog('open');
+			overlay = false;
+          });
+		}
+	}
+}
 int minX, minY, maxX, maxY;
 int xlength, ylength, miniRedX,miniRedY;
 
@@ -225,12 +344,30 @@ void loadMapPiece(int i, int j){
 	else
 		title = String(i*8+j+1)+'.grid';
 	gridLoad[i][j] = true;
-	grid[i][j] = loadImage('http://rapcities.com/'+title);
+	grid[i][j] = requestImage('http://localhost:8888/'+title);
 }
+void loadArtMapPiece(int i, int j){
+	var title;
+	if((i == 0) || (i == 1 && j < 1)){
+		title = "0";
+		title += String(i*8+j+1)+'.art.grid';
+	}
+	else
+		title = String(i*8+j+1)+'.art.grid';
+	artgridLoad[i][j] = true;
+	artgrid[i][j] = requestImage('http://localhost:8888/'+title);
+}
+boolean aye = false;
+boolean arr = false;
 
 void keyPressed(){
 	nyc.keyPressed();
+	if(key == 'a'){ aye = true; arr = false; artmode = false;}
+	else if(key == 'r' && aye){arr = true; artmode = false;}
+	else if(key == 't' && aye && arr){artmode = true; alert('you have found the secret artmode! congrats!')}
+	else artmode = false;
 }
+
 int miniMidX,miniMidY,midX,midY;
 class Map{
 	PShape rapper, rapcircle;
@@ -245,18 +382,18 @@ class Map{
 	boolean opressed = false;
 	boolean miniPressed = false;
 	Map(){
-		NYC = loadImage("http://rapcities.com/NYC.gif");
-		miniNYC = loadImage("http://rapcities.com/miniNYC.png");
-		sponsorIcon = loadImage("http://rapcities.com/sponsoricon.png");
-		cultureIcon = loadImage("http://rapcities.com/cultureicon.png");
+		NYC = loadImage("http://localhost:8888/NYC.gif");
+		miniNYC = loadImage("http://localhost:8888/miniNYC.png");
+		sponsorIcon = loadImage("http://localhost:8888/sponsoricon.png");
+		cultureIcon = loadImage("http://localhost:8888/cultureicon.png");
 		ox = oy = -1;
 		/*ominx = minX = NYCx - xdif;//map(NYCx - xdif,0,2000,725.056,935.131);
 		maxX = NYCx + xdif;//map(NYCx + xdif,0,2000,725.056,935.131);
 		ominy = minY = NYCy - ydif;//map(NYCy - ydif,0,1422,701.865,950.945);
 		maxY = NYCy + ydif;//map(NYCy + ydif,0,1422,701.865,950.945);*/
 		//531.749 231.083 853 810
-		rapper = loadShape("http://rapcities.com/rapper.svg");
-		rapcircle = loadShape("http://rapcities.com/bot.svg");
+		rapper = loadShape("http://localhost:8888/rapper.svg");
+		rapcircle = loadShape("http://localhost:8888/bot.svg");
 		prep();
 	}
 //	2000 x 1422
@@ -317,14 +454,37 @@ class Map{
 	}
 	
 	void grimage(int j, int i, int one, int two){
-		if(grid[j][i])
-			image(grid[j][i],one,two);
-		else if(!gridLoad[j][i]){
-			loadMapPiece(j,i);
-			rectMode(CENTER);
-			fill(150); noStroke();
-			rect(one, two, 1000,1000);
+		if(artmode){
+			if(artgrid[j][i]){
+				if(artgrid[j][i].width>0)
+					image(artgrid[j][i],one,two);
+				else
+					drawLoadingBlock(j,i,one,two);
+			}
+			else if(!artgridLoad[j][i]){
+				loadArtMapPiece(j,i);
+				drawLoadingBlock(j,i,one,two);
+			}
 		}
+		else{
+			if(grid[j][i]){
+				if(grid[j][i].width>0)
+					image(grid[j][i],one,two);
+				else
+					drawLoadingBlock(j,i,one,two);
+			}
+			else if(!gridLoad[j][i]){
+				loadMapPiece(j,i);
+				drawLoadingBlock(j,i,one,two);
+			}
+		}
+	}
+	
+	void drawLoadingBlock(int j, int i, int one, int two){
+		rectMode(CENTER);noStroke();
+		fill(0); rect(one, two, widths[j],heights[i]);
+		textSize(30);fill(255);
+		text('Loading Map Section',one, two);
 	}
 	
 	void drawMini(){
@@ -373,12 +533,14 @@ class Map{
 		ylength = HEIGHT;
 		miniRedX = map(xlength,0,xgrid,0,284);
 		miniRedY = map(ylength,0,ygrid,0,270);
-		midX = 3095.5;
-		midY = 5033.5;
+		midX = 2600;
+		midY = 4100;
 		miniMidX = map(midX,0,xgrid,0,284);
 		miniMidY = map(midY,0,ygrid,0,270);
-		widths = new Array(1018,1027, 1017, 1028, 1017, 1028, 1017,1037);
-		heights = new Array(950 ,970 ,970 ,969 ,979 ,970 ,970 ,979);
+	//	widths = new Array(1018,1027, 1017, 1028, 1017, 1028, 1017,1037);
+	//	heights = new Array(950 ,970 ,970 ,969 ,979 ,970 ,970 ,979);
+		widths = new Array(848,848,856,848,848,856,848,848);
+		heights = new Array(792,792,792,792,800,792,792,800);
 		allX = 9207; allY = 8707;
 		setMins();
 	}
@@ -606,9 +768,12 @@ void mouseClicked(){
 		loadVideo();
 		//getSong(artist.topTracks[curSong].id);
 	}
+	else if(toolHover >= 0){
+		toolBox.mouseClicked();
+	}
 }	
 void getSong(int id){
-	$.getJSON('http://rapcities.com/getTrack?id=' + id, function(data){
+	$.getJSON('http://localhost:8888/getTrack?id=' + id, function(data){
 		if(started) stopSong();
 		startSong(data.url);
 	});
@@ -1006,13 +1171,24 @@ class SidePane{
   String[] names = {" Current Info"," Color Mode","Sorting"};
   color currentColor;
 
-  SidePane(minx, miny){
+  SidePane(minx, miny){	
     PANEMINX = minx;
     PANEMINY = miny;
     controlLength = 57;
     INFOMINY = PANEMINY+controlLength;
 	PANEMAXX = WIDTH-bannerX;
-	PANEMAXY = PANEMINY + 555;
+	if(HEIGHT < 870){
+		int x = 870;
+		int i = 0;
+		while(x>HEIGHT && i < 5){
+			x -= 22;
+			i++;
+		}
+		PANEMAXY = PANEMINY + 555 - i*22;
+		$('#dialogWindow').css('top',350-i*22);
+		songsToShow = 10-i;
+		yloc = PANEMAXY-18;
+	}else PANEMAXY = PANEMINY + 555;
 	MINIMAXY = PANEMAXY + 270;
     num = names.length;
     textSize(16);
@@ -1106,7 +1282,7 @@ class SidePane{
 		checkText(artist.name,PANEMINX+10,INFOMINY+10, 200, 0,22);
 		fill(255);
 		textSize(16);
-		int tot = artist.topTracks.length;
+		int tot = min(songsToShow,artist.topTracks.length);
 		curSong = -1;
 		for(int i = 0; i < tot; i++){
 			if(i == playingSong){
@@ -1581,7 +1757,7 @@ class ArtistInfo{
 	  $('#center, #popup, #popup-nav, #popup-content').css('width', selectDivWidth+'px');
 	  $('#popup-content').css('height', selectDivHeight+'px');
 
-	  $.getJSON('http://rapcities.com/getArtistInfo?id=' + artist_id, function(data) {
+	  $.getJSON('http://localhost:8888/getArtistInfo?id=' + artist_id, function(data) {
 	    loadBiographies(data.biographies);
 	    loadBlogs(data.blogs);
 	    loadImages(data.images);
@@ -1800,11 +1976,15 @@ void loadEventVideo(){
 void loadVideo(){
    	if(artist.topTracks[playingSong].video_id){
 	    player.loadVideoById(artist.topTracks[playingSong].video_id);
-	    updateToolbox(artist.topTracks[playingSong].RID, artist.RID, artist.topTracks[playingSong].title, artist.name);
+	    updatePageInfo(artist.topTracks[playingSong].RID, artist.RID, artist.topTracks[playingSong].title, artist.name);
 	  }
 	else{
 	 $("#ytplayer").html("<p>Couldn't find this song on YouTube</p>");
 	}
+	$.get('http://localhost:8888/isFav', {'songid': artist.RID + " " + artist.topTracks[playingSong].RID}, function(data){
+		if(data.value)
+			artist.topTracks[playingSong].fav = true;
+	});
 }
 
 void playSong(newartist, newsong){
@@ -1839,7 +2019,7 @@ void playSong(newartist, newsong){
 }
 
 void prepareBio(){
-    $.getJSON('http://rapcities.com/getBio?id='+artist.RID, function(results){      
+    $.getJSON('http://localhost:8888/getBio?id='+artist.RID, function(results){      
       if(results != null){
         $("div#biolog").html('<b>'+artist.name+'</b><br /><p>' + results.text + '<br /><br />Source: <a href="' + results.url + '">Wikipedia</a></p>');
 	  	$('div#biolog', window.parent.document).scrollTop(0);

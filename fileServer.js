@@ -142,8 +142,14 @@ module.exports = function fileServer(maxage){
 		var pathname = parsed.pathname;
 		var ext = path.extname(pathname);
 		if(ext == '.grid'){
-			folder = __dirname + '/files/grid/NYCfinal_'+req.url.split('/')[1].split('.')[0]+'.png';
-			contentType = 'image/png';
+			if(req.url.split('.')[1]=='art'){
+				folder = __dirname + '/files/grid/art_'+req.url.split('/')[1].split('.')[0]+'.png';
+				contentType = 'image/png';
+			}
+			else{
+				folder = __dirname + '/files/grid/image_'+req.url.split('/')[1].split('.')[0]+'.gif';
+				contentType = 'image/gif';
+			}
 		}
 	}
  
@@ -189,6 +195,7 @@ module.exports = function fileServer(maxage){
         res.end('check the header!');
         break;
       case('/'):
+	  case('/#_=_'):
       case('/hennessy'):
 	  case('/smirnoff'):
 	  case('/greygoose'):

@@ -1,7 +1,7 @@
 var mongodb = require('mongodb'),
   ObjectID = mongodb.ObjectID,
-  mongoserver = new mongodb.Server('10.112.0.110', 26374),
-  //mongoserver = new mongodb.Server('localhost', 26374),
+  //mongoserver = new mongodb.Server('10.112.0.110', 26374),
+  mongoserver = new mongodb.Server('localhost', 26374),
   dbConnector = new mongodb.Db('uenergy', mongoserver),
   artists, usersCollection;
 
@@ -77,9 +77,9 @@ function writeCursor(res, cursor) {
 function addSong(req, res, next) {
   var query = getQueries(req);
   
-  var userid = new ObjectID(query.userid);
+  var userid = new ObjectID(req.user);
   var songid = query.songid;
-  if(!query.userid || !songid) {
+  if(!songid) {
     writeError(res, "no userid or songid");
   } else {
     usersCollection.findOne({'_id': userid}, function(err, document) {
@@ -137,10 +137,10 @@ function addSong(req, res, next) {
 function removeSong(req, res, next) {
   var query = getQueries(req);
   
-  var userid = new ObjectID(query.userid);
+  var userid = new ObjectID(req.user);
   var songid = query.songid;
-  if(!query.userid || !songid) {
-    writeError(res, "no userid or songid");
+  if(!songid) {
+    writeError(res, "no songid");
   } else {
     usersCollection.findOne({'_id': userid}, function(err, document) {
       if(err) {
@@ -177,9 +177,9 @@ function removeSong(req, res, next) {
 function isFav(req, res, next) {
   var query = getQueries(req);
   
-  var userid = new ObjectID(query.userid);
+  var userid = new ObjectID(req.user);
   var songid = query.songid;
-  if(!query.userid || !songid) {
+  if(!songid) {
     writeError(res, "no userid or songid");
   } else {
     usersCollection.findOne({'_id': userid}, function(err, document) {
@@ -202,19 +202,18 @@ function isFav(req, res, next) {
 }
 
 function seeSongs(req, res, next) {
-  var query = getQueries(req);
-  
-  var userid = new ObjectID(query.userid);
+  var userid = new ObjectID(req.user);
+ /* var query = getQueries(req);
   var page = query.page;
   if(!page) page = 1;
   var sortBy = query.sortBy;
   if(!sortBy) sortBy = 'title';
   var order = query.order;
-  if(!order) order = 'asc';
-  
-  if(!query.userid) {
-    writeError(res, "no userid");
-  } else {
+  if(!order) order = 'asc';*/
+  var page = 1;
+  var sortBy = 'title';
+  var order = 'asc';
+
     usersCollection.findOne({'_id': userid}, function(err, document) {
       if(err) {
         console.log(err);
@@ -223,6 +222,7 @@ function seeSongs(req, res, next) {
       }
       if(document) {
         var documents = [], index = 0, favs = document.favs, dates = document.dates;
+console.log(favs);
         // Tail-recursive loop to get past asynchronous querying:
         var loopThrough = function() {
           if(index < favs.length) {
@@ -333,15 +333,11 @@ function seeSongs(req, res, next) {
         writeError(res, "No such user");
       }
     });
-  }
 }
 
 function countSongs(req, res, next) {
-  var query = getQueries(req);
-  var userid = new ObjectID(query.userid);
-  if(!query.userid) {
-    writeError(res, "no userid");
-  } else {
+  var userid = new ObjectID(req.user);
+
     usersCollection.findOne({'_id': userid}, function(err, document) {
       if(err) {
         console.log(err);
@@ -354,38 +350,27 @@ function countSongs(req, res, next) {
         writeError(res, "No such user!");
       }
     });
-  }
 }
 
-function fbCreate(req, res, next) {
-  var query = getQueries(req);
-  var fbid = query.fbid;
-  if(fbid) {
-    usersCollection.findOne({'fbid':fbid}, {'safe': true}, function(err, document) {
-      if(err) {
-        console.log(err);
-      } else {
-        var userid = null;
-        if(document != null)
-          var userid = document._id;
-      }
-      if(userid != null) {
-      console.log("fbid exists, logged in as userid: " + userid);
-      writeSuccess(res, '"' + userid + '"');
-    } else {
-      console.log("new fbid; creating new entry...");
-      usersCollection.insert({'fbid':fbid, 'favs':[], 'dates':[]}, {'safe': true}, function(err, records) {
-        if(err) { console.log(err); return; }
-        userid = records[0]._id;
-        console.log("new user created as userid: " + userid);
-        writeSuccess(res, '"' + userid + '"');
-      });
-    }
-    });
-  } else {
-    console.log("Login failed: no fbid.");
-    writeError(res, "no fbid given");
-  }
+function fbCreate(fbData, callback) {
+	usersCollection.findOne({'fbid':fbData.fbid},function(err,user){
+		if(err){
+			console.log(err);
+			callback("error finding user in database");
+		}
+		else if(user){
+			callback(null,user._id)
+		}
+		else{
+			console.log('FBCREATE:\n\n' + JSON.stringify(fbData));
+			fbData['favs'] = []; fbData['dates'] = [];
+			usersCollection.insert(fbData, {'safe': true}, function(err, records) {
+		        if(err) { console.log(err); callback("insertion error"); }
+				console.log('_id: '+records[0]._id);
+				callback(null,records[0]._id);
+		    });
+		}
+	});
 }
 
 exports.addSong = addSong;

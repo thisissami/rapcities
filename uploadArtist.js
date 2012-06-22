@@ -2,8 +2,8 @@ var http = require('http');
 var api = require('7digital-api'),
 	artistes = new api.Artists();
 var mongodb = require('mongodb'),
-  mongoserver = new mongodb.Server('10.112.0.110', 26374),
-  //mongoserver = new mongodb.Server('localhost', 26374),
+  //mongoserver = new mongodb.Server('10.112.0.110', 26374),
+  mongoserver = new mongodb.Server('localhost', 26374),
   dbConnector = new mongodb.Db('uenergy', mongoserver);
 
 

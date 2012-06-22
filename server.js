@@ -28,7 +28,42 @@ else{
   artistInfo = require('./artistInfo');
   users = require('./user');
   http = require('http');
-        
+  //everyauth = require('everyauth');
+  passport = require('passport');
+  fpass = require('passport-facebook').Strategy;
+  redistore = require('connect-redis')(connect);
+
+passport.serializeUser(function(userid,done){
+	console.log('serializing!');
+	done(null, userid);
+});
+passport.deserializeUser(function(userid,done){
+	console.log('deserializing!');
+	done(null,userid);
+});
+
+passport.use(new fpass({
+		clientID:'300271166724919',
+		clientSecret:'b4ba0065d5002941b871610d00afd80b',
+		callbackURL:'http://localhost:8888/auth/facebook/callback'
+	},
+	function(accessToken, refreshToken, fbUserData, done){
+		var toUpload = {
+			'name':fbUserData._json.name,
+			'birthday':fbUserData._json.birthday,
+			'location':fbUserData._json.location,
+			'email':fbUserData._json.email,
+			'gender':fbUserData._json.gender,
+			'fbid':fbUserData._json.id,
+			'accessToken':accessToken
+		}
+		users.fbCreate(toUpload, function (err, id) {
+		      if (err) { return done(err); }
+		      done(null, id);
+		});
+	}
+));
+
   function onRequest(req, res, next) {
     var parsed = url.parse(req.url,true);
     var pathname = parsed.pathname;
@@ -47,7 +82,6 @@ else{
       case '/removeSong': users.removeSong(req, res, next); break;
       case '/countSongs': users.countSongs(req, res, next); break;
       case '/isFav': users.isFav(req, res, next); break;
-      case '/fbCreate': users.fbCreate(req, res, next); break;
       default: return;
     }
   }
@@ -59,14 +93,82 @@ else{
 			res.end();
 		} else	next();
 	}
+	
+	function checkLoggedIn(req, res, next){
+		console.log("req.user: " + req.user);
+		if(req.user){
+			if(req.url == '/logout'){
+				req.logOut();
+				res.writeHead(302, {'location':'http://localhost:8888/login'});
+				res.end();
+			}
+			else
+				next();
+		}
+		else{
+			console.log('\nNot LOGGED IN\n');
+			if(req.socket.remoteAddress || req.socket.socket.remoteAddress == '127.0.0.1'){
+		      	var folder,contentType;
+				console.log('req url = '+req.url);
+	  		   	if(req.url == '/landing.png'){
+					folder = __dirname+'/files/landing.png';
+					contentType = 'image/png';
+				}
+				else if(req.url == '/facebookLanding.png'){
+					folder = __dirname+'/files/facebookLanding.png';
+					contentType = 'image/png';
+				}
+				else if(req.url == '/auth/facebook'){
+					passport.authenticate('facebook', {scope: ['email','user_location','user_birthday']})(req,res,next);
+					return;
+				}
+				else if(req.url.split('?')[0] == '/auth/facebook/callback'){
+					passport.authenticate('facebook', {failureRedirect: '/failbook', 'successRedirect':'/'})(req, res, next);
+					return;
+				}
+				else if(req.url.split('?')[0] == '/failbook'){
+					console.log('failed log in');
+					res.writeHead(401);
+					res.end('Your login attempt with Facebook failed. If this is an error, please try logging in again or get in touch with Facebook.');
+					return;
+				}
+				else{
+		        	folder = __dirname + '/files/landing.html';
+		        	contentType = 'text/html; charset=utf-8';
+			    }
+				if(folder){
+					console.log('got to folder part\n\n');
+			        fs.readFile(folder, function(error, content){
+			          if(error){
+			            res.writeHead(500);
+			            res.end();
+			          }
+			          else{
+			            res.writeHead(200, {'Content-Type': contentType});
+			            res.end(content);
+			          }
+			        });
+			      }
+					else{ res.writeHead(500); res.end();}
+			}
+			else {res.writeHead(500); res.end();}
+		}
+	}
     
   connect.createServer(
 	checkWWW,
+	connect.logger(),
+	connect.cookieParser(),
+	connect.bodyParser(),
+	connect.session({store: new redistore, secret:'jibblym87543dxj'}),
+	connect.query(),
+	passport.initialize(),
+	passport.session(),
+	checkLoggedIn,
     require('./fileServer')(),
-    //remove this once connect reaches v2.0.0 - connect.compress({memLevel:9}),
-    connect.logger(),
-    onRequest).listen(80);
-	//onRequest).listen(8888);
+    connect.compress({memLevel:9}),
+    //onRequest).listen(80);
+	onRequest).listen(8888);
   console.log('Server has started.');
 }
 

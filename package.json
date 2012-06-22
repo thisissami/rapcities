@@ -1,13 +1,13 @@
 {
-	"name": "rapcities-uploader",
-	"description": "uploader for rapcities",
+	"name": "rapcities",
+	"description": "virtual hip-hop city",
 	"author": "thisissami",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"dependencies": {
-		"connect": "1.8.0",
-		"mongodb": "0.9.9-7",
-		"nodemailer": "0.2.3",
-		"7digital-api":"0.4.3"
+		"connect": "2.3.1",
+		"mongodb": "1.0.2",
+		"7digital-api":"0.4.3",
+		"everyauth":"0.2.32"
 	},
-	"engine": "node = 0.6.7"
+	"engine": "node = 0.6.19"
 }
