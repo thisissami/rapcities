@@ -219,10 +219,10 @@ void loadMapPiece(int i, int j){
 	var title;
 	if((i == 0) || (i == 1 && j < 1)){
 		title = "0";
-		title += String(i*8+j+1)+'.grid';
+		title += String(i*8+j+1)+'.large.grid';
 	}
 	else
-		title = String(i*8+j+1)+'.grid';
+		title = String(i*8+j+1)+'.large.grid';
 	gridLoad[i][j] = true;
 	grid[i][j] = loadImage('http://localhost:8888/'+title);
 }
@@ -376,8 +376,8 @@ class Map{
 		midY = 4100;
 		miniMidX = map(midX,0,xgrid,0,284);
 		miniMidY = map(midY,0,ygrid,0,270);
-		widths = new Array(848,848,856,848,848,856,848,848);
-		heights = new Array(792,792,792,792,800,792,792,800);
+		widths = new Array(1018,1027, 1017, 1028, 1017, 1028, 1017,1037);
+		heights = new Array(950 ,970 ,970 ,969 ,979 ,970 ,970 ,979);
 		allX = 9207; allY = 8707;
 		setMins();
 	}

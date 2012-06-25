@@ -146,6 +146,10 @@ module.exports = function fileServer(maxage){
 				folder = __dirname + '/files/grid/art_'+req.url.split('/')[1].split('.')[0]+'.png';
 				contentType = 'image/png';
 			}
+			else if(req.url.split('.')[1]=='large'){
+				folder = __dirname + '/files/grid/NYCfinal_'+req.url.split('/')[1].split('.')[0]+'.png';
+				contentType = 'image/png';
+			}
 			else{
 				folder = __dirname + '/files/grid/image_'+req.url.split('/')[1].split('.')[0]+'.gif';
 				contentType = 'image/gif';
