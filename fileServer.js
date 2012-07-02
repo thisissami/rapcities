@@ -110,11 +110,19 @@ module.exports = function fileServer(maxage){
         contentType = 'image/png';
       }
 	  else if(req.url == '/facebook'){
-		folder = __dirname + '/files/icons/Facebook_Grunge_Icon_by_highaltitudes.png';
+		folder = __dirname + '/files/icons/facebook-recommend.png'; 
+        contentType = 'image/png';
+      }
+      else if(req.url == '/exit.png'){
+		folder = __dirname + '/files/icons/exit.png';
         contentType = 'image/png';
       }
 	  else if(req.url == '/youtube'){
 		folder = __dirname + '/files/icons/youtube_metal_grunge_icon_5_by_highaltitudes-d4168hp.png';
+        contentType = 'image/png';
+      }
+      else if(req.url == '/wikibio.png'){
+		folder = __dirname + '/files/icons/wikibio.png';
         contentType = 'image/png';
       }
 	  else if(req.url == '/heart'){

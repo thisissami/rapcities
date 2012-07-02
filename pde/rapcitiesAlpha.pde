@@ -1,4 +1,4 @@
-/* @pjs preload="http://localhost:8888/heartbasket.png, http://localhost:8888/heart.svg, http://localhost:8888/greyHeart.svg, http://localhost:8888/facebook,http://localhost:8888/info,http://localhost:8888/twitter,http://localhost:8888/NYC.gif,http://localhost:8888/rapper.svg,http://localhost:8888/bot.svg,http://localhost:8888/miniNYC.png,http://localhost:8888/sponsoricon.png,http://localhost:8888/cultureicon.png,http://localhost:8888/logo";*/
+/* @pjs preload="http://localhost:8888/heartbasket.png, http://localhost:8888/wikibio.png, http://localhost:8888/exit.png, http://localhost:8888/heart.svg, http://localhost:8888/greyHeart.svg, http://localhost:8888/facebook,http://localhost:8888/info,http://localhost:8888/twitter,http://localhost:8888/NYC.gif,http://localhost:8888/rapper.svg,http://localhost:8888/bot.svg,http://localhost:8888/miniNYC.png,http://localhost:8888/sponsoricon.png,http://localhost:8888/cultureicon.png,http://localhost:8888/logo";*/
 boolean started;
 PFont font;
 color[] colors;
@@ -101,10 +101,12 @@ artmode = false;
 	}
   artinfo = new ArtistInfo();
   facebook = loadImage("http://localhost:8888/facebook");
+  logout = loadImage("http://localhost:8888/exit.png");
   heartBasket = loadImage("http://localhost:8888/heartbasket.png");
   heart = loadShape("http://localhost:8888/heart.svg");
   greyHeart = loadShape("http://localhost:8888/greyHeart.svg");
   twitter = loadImage("http://localhost:8888/twitter");
+  wikibio = loadImage("http://localhost:8888/wikibio.png");
 }
 
 
@@ -120,7 +122,7 @@ void setUpSize(width,height){
 		xlength = WIDTH;
 		ylength = HEIGHT;
 		PANEMINX = WIDTH-bannerX-284;
-		toolLeft = PANEMINX;
+		toolLeft = WIDTH/2 - toolWidth/2;
 	    //INFOMINY = PANEMINY+controlLength;
 	    //PANEMINY = bannerY;
 		PANEMAXX = WIDTH-bannerX;
@@ -131,18 +133,19 @@ void setUpSize(width,height){
 				x -= 22;
 				i++;
 			}
-			PANEMAXY = PANEMINY + 555 - i*22;
+			PANEMAXY = PANEMINY + 558 - i*22;
 			MINIMAXY = PANEMAXY + 270;
 			songsToShow = 10-i;
 			yloc = PANEMAXY-18;
-			$('#dialogWindow').css('top',350-i*22);
+			$('#dialogWindow').css('top',353-i*22-57);
 		}else{
-			PANEMAXY = PANEMINY + 555;
+			PANEMAXY = PANEMINY + 558-57;
 			MINIMAXY = PANEMAXY + 270;
 			songsToShow = 10;
 			yloc = PANEMAXY-18;
-			$('#dialogWindow').css('top',350);
+			$('#dialogWindow').css('top',353-57);
 		}
+		sidePane.resetSize();
 		//PANEMAXY = HEIGHT-300;
 		miniRedX = map(xlength,0,xgrid,0,284);
 		miniRedY = map(ylength,0,ygrid,0,270);
@@ -162,7 +165,7 @@ void setUpSize(width,height){
 }
 
 PShapeSVG heart,greyHeart;
-PImage facebook,info,facebook2,twitter,heartBasket;
+PImage facebook,info,facebook2,twitter,heartBasket,logout,wikibio;
 
 void setUpColors(){
   colorMode(RGB);
@@ -244,14 +247,17 @@ class Toolbox{
 	int HEART = 0;
 	int BASKET = 1;
 	int FACEREC = 2;
+	int LOGOUT = 3;
+	int ARTBIO = 4;
+	
 	Toolbox(){
 		overlay = false;
 		toolHover =  -1;
-		toolTop = 10;
+		toolTop = PANEMINY;
 		toolFull = 40;
 		toolHalf = toolFull/2;
-		toolWidth = 120;
-		toolLeft = PANEMINX;
+		toolWidth = 200;
+		toolLeft = width/2 - toolWidth/2;
 	}
 	
 	void draw(){
@@ -268,6 +274,8 @@ class Toolbox{
 		imageMode(CENTER);
 		image(heartBasket,toolLeft+toolHalf*3,toolTop+toolHalf);
 		image(facebook, toolLeft+toolHalf*5, toolTop+toolHalf, toolFull -5, toolFull -5);
+		image(wikibio, toolLeft+toolHalf*7, toolTop+toolHalf);
+		image(logout, toolLeft+toolHalf*9, toolTop+toolHalf);
 		
 		if(mouseY>toolTop && mouseY<toolTop+toolFull&&mouseX>toolLeft&&mouseX<toolLeft+toolWidth){
 			textSize(14); fill(0); stroke(255); rectMode(CORNERS);
@@ -275,22 +283,34 @@ class Toolbox{
 				var heartext;
 				if(artist.topTracks[playingSong].fav) heartext = "Un-Heart Song";
 				else heartext = "Heart Song";
-				rect(PANEMINX, toolTop+toolFull+3, PANEMINX+textWidth(heartext)+4,toolTop+toolFull+23);
+				rect(toolLeft, toolTop-5, toolLeft+textWidth(heartext)+4,toolTop-25);
 				fill(255);
-				text(heartext,PANEMINX+2,toolTop+toolFull+5);
+				text(heartext,toolLeft+2,toolTop-23);
 				toolHover = HEART;
 			}
 			else if(mouseX>toolLeft+toolFull && mouseX<toolLeft+toolFull*2){//basket
-				rect(PANEMINX, toolTop+toolFull+3, PANEMINX+textWidth('View Hearted Songs')+4,toolTop+toolFull+23);
+				rect(toolLeft+toolFull, toolTop-5, toolLeft+toolFull+textWidth('View HeartBasket')+4,toolTop-25);
 				fill(255);
-				text('View Hearted Songs',PANEMINX+2,toolTop+toolFull+5);
+				text('View HeartBasket',toolLeft+toolFull+2,toolTop-23);
 				toolHover = BASKET;
 			}
-			else if(mouseX>toolLeft+toolFull*2&&mouseX<toolLeft+toolWidth){//facebook
-				rect(PANEMINX, toolTop+toolFull+3, PANEMINX+textWidth('Recommend Song on Facebook')+4,toolTop+toolFull+23);
+			else if(mouseX>toolLeft+toolFull*2&&mouseX<toolLeft+toolFull*3){//facebook
+				rect(toolLeft+toolFull*2, toolTop-5, toolLeft+toolFull*2+textWidth('Recommend Song on Facebook')+4,toolTop-25);
 				fill(255);
-				text('Recommend Song on Facebook',PANEMINX+2,toolTop+toolFull+5);
+				text('Recommend Song on Facebook',toolLeft+toolFull*2+2,toolTop-23);
 				toolHover = FACEREC;
+			}
+			else if(mouseX>toolLeft+toolFull*3&&mouseX<toolLeft+toolFull*4){//wikibio
+				rect(toolLeft+toolFull*3, toolTop-5, toolLeft+toolFull*3+textWidth('Artist Biography')+4,toolTop-25);
+				fill(255);
+				text('Artist Biography',toolLeft+toolFull*3+2,toolTop-23);
+				toolHover = ARTBIO;
+			}
+			else if(mouseX>toolLeft+toolFull*4&&mouseX<toolLeft+toolFull*5){//wikibio
+				rect(toolLeft+toolFull*4, toolTop-5, toolLeft+toolFull*4+textWidth('Logout')+4,toolTop-25);
+				fill(255);
+				text('Logout',toolLeft+toolFull*4+2,toolTop-23);
+				toolHover = LOGOUT;
 			}
 		}
 		else toolHover = -1;
@@ -312,7 +332,13 @@ class Toolbox{
 			case(BASKET):
 				showAndFillOverlay();
 				break;
+			case(LOGOUT):
+				link('http://localhost:8888/logout');
+				break;
 			case(FACEREC):
+				break;
+			case(ARTBIO):
+				prepareBio();
 				break;
 		}
 	}
@@ -737,7 +763,7 @@ void mouseClicked(){
     artist = artists.get(curhover);
 	//getSong(artist.topTracks[0].id);
 	playingSong = 0;
-	loadVideo(); prepareBio();
+	loadVideo(); sidePane.resetSize();//prepareBio();
   }
   else if(curehover >= 0){
 	//togglePlayer();
@@ -771,7 +797,14 @@ void mouseClicked(){
 	else if(toolHover >= 0){
 		toolBox.mouseClicked();
 	}
+	else if(forwardPageHover){
+		sidePane.nextPage();
+	}
+	else if(backPageHover){
+		sidePane.previousPage();
+	}
 }	
+
 void getSong(int id){
 	$.getJSON('http://localhost:8888/getTrack?id=' + id, function(data){
 		if(started) stopSong();
@@ -1088,7 +1121,8 @@ void nextArtist(){
 				//getSong(artist.topTracks[0].id);
 				playingSong = 0;
 				loadVideo();
-				prepareBio();
+				sidePane.resetSize();
+				//prepareBio();
 			}
 			
 		}
@@ -1153,6 +1187,7 @@ void checkText(String string, int x, int y,int max,color col, int ybelow){
 final int BASICINFO = 0;
 final int SETTINGS = 1;
 
+boolean forwardPageHover, backPageHover;
 int curGenre = 0;
 int PANEMINY, PANEMINX, PANEMAXY, PANEMAXX, controlLength, INFOMINY;
 class SidePane{  
@@ -1175,8 +1210,9 @@ class SidePane{
     PANEMINX = minx;
     PANEMINY = miny;
     controlLength = 57;
-    INFOMINY = PANEMINY+controlLength;
+    INFOMINY = PANEMINY;//+controlLength;
 	PANEMAXX = WIDTH-bannerX;
+	backPageHover = forwardPageHover = false;
 	if(HEIGHT < 870){
 		int x = 870;
 		int i = 0;
@@ -1184,11 +1220,11 @@ class SidePane{
 			x -= 22;
 			i++;
 		}
-		PANEMAXY = PANEMINY + 555 - i*22;
-		$('#dialogWindow').css('top',350-i*22);
+		PANEMAXY = PANEMINY + 558-controlLength - i*22;
+		$('#dialogWindow').css('top',353-i*22-controlLength);
 		songsToShow = 10-i;
 		yloc = PANEMAXY-18;
-	}else PANEMAXY = PANEMINY + 555;
+	}else PANEMAXY = PANEMINY + 558-controlLength; 
 	MINIMAXY = PANEMAXY + 270;
     num = names.length;
     textSize(16);
@@ -1275,6 +1311,25 @@ class SidePane{
 			case 4: text("Tweet About Song",x,y); break;
 		}
 	}*/
+	void resetSize(){
+		while(pageToShow*songsToShow >= artist.topTracks.length){
+			pageToShow--;
+		}
+		totalPagesToShow = ceil(artist.topTracks.length/songsToShow);
+	}
+	
+	int pageToShow = 0; int totalPagesToShow = 1;
+	void resetPage(){
+		pageToShow = 0;
+	}
+	void nextPage(){
+		pageToShow++;
+	}
+	void previousPage(){
+		pageToShow--;
+		console.log('WHATALKFJLASDFJ');
+	}
+
 	void printTopSongs(){
 		textAlign(LEFT,TOP);
 		textSize(22);
@@ -1282,22 +1337,52 @@ class SidePane{
 		checkText(artist.name,PANEMINX+10,INFOMINY+10, 200, 0,22);
 		fill(255);
 		textSize(16);
-		int tot = min(songsToShow,artist.topTracks.length);
+		int tot = min(songsToShow,artist.topTracks.length-pageToShow*songsToShow);
 		curSong = -1;
-		for(int i = 0; i < tot; i++){
+		int base = pageToShow*songsToShow;
+		for(int i = base; i < base+tot; i++){
 			if(i == playingSong){
 				fill(colors[2]);
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,248,colors[2],30);
+				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + (i-base)*22,248,colors[2],30);
 				fill(255);
 			}
-			else if(mouseX>PANEMINX+20 && mouseY < INFOMINY+35+(i+1)*22&& mouseY>INFOMINY+35+i*22){
+			else if(mouseX>PANEMINX+20 && mouseY < INFOMINY+35+(i-base+1)*22&& mouseY>INFOMINY+35+(i-base)*22){
 				fill(colors[2]);
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,248,colors[2],30);
+				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + (i-base)*22,248,colors[2],30);
 				curSong = i;
 				fill(255);
 			}
 			else
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + i*22,248,color(255),30);
+				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + (i-base)*22,248,color(255),30);
+		}
+		//show pages if there's enough songs for that.
+		if(songsToShow < artist.topTracks.length){
+			textSize(14);
+			text(pageToShow+1+"/"+totalPagesToShow, PANEMAXX - 46, INFOMINY+30+songsToShow*22);
+			if(pageToShow > 0 && mouseX > PANEMAXX-64 && mouseX < PANEMAXX-46 && mouseY < INFOMINY+43+songsToShow*22 && mouseY > INFOMINY+35+songsToShow*22){
+				fill(colors[2]);
+				text('<',PANEMAXX-58,INFOMINY+30+songsToShow*22);
+				text('<',PANEMAXX-64,INFOMINY+30+songsToShow*22);
+				fill(255);
+				backPageHover = true;
+			}
+			else{
+				backPageHover = false;
+				text('<',PANEMAXX-58,INFOMINY+30+songsToShow*22);
+				text('<',PANEMAXX-64,INFOMINY+30+songsToShow*22);
+			}
+			if(pageToShow < artist.topTracks.length/songsToShow-1 && mouseX > PANEMAXX-23 && mouseX < PANEMAXX-7 && mouseY < INFOMINY+43+songsToShow*22 && mouseY > INFOMINY+35+songsToShow*22){
+				fill(colors[2]);
+				text('>',PANEMAXX-22,INFOMINY+30+songsToShow*22);
+				text('>',PANEMAXX-16,INFOMINY+30+songsToShow*22);
+				fill(255);
+				forwardPageHover = true;
+			}
+			else{
+				forwardPageHover = false;
+				text('>',PANEMAXX-22,INFOMINY+30+songsToShow*22);
+				text('>',PANEMAXX-16,INFOMINY+30+songsToShow*22);
+			}
 		}
 	}
   //Basic Song Information
@@ -1947,8 +2032,8 @@ void startMusic(){
 		    for(int j = 0; j < artist.topTracks.length; j++){
 		      if(artist.topTracks[j].RID == songID){
 			playingSong = j;
-			loadVideo();
-			prepareBio();
+			loadVideo(); sidePane.resetSize();
+			//prepareBio();
 			midX = map(artist.x,531.749,531.749+853,0,xgrid);
 			midY = map(artist.y,231.083,231.083+810,0,ygrid);
 			miniMidX = map(midX,0,xgrid,0,284);
@@ -1959,8 +2044,8 @@ void startMusic(){
 		    }
 		  } else{
 		    playingSong = 0;
-		    loadVideo();
-			prepareBio();
+		    loadVideo(); sidePane.resetSize();
+			//prepareBio();
 		  }
 		break;
 	  }
@@ -1985,6 +2070,7 @@ void loadVideo(){
 		if(data.value)
 			artist.topTracks[playingSong].fav = true;
 	});
+	sidePane.resetPage();
 }
 
 void playSong(newartist, newsong){
@@ -2006,13 +2092,13 @@ void playSong(newartist, newsong){
 	for(int j = 0; j < artist.topTracks.length; j++){
 	  if(artist.topTracks[j].RID == newsong){
 	    playingSong = j;
-	    loadVideo(); if(newart)prepareBio();
+	    loadVideo(); if(newart)sidePane.resetSize();//prepareBio();
 	  }
 	}
       }
       else{
 	playingSong = 0;
-	loadVideo(); if(newart)prepareBio();
+	loadVideo(); if(newart)sidePane.resetSize();//prepareBio();
       }
     }
   }
