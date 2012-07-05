@@ -763,7 +763,8 @@ void mouseClicked(){
     artist = artists.get(curhover);
 	//getSong(artist.topTracks[0].id);
 	playingSong = 0;
-	loadVideo(); sidePane.resetSize();//prepareBio();
+	loadVideo(); sidePane.resetSize(); sidePane.resetPage();
+	//prepareBio();
   }
   else if(curehover >= 0){
 	//togglePlayer();
@@ -1122,6 +1123,7 @@ void nextArtist(){
 				playingSong = 0;
 				loadVideo();
 				sidePane.resetSize();
+				sidePane.resetPage();
 				//prepareBio();
 			}
 			
@@ -2070,7 +2072,6 @@ void loadVideo(){
 		if(data.value)
 			artist.topTracks[playingSong].fav = true;
 	});
-	sidePane.resetPage();
 }
 
 void playSong(newartist, newsong){
@@ -2092,13 +2093,15 @@ void playSong(newartist, newsong){
 	for(int j = 0; j < artist.topTracks.length; j++){
 	  if(artist.topTracks[j].RID == newsong){
 	    playingSong = j;
-	    loadVideo(); if(newart)sidePane.resetSize();//prepareBio();
+	    loadVideo(); if(newart){sidePane.resetPage();
+		sidePane.resetSize();}//prepareBio();
 	  }
 	}
       }
       else{
 	playingSong = 0;
-	loadVideo(); if(newart)sidePane.resetSize();//prepareBio();
+	loadVideo(); if(newart){sidePane.resetSize();sidePane.resetPage();
+	}//prepareBio();
       }
     }
   }

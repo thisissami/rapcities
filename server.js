@@ -46,7 +46,7 @@ passport.use(new fpass({
 		//clientID:'300271166724919',
 		//clientSecret:'b4ba0065d5002941b871610d00afd80b',
 		clientID:'134659439991720', //rapcities proper
-		clientSecret:'43c2b1a5bc972868418383d74a51bfa4',
+		clientSecret:'43c2b1a5bc972868418383d74a51bfa4', // DON'T FORGET TO SWITCH LOCALHOST HERE
 		callbackURL:'http://rapcities.com/auth/facebook/callback'
 	},
 	function(accessToken, refreshToken, fbUserData, done){
