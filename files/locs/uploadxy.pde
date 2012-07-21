@@ -486,7 +486,7 @@ class Map{
 
 var curicon; var iconrequested = false; var iconready = false; var _id;
 var iconset = false; var iconx, icony;
-var location;
+var location; var curVid = -1;
 
 void mouseClicked(){
   if(curloc >= 0){
