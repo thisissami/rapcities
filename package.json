@@ -9,7 +9,8 @@
 		"7digital-api":"0.4.3",
 		"passport":"0.1.10",
 		"passport-facebook":"0.1.3",
-		"connect-redis":"1.4.0"
+		"connect-redis":"1.4.0",
+		"shortid":"1.0.8"
 	},
 	"engine": "node = 0.6.19"
 }
