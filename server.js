@@ -26,12 +26,14 @@ else{
   uploader = require('./uploadArtist'),
   digital7 = require('./7Dconnect'),
   artistInfo = require('./artistInfo');
+  locations = require('./locs');
   users = require('./user');
   http = require('http');
   //everyauth = require('everyauth');
   passport = require('passport');
   fpass = require('passport-facebook').Strategy;
   redistore = require('connect-redis')(connect);
+  qs = require('querystring');
 
 passport.serializeUser(function(userid,done){
 	console.log('serializing!');
@@ -66,12 +68,13 @@ passport.use(new fpass({
 	}
 ));
 
-  function onRequest(req, res, next) {
+  function router(req, res, next) {
     var parsed = url.parse(req.url,true);
     var pathname = parsed.pathname;
     var ext = path.extname(pathname);
-    
-    switch(pathname){
+    var arr = pathname.split('?')[0];
+
+    switch(arr){
       case '/addArtist': console.log('OH SHIT SOME SUCCESS!'); uploader.uploadLoc(res, parsed.query); break;
 	  case '/getArtists': console.log('GETTING ZE ARTISTS!!!!'); uploader.getLocs(res, parsed.query); break;
 	  case '/addEvent': console.log('OH SHIT ADDING AN EVENT!!!!'); uploader.uploadEvent(res, parsed.query); break;
@@ -84,6 +87,15 @@ passport.use(new fpass({
       case '/removeSong': users.removeSong(req, res, next); break;
       case '/countSongs': users.countSongs(req, res, next); break;
       case '/isFav': users.isFav(req, res, next); break;
+	  case '/loc/newtype':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.newType(req,res); break;
+	  case '/loc/getTypes':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.getTypes(req,res); break;
+	  case '/loc/getTypeIcon':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.getTypeIcon(req,res); break;
+	  case '/loc/getTypeIconID':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.getTypeIconID(req,res); break;
+	  case '/loc/newloc':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.newLoc(req,res); break;
+	  case '/loc/browse':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.browseLoc(req,res); break;
+	  case '/loc/search':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.searchLoc(req,res); break;
+	  case '/loc/editLoc':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.editLoc(req,res); break;
+	  case '/loc/editLocation':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.editLocation(req,res); break;
       default: return;
     }
   }
@@ -93,7 +105,9 @@ passport.use(new fpass({
 			console.log('www');
 			res.writeHead(301, {'location':'http://'+req.headers.host.replace(/^www\./,'')+req.url});
 			res.end();
-		} else	next();
+		} 
+		else
+			next();
 	}
 	
 	function checkLoggedIn(req, res, next){
@@ -156,7 +170,7 @@ passport.use(new fpass({
 			else {res.writeHead(500); res.end();}
 		}
 	}
-    
+	
   connect.createServer(
 	checkWWW,
 	connect.logger(),
@@ -169,8 +183,8 @@ passport.use(new fpass({
 	checkLoggedIn,
     require('./fileServer')(),
     connect.compress({memLevel:9}),
-    onRequest).listen(80);
-	//onRequest).listen(8888);
+    router).listen(80);
+	//router).listen(8888);
   console.log('Server has started.');
 }
 

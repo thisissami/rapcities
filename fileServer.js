@@ -21,11 +21,19 @@ module.exports = function fileServer(maxage){
 	  
 	  
       
-	   if(req.url == '/upl0dder'){
-        folder = __dirname + '/pde/artistupload.html';
-        contentType = 'text/html';
+	  if(req.url == '/upl0dder' && (req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001')){
+		folder = __dirname + '/files/locs/upload.html';
+		contentType = 'text/html';
       }
-	/*else if(req.url == '/indexold.html'){
+	else if(req.url == '/pl0dder' && (req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001')){
+		folder = __dirname + '/files/locs/uploader.html';
+		contentType = 'text/html';
+	}
+/*	else if(req.url == '/upl0d.pde'){
+		folder = __dirname + '/files/locs/uploadxy.pde';
+		contentType = 'text/processing';
+	}
+	else if(req.url == '/indexold.html'){
         folder = __dirname + '/pde/indexold.html';
         contentType = 'text/html; charset=utf-8';
       }
@@ -33,30 +41,6 @@ module.exports = function fileServer(maxage){
         folder = __dirname + '/pde/rapcitiesAlpha.pde';
         contentType = 'text/processing';
       }*/
-	else if(req.url == '/eventupl0dder'){
-        folder = __dirname + '/pde/eventupload.html';
-        contentType = 'text/html';
-      }
-      else if(req.url == '/vyuzik.pde'){
-        folder = __dirname + '/pde/vyuzik.pde';
-        contentType = 'text/processing';
-      } 
-	  else if(req.url == '/uploader.pde'){
-		folder = __dirname + '/pde/uploader.pde';
-        contentType = 'text/processing';
-      }  
-	else if(req.url == '/eventuploader.pde'){
-		folder = __dirname + '/pde/eventuploader.pde';
-        contentType = 'text/processing';
-      }
-	  else if(req.url == '/svgtester.pde'){
-		folder = __dirname + '/pde/SVG/applet_js/svgtester.pde';
-        contentType = 'text/processing';
-      }
-	else if(req.url == '/rapcity.pde'){
-		folder = __dirname + '/pde/SVG/applet_js/rapcity.pde';
-        contentType = 'text/processing';
-      }
 	  else if(req.url == '/processing.js'){
 		folder = __dirname + '/pde/SVG/applet_js/processing.js';
         contentType = 'text/javascript';

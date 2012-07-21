@@ -48,10 +48,10 @@
       var top = '<html> <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# rapcities: http://ogp.me/ns/fb/rapcities#">'
   +'<meta property="fb:app_id" content="134659439991720" />'
   +'<meta property="og:type"   content="rapcities:song" />'
-  +'<meta property="og:url"    content="http://rapcities.com/song/'+splitURL[2]+'/'+splitURL[3]+'" />' 
+  +'<meta property="og:url"    content="http://localhost:8888/song/'+splitURL[2]+'/'+splitURL[3]+'" />' 
   +'<meta property="og:title"  content="'+songName+' by '+artistName+ '" />' 
   +'<meta property="og:description" content="Broadcasting Hip-Hop 24/7 from a virtual city of music and culture." />'
-  +'<meta property="og:image"  content="http://rapcities.com/frlogo.png" />'
+  +'<meta property="og:image"  content="http://localhost:8888/frlogo.png" />'
    +' <title>RapCities - '+artistName+' -- '+songName+'</title>';
       
       
