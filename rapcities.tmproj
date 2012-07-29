@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>files/locs/uploadxy.pde</string>
+	<string>server.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -90,7 +90,7 @@
 				<key>column</key>
 				<integer>2</integer>
 				<key>line</key>
-				<integer>5</integer>
+				<integer>6</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -186,14 +186,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>19</integer>
+				<integer>34</integer>
 				<key>line</key>
-				<integer>31</integer>
+				<integer>43</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>1</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>24</integer>
+				<key>line</key>
+				<integer>43</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>34</integer>
+				<key>line</key>
+				<integer>43</integer>
+			</dict>
 		</dict>
 		<key>files/heart.svg</key>
 		<dict>
@@ -244,29 +260,29 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>161</integer>
+				<integer>4065</integer>
 				<key>line</key>
-				<integer>417</integer>
+				<integer>412</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
-			<integer>3721</integer>
+			<integer>659</integer>
 			<key>firstVisibleLine</key>
-			<integer>413</integer>
+			<integer>411</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>113</integer>
+				<integer>4052</integer>
 				<key>line</key>
-				<integer>417</integer>
+				<integer>412</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>161</integer>
+				<integer>4065</integer>
 				<key>line</key>
-				<integer>417</integer>
+				<integer>412</integer>
 			</dict>
 		</dict>
 		<key>files/indexhalf.html</key>
@@ -334,58 +350,58 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>49</integer>
+				<integer>76</integer>
 				<key>line</key>
-				<integer>118</integer>
+				<integer>242</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
-			<integer>0</integer>
+			<integer>177</integer>
 			<key>firstVisibleLine</key>
-			<integer>86</integer>
+			<integer>227</integer>
 		</dict>
 		<key>files/locs/uploader.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>79</integer>
+				<integer>152</integer>
 				<key>line</key>
-				<integer>40</integer>
+				<integer>39</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
-			<integer>29295</integer>
+			<integer>23781</integer>
 			<key>firstVisibleLine</key>
 			<integer>22</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>72</integer>
-				<key>line</key>
-				<integer>40</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>81</integer>
-				<key>line</key>
-				<integer>40</integer>
-			</dict>
 		</dict>
 		<key>files/locs/uploadxy.pde</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>45</integer>
+				<integer>9</integer>
 				<key>line</key>
-				<integer>567</integer>
+				<integer>507</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>512</integer>
+			<integer>475</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>5</integer>
+				<key>line</key>
+				<integer>507</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>9</integer>
+				<key>line</key>
+				<integer>507</integer>
+			</dict>
 		</dict>
 		<key>files/soundmanager2-nodebug-jsmin.js</key>
 		<dict>
@@ -415,20 +431,6 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>locs.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>8</integer>
-				<key>line</key>
-				<integer>62</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>-1</integer>
-		</dict>
 		<key>moveYouTubeURL.js</key>
 		<dict>
 			<key>caret</key>
@@ -448,9 +450,23 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>25</integer>
+				<integer>18</integer>
 				<key>line</key>
-				<integer>11</integer>
+				<integer>12</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>pde/SVG/applet_js/processing.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -550,59 +566,43 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>49</integer>
+				<integer>42</integer>
 				<key>line</key>
-				<integer>616</integer>
+				<integer>605</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>576</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>616</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>617</integer>
-			</dict>
+			<integer>590</integer>
 		</dict>
 		<key>pde/eventuploaderold.pde</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>3</integer>
+				<integer>16</integer>
 				<key>line</key>
-				<integer>455</integer>
+				<integer>358</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>410</integer>
+			<integer>329</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>2</integer>
+				<integer>6</integer>
 				<key>line</key>
-				<integer>444</integer>
+				<integer>358</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>3</integer>
+				<integer>16</integer>
 				<key>line</key>
-				<integer>455</integer>
+				<integer>358</integer>
 			</dict>
 		</dict>
 		<key>pde/index.html</key>
@@ -654,30 +654,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>87</integer>
+				<integer>15</integer>
 				<key>line</key>
-				<integer>396</integer>
+				<integer>29</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>340</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>26</integer>
-				<key>line</key>
-				<integer>396</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>87</integer>
-				<key>line</key>
-				<integer>396</integer>
-			</dict>
+			<integer>0</integer>
 		</dict>
 		<key>pde/indexoldhalf.html</key>
 		<dict>
@@ -756,44 +740,74 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>6</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>2123</integer>
+				<integer>644</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>2075</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>2</integer>
-				<key>line</key>
-				<integer>2123</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>6</integer>
-				<key>line</key>
-				<integer>2123</integer>
-			</dict>
+			<integer>-1</integer>
 		</dict>
 		<key>pde/rapcitiesAlpha.pde~</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
+				<integer>24</integer>
+				<key>line</key>
+				<integer>1020</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>988</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>13</integer>
+				<key>line</key>
+				<integer>1020</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>24</integer>
+				<key>line</key>
+				<integer>1020</integer>
+			</dict>
+		</dict>
+		<key>pde/rapcitiesbroken.pde</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>29</integer>
+				<key>line</key>
+				<integer>1905</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>1869</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
 				<integer>0</integer>
 			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>2</integer>
+				<key>line</key>
+				<integer>1933</integer>
+			</dict>
 		</dict>
 		<key>pde/uploader.pde</key>
 		<dict>
@@ -822,6 +836,20 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+		</dict>
+		<key>port.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>25</integer>
+				<key>line</key>
+				<integer>67</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>19</integer>
 		</dict>
 		<key>prepareGeoNYC.js</key>
 		<dict>
@@ -902,9 +930,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>70</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>20</integer>
+				<integer>36</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
@@ -915,16 +943,16 @@
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>19</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>23</integer>
+				<integer>0</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>70</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>20</integer>
+				<integer>36</integer>
 			</dict>
 		</dict>
 		<key>replaceYouTubeTitle.js</key>
@@ -1006,14 +1034,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>66</integer>
 				<key>line</key>
-				<integer>93</integer>
+				<integer>91</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>50</integer>
+			<integer>49</integer>
 		</dict>
 		<key>testName.js</key>
 		<dict>
@@ -1055,7 +1083,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>53</integer>
 		</dict>
 		<key>user.js</key>
 		<dict>
@@ -1120,7 +1148,6 @@
 		<string>pde/indexold-small.html</string>
 		<string>server-everyauth.js</string>
 		<string>server.js</string>
-		<string>locs.js</string>
 		<string>files/locs/upload.html</string>
 		<string>files/soundmanager2-nodebug-jsmin.js</string>
 		<string>README.txt</string>
@@ -1131,8 +1158,10 @@
 		<string>pde/index.html</string>
 		<string>facebook.js</string>
 		<string>fileServer.js</string>
+		<string>pde/SVG/applet_js/processing.js</string>
 		<string>pde/rapcitiesAlpha.pde~</string>
 		<string>pde/rapcitiesAlpha.pde</string>
+		<string>pde/rapcitiesbroken.pde</string>
 		<string>config.json</string>
 		<string>createRIDs.js</string>
 		<string>topTracks.js</string>
@@ -1141,6 +1170,7 @@
 		<string>removeYouTubeURL.js</string>
 		<string>replaceYouTubeTitle.js</string>
 		<string>renameArtist.js</string>
+		<string>port.js</string>
 		<string>pde/indexoldhalf.html</string>
 		<string>removeEvent.js</string>
 		<string>files/index.html</string>

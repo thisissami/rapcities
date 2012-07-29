@@ -88,14 +88,15 @@ passport.use(new fpass({
       case '/countSongs': users.countSongs(req, res, next); break;
       case '/isFav': users.isFav(req, res, next); break;
 	  case '/loc/newtype':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.newType(req,res); break;
-	  case '/loc/getTypes':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.getTypes(req,res); break;
-	  case '/loc/getTypeIcon':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.getTypeIcon(req,res); break;
+	  case '/loc/getTypes': locations.getTypes(req,res); break;
+	  case '/loc/getTypeIcon': locations.getTypeIcon(req,res); break;
 	  case '/loc/getTypeIconID':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.getTypeIconID(req,res); break;
 	  case '/loc/newloc':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.newLoc(req,res); break;
-	  case '/loc/browse':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.browseLoc(req,res); break;
+	  case '/loc/browse': locations.browseLoc(req,res); break;
 	  case '/loc/search':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.searchLoc(req,res); break;
 	  case '/loc/editLoc':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.editLoc(req,res); break;
 	  case '/loc/editLocation':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.editLocation(req,res); break;
+	  case '/loc/view': locations.view(req,res); break;
       default: return;
     }
   }

@@ -8,22 +8,8 @@ HashMap longText; //used for long text
 Current current; //used to display current song info and controls
 SidePane sidePane; //displays the sidepane
 Map nyc;
-ArtistInfo artinfo;
+//ArtistInfo artinfo;
 
-final int NOSORT = 0;
-final int HOTSORT = 1;
-final int LHOTSORT = 2;
-
-final int GENRE = 0;
-final int STYLE = 1;
-final int MOOD = 2;
-
-int sortSongs = NOSORT;
-boolean genreArray = false;
-int genreDisplay = MOOD; 
-int filterPopRock = 0;
-
-Song song;
 var grid,gridLoad;
 
 //positions of different sections of the screen
@@ -41,7 +27,7 @@ var SPONSORS = 1;
 void setup(){
   WIDTH = max(700,$(window).width());//screen.width;//950;
   HEIGHT = max(770,$(window).height());//screen.height;// 635;
-setUpArtists();
+setUpLocations();
 var pathArray = window.location.pathname.split( '/' );
 if(pathArray.length > 0 && pathArray[0] != "songid"){
 	if(pathArray.length < 3)
@@ -50,7 +36,6 @@ if(pathArray.length > 0 && pathArray[0] != "songid"){
 		sponsor = pathArray[3];
 	//alert(sponsor);
 }
-setUpEvents();
   logo = loadImage("http://localhost:8888/logo");
 $("#parent").css("width",WIDTH).css("height",HEIGHT);
   if(WIDTH == 700 || HEIGHT == 770){
@@ -64,8 +49,8 @@ $("#parent").css("width",WIDTH).css("height",HEIGHT);
   bannerY = 30;//HEIGHT/bannerYFull*300;
   YBASE = 30;
   XBASE = 0;
-  ygrid = 6352;
-  xgrid = 6800;
+  ygrid = 950*8;
+  xgrid = 1000*8;
 togglePlayer();
 recentlyPlayed = new ArrayList();
 songsToShow = 10;		
@@ -99,7 +84,7 @@ artmode = false;
 			artgridLoad[i][j] = false;
 		}
 	}
-  artinfo = new ArtistInfo();
+  //artinfo = new ArtistInfo();
   facebook = loadImage("http://localhost:8888/facebook");
   logout = loadImage("http://localhost:8888/exit.png");
   heartBasket = loadImage("http://localhost:8888/heartbasket.png");
@@ -133,7 +118,7 @@ void setUpSize(width,height){
 				x -= 22;
 				i++;
 			}
-			PANEMAXY = PANEMINY + 558 - i*22;
+			PANEMAXY = PANEMINY + 558 -57- i*22;
 			MINIMAXY = PANEMAXY + 270;
 			songsToShow = 10-i;
 			yloc = PANEMAXY-18;
@@ -199,44 +184,32 @@ void draw(){
   image(logo,0,0);//,logo.width,logo.height);
   //draws the current song controller
   sidePane.draw();
-if(artist)  toolBox.draw();
-current.draw();
-  if(curhover > -1)
-		drawHoverInfo(curhover);
-  if(curehover > -1)
-		drawEventInfo();
+	if(location && location.list && location.list.length)  toolBox.draw();
+	current.draw();
+  if(curloc > -1)
+		drawHoverInfo(curloc);
 }
 
-var artists = new ArrayList();
-var culture = new ArrayList();
-var sponsors = new ArrayList();
-var artist = null;
+var location;
+var icons = new HashMap();
+var media = {}
+var colors = {}
+var locations = new ArrayList();
 
-void setUpArtists(){
-    artists.clear();
-    String jsonstring = "http://localhost:8888/getArtists";/*?maxX="+maxX+"&minX="+minX+
-              "&minY="+minY+"&maxY="+maxY;*/
-    if(sortSongs){jsonstring+="&sort="+sortSongs;}
-    $.getJSON(jsonstring, function(results){      
-      if(results != null){
-        var length = results.length;
-        for(int i = 0; i < length; i++){
-            artists.add(results[i]);
+void setUpLocations(){
+	$.getJSON('http://localhost:8888/loc/browse?hasLoc=8', function(results){      
+      if(results && results.locs){
+        for(int i = 0; i < results.locs.length; i++){
+            locations.add(results.locs[i]);
 		}
       }
-	if(player) startMusic();
     });
-  }
-
-void setUpEvents(){
-	$.getJSON("http://localhost:8888/getEvents?sponsor=all", function(results){
-		if(results != null){
-			var length = results.length;
-			for(int i = 0; i < length; i++){
-				if(results[i].sponsor == "culture")
-	            	culture.add(results[i]);
-				else
-					sponsors.add(results[i]);
+	$.getJSON('http://localhost:8888/loc/getTypes',function(results){
+		if(results && results.types){
+			for(int i = 0; i < results.types.length; i++){
+				icons.put(results.types[i]._id, requestImage('http://localhost:8888/loc/getTypeIcon?_id='+results.types[i]._id));
+				colors[results.types[i]._id] = color(results.types[i].r, results.types[i].g, results.types[i].b);
+				media[results.types[i]._id] = results.types[i].mediaType;
 			}
 		}
 	});
@@ -266,7 +239,7 @@ class Toolbox{
 		rect(toolLeft, toolTop, toolLeft+toolWidth, toolTop+toolFull);
 		
 		shapeMode(CENTER);
-		if(artist.topTracks[playingSong].fav)
+		if(location.list[playingVideo].fav)
 			shape(heart,toolLeft+toolHalf,toolTop+toolHalf,toolHalf+4, toolHalf+2);
 		else
 			shape(greyHeart,toolLeft+toolHalf,toolTop+toolHalf,toolHalf+4, toolHalf+2);
@@ -281,7 +254,7 @@ class Toolbox{
 			textSize(14); fill(0); stroke(255); rectMode(CORNERS);
 			if(mouseX<toolLeft+toolFull){//heart
 				var heartext;
-				if(artist.topTracks[playingSong].fav) heartext = "Un-Heart Song";
+				if(location.list[playingVideo].fav) heartext = "Un-Heart Song";
 				else heartext = "Heart Song";
 				rect(toolLeft, toolTop-5, toolLeft+textWidth(heartext)+4,toolTop-25);
 				fill(255);
@@ -318,18 +291,18 @@ class Toolbox{
 	
 	void mouseClicked(){
 		switch(toolHover){
-			case(HEART):
+			case(HEART):break;
 			console.log('heart');
-				if(artist.topTracks[playingSong].fav){
+				if(location.list[playingVideo].fav){
 					$.get('http://localhost:8888/removeSong', { "songid": artist.RID+" "+artist.topTracks[playingSong].RID});
-					artist.topTracks[playingSong].fav = false;
+					location.list[playingVideo].fav = false;
 				}
 				else{
 					$.get('http://localhost:8888/addSong', { "songid": artist.RID+" "+artist.topTracks[playingSong].RID});
-					artist.topTracks[playingSong].fav = true;
+					location.list[playingVideo].fav = true;
 				}
 				break;
-			case(BASKET):
+			case(BASKET):break;
 				showAndFillOverlay();
 				break;
 			case(LOGOUT):
@@ -337,7 +310,7 @@ class Toolbox{
 				break;
 			case(FACEREC):
 				break;
-			case(ARTBIO):
+			case(ARTBIO):break;
 				prepareBio();
 				break;
 		}
@@ -360,7 +333,6 @@ class Toolbox{
 int minX, minY, maxX, maxY;
 int xlength, ylength, miniRedX,miniRedY;
 
-int curhover = -1;
 void loadMapPiece(int i, int j){
 	var title;
 	if((i == 0) || (i == 1 && j < 1)){
@@ -432,8 +404,7 @@ class Map{
 	
 	void draw(){
 		drawMap();
-		drawEvents();
-		drawArtists();
+		drawLocations();
 		fill(0);
 		noStroke();
 		rectMode(CORNERS);
@@ -441,7 +412,7 @@ class Map{
 	}
 	
 	void drawMap(){
-		imageMode(CENTER);
+		imageMode(CENTER); 
 		var totX = 0;//widths[0];
 		var totY = 0;//heights[0];
 		int i;
@@ -526,34 +497,18 @@ class Map{
 		stroke(colors[0]);
 		rect(PANEMINX+miniMidX,PANEMAXY+miniMidY,miniRedX,miniRedY);
 		ellipseMode(CENTER);
-		fill(colors[2]); stroke(colors[2]); 
-		for(int i = 0; i < artists.size(); i++){
-			var cur = artists.get(i);
-			if(cur == artist)
+		for(int i = 0; i < locations.size(); i++){
+			var cur = locations.get(i);
+			fill(colors[cur.type]); stroke(colors[cur.type]);
+			if(location && cur._id == location._id)
 				ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),5,5);
 			else
 				ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),3,3);
 		}
-		fill(colors[8]); stroke(colors[8]);
-		for(int i = 0; i < sponsors.size(); i++){
-			var cur = sponsors.get(i);
-			ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),2,2);
-		}
-		fill(colors[1]); stroke(colors[1]);
-		for(int i = 0; i < culture.size(); i++){
-			var cur = culture.get(i);
-			ellipse(map(cur.x, 531.749,531.749+853,PANEMINX,PANEMAXX),map(cur.y,231.083,231.083+810,PANEMAXY,MINIMAXY),2,2);
-		}
 	//	fill(255); rect(PANEMAXX,PANEMAXY+270,10,10);
 		//rect(PANEMINX+minix,PANEMAXY+miniy,PANEMINX+maxix,PANEMAXY+maxiy);
 	}
-	/*
-	widths:
-	1018 1027 1017 1028 1017 1028 1017 1037 
-	heights
-	950 970 970 969 979 970 970 979 
-	totx:9207toty: 8707
-	*/
+	
 	void prep(){
 		xlength = WIDTH;
 		ylength = HEIGHT;
@@ -565,9 +520,9 @@ class Map{
 		miniMidY = map(midY,0,ygrid,0,270);
 	//	widths = new Array(1018,1027, 1017, 1028, 1017, 1028, 1017,1037);
 	//	heights = new Array(950 ,970 ,970 ,969 ,979 ,970 ,970 ,979);
-		widths = new Array(848,848,856,848,848,856,848,848);
-		heights = new Array(792,792,792,792,800,792,792,800);
-		allX = 9207; allY = 8707;
+		widths = new Array(1000,1000,1000,1000,1000,1000,1000,1000);
+		heights = new Array(950,950,950,950,950,950,950,950);
+		allX = 1000*8; allY = 950*8;
 		setMins();
 	}
 	void miniMousePressed(){
@@ -608,64 +563,35 @@ class Map{
 		}
 	}
 	
-	void drawArtists(){
-		shapeMode(CENTER);
-		curhover = -1;
-		for(int i = 0; i < artists.size(); i++){
-			var cur = artists.get(i);
-			if(cur.x < maxX+10 && cur.x > minX-10 && cur.y < maxY+15 && cur.y > minY-15){
+	void drawLocations(){
+		imageMode(CENTER);
+		curloc = -1;
+		for(int i = 0; i < locations.size(); i++){
+			var cur = locations.get(i);
+			if(cur.x < maxX+10 && cur.x > minX-10 && cur.y < maxY+15 && cur.y > minY-15 && icons.get(cur.type).width > 0){
 				var x = map(cur.x,minX,maxX,0,WIDTH);
 				var y = map(cur.y,minY,maxY,0,HEIGHT);
 				if(mouseX < x+15 && mouseX > x-15 && mouseY < y+15 && mouseY > y-15
 					&& (mouseX < PANEMINX || mouseX > PANEMAXX || mouseY < PANEMINY || mouseY > MINIMAXY)){
-					shape(rapcircle,x,y,30,30);
-					curhover = i;
+					image(icons.get(cur.type),x,y);
+					curloc = i;
 				}
-				else if(cur==artist){
-					shape(rapcircle,x,y,30,30);
+				else if(location && cur._id==location._id){
+					image(icons.get(cur.type),x,y);
 				    textSize(18);
-				    int xlength = textWidth(artist.name);
-				    stroke(colors[2]);
+				    int xlength = textWidth(cur.title);
+				    stroke(colors[cur.type]);
 				    fill(0);
 					rectMode(CENTER);
 				    rect(x, y-40,xlength+12, 26,10);
 
-				      fill(colors[2]);
+				      fill(colors[cur.type]);
 				     // fill(outlineColors[genres.get(songs.get(hoverSong).genre)]);
 				    textAlign(LEFT,TOP);
-				    text(artist.name, x-xlength/2, y-50);
+				    text(cur.title, x-xlength/2, y-50);
 			    }
 				else
-					shape(rapper,x,y,20,30);
-			}
-		}
-	}
-
-	void drawEvents(){
-		imageMode(CENTER);
-		curehover = -1;
-		for(int i = 0; i < culture.size(); i++){
-			var cur = culture.get(i);
-			if(cur.x < maxX+18 && cur.x > minX-18 && cur.y < maxY+26 && cur.y > minY-26){
-				var x = map(cur.x,minX,maxX,0,WIDTH);
-				var y = map(cur.y,minY,maxY,0,HEIGHT);
-				if(mouseX < x+18 && mouseX > x-18 && mouseY < y+26 && mouseY > y-26){
-					curehover = i;
-					curehovertype = CULTURE;
-				}
-				image(cultureIcon,x,y);
-			}
-		}
-		for(int i = 0; i < sponsors.size(); i++){
-			var cur = sponsors.get(i);
-			if(cur.x < maxX+18 && cur.x > minX-18 && cur.y < maxY+26 && cur.y > minY-26){
-				var x = map(cur.x,minX,maxX,0,WIDTH);
-				var y = map(cur.y,minY,maxY,0,HEIGHT);
-				if(mouseX < x+18 && mouseX > x-18 && mouseY < y+26 && mouseY > y-26){
-					curehover = i;
-					curehovertype = SPONSORS;
-				}
-				image(sponsorIcon,x,y);
+					image(icons.get(cur.type),x,y);
 			}
 		}
 	}
@@ -720,80 +646,34 @@ class Map{
 	}
 }
 
+var curVid = -1; var curloc = -1;
 
 void drawHoverInfo(int i){
-    String name = artists.get(i).name;
+    var loc = locations.get(i);
     textSize(18);
-    int xlength = textWidth(name);
-    stroke(colors[2]);
+    int xlength = textWidth(loc.title);
+    stroke(colors[loc.type]);
     fill(0);
 	rectMode(CORNERS);
     rect(mouseX, mouseY-33,mouseX+xlength+12, mouseY-7,10);
 
-      fill(colors[2]);
+      fill(colors[loc.type]);
      // fill(outlineColors[genres.get(songs.get(hoverSong).genre)]);
     textAlign(LEFT,TOP);
-    text(name, mouseX+6, mouseY-30);
-}
-
-void drawEventInfo(){
-	String name; int i;
-	if(curehovertype == SPONSORS){
-    	name = sponsors.get(curehover).title;
-		i = 8;
-	}
-	else if(curehovertype == CULTURE){
-		name = culture.get(curehover).title;
-		i = 1;
-	}
-    textSize(18);
-    int xlength = textWidth(name);
-    stroke(colors[i]);
-    fill(0);
-	rectMode(CORNERS);
-    rect(mouseX, mouseY-33,mouseX+xlength+12, mouseY-7,10);
-
-      fill(colors[i]);
-    textAlign(LEFT,TOP);
-    text(name, mouseX+6, mouseY-30);
+    text(loc.title, mouseX+6, mouseY-30);
 }
 
 void mouseClicked(){
-  if(curhover >= 0){
-    artist = artists.get(curhover);
-	//getSong(artist.topTracks[0].id);
-	playingSong = 0;
-	loadVideo(); sidePane.resetSize(); sidePane.resetPage();
-	//prepareBio();
+  if(curloc >= 0){
+	location = locations.get(curloc);
+	playingVideo = 0;
+	sidePane.resetSize(); 
+	sidePane.resetPage();
+	loadVideo();
   }
-  else if(curehover >= 0){
-	//togglePlayer();
-	loadEventVideo();
-	//song.pause();
-  }
-  /*else if(curMenu >= 0){
-	switch(curMenu){
-		case 0: //info
-			artinfo.showArtistInfo(artist.echoID);
-			return;
-		case 1: //heart
-		case 4: //twitter
-		case 2://facebook
-			link(artist.facebook, "_new");
-		    return;
-		case 3://youtube
-			/*togglePlayer();
-			loadVideo();
-			song.pause();*/
-			//link("http://www.youtube.com/results?search_query=" + song.title.replace(/ /g, '+') + "+" +
-		      //    song.artist.replace(/ /g, '+'), "_new");
-	/*	    return;
-	}
-	}*/
-	else if(curSong >= 0){
-		playingSong = curSong;
+	else if(curVid >= 0){
+		playingVideo = curVid;
 		loadVideo();
-		//getSong(artist.topTracks[curSong].id);
 	}
 	else if(toolHover >= 0){
 		toolBox.mouseClicked();
@@ -806,31 +686,6 @@ void mouseClicked(){
 	}
 }	
 
-void getSong(int id){
-	$.getJSON('http://localhost:8888/getTrack?id=' + id, function(data){
-		if(started) stopSong();
-		startSong(data.url);
-	});
-}
-void startSong(String url){
-	    song = soundManager.createSound({
-	      id: url,
-	      url: url,
-	      autoLoad: true,
-	      autoPlay: true,
-	      volume: volume,
-	      onfinish: function(){ createNext(); }
-	    });
-	    started = true;
-	    if(muted)
-	      song.mute();
-	  }
-	  void stopSong(){
-	    started = false;
-	    song.stop();
-	    song.unload();
-	    song.destruct();
-	  }
 
 void mousePressed(){
   if(mouseY < curBottom && mouseY > curTop && mouseX < curRight && mouseX > curLeft){
@@ -1021,14 +876,12 @@ class Forward extends Button{
   boolean invert;
   boolean pressed;
   
-  Forward(int x, int y, int hw, int hh)
-  {
+  Forward(int x, int y, int hw, int hh){
     super(x, y, hw, hh);
     invert = false;
   }
   
-  void mousePressed()
-  {
+  void mousePressed()  {
     if (super.pressed()){ 
       invert = true;
       pressedHere = true;
@@ -1042,18 +895,16 @@ class Forward extends Button{
       invert = false;
   }
   
-  void mouseReleased()
-  {
+  void mouseReleased()  {
     if(invert && pressedHere){
       //code to skip to next song
-      nextArtist();
+      nextLocation();
       invert = false;
     }
     pressedHere = false;
   }
 
-  void draw()
-  {
+  void draw()  {
     if ( invert ){
       fill(255);
       noStroke();
@@ -1061,11 +912,11 @@ class Forward extends Button{
     else{
       if(super.pressed()){
 		textSize(14);
-		var twidth = textWidth("Next Artist");
+		var twidth = textWidth("Next Plot");
 		fill(0); stroke(255);
 		rect(x-twidth/2-3,y+15,x+twidth/2+3,y+35);
 		textAlign(CENTER,TOP);
-        fill(255); text("Next Artist",x,y+17);
+        fill(255); text("Next Plot",x,y+17);
 		noFill();
 	}
       else{
@@ -1074,13 +925,11 @@ class Forward extends Button{
 		}
     }
     rect(x - hw, y - hh, x + hw, y+hh);
-    if ( invert )
-    {
+    if ( invert )    {
       fill(0);
       noStroke();
     }
-    else
-    {
+    else    {
       fill(255);
       noStroke();
     }
@@ -1091,42 +940,36 @@ class Forward extends Button{
 
 //create the next song
 void createNext(){
-  stopSong();
-  if(playingSong < artist.topTracks.length-1){
-  	playingSong++;
+  stopVideo();
+  if(playingVideo < location.list.length-1){
+  	playingVideo++;
 	loadVideo();
-	//getSong(artist.topTracks[playingSong].id);
+	//getSong(artist.topTracks[playingVideo].id);
   }
   else
-	nextArtist();
+	nextLocation();
 }
 
 ArrayList recentlyPlayed;
 
-void nextArtist(){
+void nextLocation(){
 	boolean alreadyPlayed = false;
 	for(int i = 0; i < recentlyPlayed.size(); i++){
-		if(recentlyPlayed.get(i) == artist.name){
+		if(recentlyPlayed.get(i) == location._id){
 			alreadyPlayed = true;
 			break;
 		}
 	}
 	if(!alreadyPlayed){
-		recentlyPlayed.add(artist.name);
+		recentlyPlayed.add(location._id);
 	}
-	for(int i = 0; i < artists.size(); i++){
-		var cur = artists.get(i);
-		if(cur.x > minX && cur.x < maxX && cur.y > minY && cur.y < maxY){
-			if(!recentlyPlayed.contains(cur.name)){
-				artist = cur;
-				//getSong(artist.topTracks[0].id);
-				playingSong = 0;
-				loadVideo();
-				sidePane.resetSize();
-				sidePane.resetPage();
-				//prepareBio();
-			}
-			
+	for(int i = 0; i < locations.size(); i++){
+		var cur = locations.get(i);
+		if(cur.x > minX && cur.x < maxX && cur.y > minY && cur.y < maxY && !recentlyPlayed.contains(cur._id)){
+			location = cur;
+			playingVideo = 0;
+			loadVideo();
+			//prepareBio();			
 		}
 	}
 }
@@ -1234,7 +1077,7 @@ class SidePane{
   
   void draw(){
     drawControl();
-	if(!artist){printNoSong();}else{printTopSongs();}		
+	if(!location){printNoSong();}else{printLocation();}		
   }
 
  
@@ -1314,10 +1157,12 @@ class SidePane{
 		}
 	}*/
 	void resetSize(){
-		while(pageToShow*songsToShow >= artist.topTracks.length){
-			pageToShow--;
+		if(location && location.list){
+			while(pageToShow*songsToShow >= location.list.length){
+				pageToShow--;
+			}
+			totalPagesToShow = ceil(location.list.length/songsToShow);
 		}
-		totalPagesToShow = ceil(artist.topTracks.length/songsToShow);
 	}
 	
 	int pageToShow = 0; int totalPagesToShow = 1;
@@ -1329,62 +1174,67 @@ class SidePane{
 	}
 	void previousPage(){
 		pageToShow--;
-		console.log('WHATALKFJLASDFJ');
 	}
 
-	void printTopSongs(){
+	void printLocation(){
 		textAlign(LEFT,TOP);
 		textSize(22);
-		fill(colors[2]);
-		checkText(artist.name,PANEMINX+10,INFOMINY+10, 200, 0,22);
+		fill(colors[location.type]);
+		checkText(location.title,PANEMINX+10,INFOMINY+10, 200, 0,22);
 		fill(255);
 		textSize(16);
-		int tot = min(songsToShow,artist.topTracks.length-pageToShow*songsToShow);
-		curSong = -1;
-		int base = pageToShow*songsToShow;
-		for(int i = base; i < base+tot; i++){
-			if(i == playingSong){
-				fill(colors[2]);
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + (i-base)*22,248,colors[2],30);
-				fill(255);
+		curVid = -1;
+		if(location.list){
+			int tot = min(songsToShow,location.list.length-pageToShow*songsToShow);
+			int base = pageToShow*songsToShow;
+			for(int i = base; i < base+tot; i++){
+				if(i == playingVideo){
+					fill(colors[location.type]);
+					checkText(location.list[i].title, PANEMINX+20, INFOMINY + 35 + (i-base)*22,248,colors[location.type],30);
+					fill(255);
+				}
+				else if(mouseX>PANEMINX+20 && mouseY < INFOMINY+35+(i-base+1)*22&& mouseY>INFOMINY+35+(i-base)*22){
+					fill(colors[location.type]);
+					checkText(location.list[i].title, PANEMINX+20, INFOMINY + 35 + (i-base)*22,248,colors[location.type],30);
+					curVid = i;
+					fill(255);
+				}
+				else
+					checkText(location.list[i].title, PANEMINX+20, INFOMINY + 35 + (i-base)*22,248,color(255),30);
 			}
-			else if(mouseX>PANEMINX+20 && mouseY < INFOMINY+35+(i-base+1)*22&& mouseY>INFOMINY+35+(i-base)*22){
-				fill(colors[2]);
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + (i-base)*22,248,colors[2],30);
-				curSong = i;
-				fill(255);
+			
+			//show pages if there's enough songs for that.
+			if(songsToShow < location.list.length){
+				textSize(14);
+				text(pageToShow+1+"/"+totalPagesToShow, PANEMAXX - 46, INFOMINY+30+songsToShow*22);
+				if(pageToShow > 0 && mouseX > PANEMAXX-64 && mouseX < PANEMAXX-46 && mouseY < INFOMINY+43+songsToShow*22 && mouseY > INFOMINY+35+songsToShow*22){
+					fill(colors[2]);
+					text('<',PANEMAXX-58,INFOMINY+30+songsToShow*22);
+					text('<',PANEMAXX-64,INFOMINY+30+songsToShow*22);
+					fill(255);
+					backPageHover = true;
+				}
+				else{
+					backPageHover = false;
+					text('<',PANEMAXX-58,INFOMINY+30+songsToShow*22);
+					text('<',PANEMAXX-64,INFOMINY+30+songsToShow*22);
+				}
+				if(pageToShow < location.list.length/songsToShow-1 && mouseX > PANEMAXX-23 && mouseX < PANEMAXX-7 && mouseY < INFOMINY+43+songsToShow*22 && mouseY > INFOMINY+35+songsToShow*22){
+					fill(colors[2]);
+					text('>',PANEMAXX-22,INFOMINY+30+songsToShow*22);
+					text('>',PANEMAXX-16,INFOMINY+30+songsToShow*22);
+					fill(255);
+					forwardPageHover = true;
+				}
+				else{
+					forwardPageHover = false;
+					text('>',PANEMAXX-22,INFOMINY+30+songsToShow*22);
+					text('>',PANEMAXX-16,INFOMINY+30+songsToShow*22);
+				}
 			}
-			else
-				checkText(artist.topTracks[i].title, PANEMINX+20, INFOMINY + 35 + (i-base)*22,248,color(255),30);
 		}
-		//show pages if there's enough songs for that.
-		if(songsToShow < artist.topTracks.length){
-			textSize(14);
-			text(pageToShow+1+"/"+totalPagesToShow, PANEMAXX - 46, INFOMINY+30+songsToShow*22);
-			if(pageToShow > 0 && mouseX > PANEMAXX-64 && mouseX < PANEMAXX-46 && mouseY < INFOMINY+43+songsToShow*22 && mouseY > INFOMINY+35+songsToShow*22){
-				fill(colors[2]);
-				text('<',PANEMAXX-58,INFOMINY+30+songsToShow*22);
-				text('<',PANEMAXX-64,INFOMINY+30+songsToShow*22);
-				fill(255);
-				backPageHover = true;
-			}
-			else{
-				backPageHover = false;
-				text('<',PANEMAXX-58,INFOMINY+30+songsToShow*22);
-				text('<',PANEMAXX-64,INFOMINY+30+songsToShow*22);
-			}
-			if(pageToShow < artist.topTracks.length/songsToShow-1 && mouseX > PANEMAXX-23 && mouseX < PANEMAXX-7 && mouseY < INFOMINY+43+songsToShow*22 && mouseY > INFOMINY+35+songsToShow*22){
-				fill(colors[2]);
-				text('>',PANEMAXX-22,INFOMINY+30+songsToShow*22);
-				text('>',PANEMAXX-16,INFOMINY+30+songsToShow*22);
-				fill(255);
-				forwardPageHover = true;
-			}
-			else{
-				forwardPageHover = false;
-				text('>',PANEMAXX-22,INFOMINY+30+songsToShow*22);
-				text('>',PANEMAXX-16,INFOMINY+30+songsToShow*22);
-			}
+		else{
+			text(location.info,PANEMINX+20, INFOMINY+35,248,PANEMAXX-PANEMINX+20);
 		}
 	}
   //Basic Song Information
@@ -1440,7 +1290,6 @@ class Current{
       
      // draw the seekbar
       drawSeekBar();
-    //  drawSongInfo();
       
      drawVolume();
       if(onVolGen)
@@ -1449,36 +1298,7 @@ class Current{
       ellipseMode(CENTER_RADIUS);
     }
   }
-  
-  void drawSongInfo(){
-    textAlign(LEFT,TOP);
-    textSize(20);
-    color currentColor = colors[2];
-    fill(currentColor);
-    int maxt,maxa;
-    if(textWidth(artist.topTracks[playingSong].title+" by "+artist.name) <= (volX- 50 - curLeft+20)){
-      maxt = maxa = WIDTH;
-    }
-    else if(textWidth(artist.topTracks[playingSong].title) > (volX- 50 - curLeft+20)/2-16 && textWidth(artist.name) > (volX - 50- curLeft+20)/2-16){
-      maxt = maxa = (volX - 50 - curLeft+20)/2-16;
-    }
-    else if(textWidth(artist.topTracks[playingSong].title) > textWidth(artist.name)){
-      maxa = WIDTH;
-      maxt = volX - 50 - curLeft+20 - textWidth(song.artist+" by ");
-    }
-    else{
-      maxt = WIDTH;
-      maxa = volX- 50 - curLeft+20- textWidth(artist.topTracks[playingSong].title+" by ");
-    }
-    checkText(artist.topTracks[playingSong].title, curLeft+20, YBASE+37,maxt,currentColor,24);
-    checkText(artist.name, curLeft+20+textWidth(" by ") + min(maxt,textWidth(artist.topTracks[playingSong].title)),YBASE+37,maxa,currentColor,24);
-    fill(255);
-    text(" by ", curLeft+20+min(maxt,textWidth(artist.topTracks[playingSong].title)),YBASE+37);
-    //fill(currentColor);
-    //textSize(18);
-    //text(song.genre, 30, 37);
-  }
-  
+   
   boolean pressedInSeekBar = false;
   /* FUUUUUUCK WASTE OF MY TIME! 
   void mouseClicked(){
@@ -1994,12 +1814,12 @@ class ArtistInfo{
 }
 
 void videoEnded(){
-	if(playingSong < artist.topTracks.length-1){
-	  	playingSong++;
+	if(location.list && playingVideo < location.list.length-1){
+	  	playingVideo++;
 		loadVideo();
   }
   else
-	nextArtist();
+	nextLocation();
 }
 
 void togglePlayer(){
@@ -2015,9 +1835,9 @@ void prepPlayer(){
 	player = document.getElementById('YouTubeP');
 	playMode = VIDEO;
 	player.setVolume(volume);
-	if(artists.size() > 0) startMusic();
+	//if(locations.size() > 0) startMusic();
 }
-
+/*
 void startMusic(){
   var pathArray = window.location.pathname.split('/');
   var artID, songID;
@@ -2052,56 +1872,60 @@ void startMusic(){
 		break;
 	  }
   }
-}
-void loadEventVideo(){
-	if(curehovertype == SPONSORS)
-		player.loadVideoById(sponsors.get(curehover).link);
-	else if(curehovertype == CULTURE)
-		player.loadVideoById(culture.get(curehover).link);
-}
+}*/
 
 void loadVideo(){
-   	if(artist.topTracks[playingSong].video_id){
-	    player.loadVideoById(artist.topTracks[playingSong].video_id);
-	    updatePageInfo(artist.topTracks[playingSong].RID, artist.RID, artist.topTracks[playingSong].title, artist.name);
+   	if(location.list && location.list.length > 0){
+	    player.loadVideoById(location.list[playingVideo].ytid);
+		$.ajax({
+			url: "http://localhost:8888/loc/view",
+			data: {_id:location._id,position:playingVideo}
+		});
+	    //updateToolbox(location.list[playingVideo].RID, location._id, location.list[playingVideo].title, location.title);
 	  }
-	else{
-	 $("#ytplayer").html("<p>Couldn't find this song on YouTube</p>");
+	else if(location.ytid){
+		player.loadVideoById(location.ytid);
+		$.ajax({
+			url: "http://localhost:8888/loc/view",
+			data: {_id:location._id}
+		});
+		//updateToolbox();
+	 //$("#ytplayer").html("<p>Couldn't find this song on YouTube</p>");
 	}
+/*	FAV FAV FAV
+	
 	$.get('http://localhost:8888/isFav', {'songid': artist.RID + " " + artist.topTracks[playingSong].RID}, function(data){
 		if(data.value)
 			artist.topTracks[playingSong].fav = true;
-	});
+	});*/
 }
 
-void playSong(newartist, newsong){
-	var newart;
-	if(newartist == artist.RID)
-		newart = false;
+void playVideo(newlocation, newsub){
+	var newloc;
+	if(newlocation == location._id)
+		newloc = false;
 	else
-		newart = true;
+		newloc = true;
 		
-  for(int i = 0; i < artists.size(); i++){
-    if(newartist == artists.get(i).RID){
-      artist = artists.get(i);
-			midX = map(artist.x,531.749,531.749+853,0,xgrid);
-			midY = map(artist.y,231.083,231.083+810,0,ygrid);
+  for(int i = 0; i < locations.size(); i++){
+    if(newlocation == locations.get(i)._id){
+      location = locations.get(i);
+			midX = map(location.x,531.749,531.749+853,0,xgrid);
+			midY = map(location.y,231.083,231.083+810,0,ygrid);
 			miniMidX = map(midX,0,xgrid,0,284);
 			miniMidY = map(midY,0,ygrid,0,270);
 			nyc.setMins(); 			
-      if(newsong){
-	for(int j = 0; j < artist.topTracks.length; j++){
-	  if(artist.topTracks[j].RID == newsong){
-	    playingSong = j;
-	    loadVideo(); if(newart){sidePane.resetPage();
-		sidePane.resetSize();}//prepareBio();
+      if(newsub && location.list){
+	for(int j = 0; j < location.list.length; j++){
+	  if(location.list[j].RID == newsub){
+	    playingVideo = j;
+	    loadVideo(); if(newloc){sidePane.resetSize();sidePane.resetPage();}//if(newloc)prepareBio();
 	  }
 	}
       }
       else{
-	playingSong = 0;
-	loadVideo(); if(newart){sidePane.resetSize();sidePane.resetPage();
-	}//prepareBio();
+	playingVideo = 0;
+	loadVideo(); if(newloc){sidePane.resetSize();sidePane.resetPage();}//if(newart)prepareBio();
       }
     }
   }
@@ -2118,22 +1942,4 @@ void prepareBio(){
 	if( !$("div#biolog").dialog("isOpen") ) {
 		$("div#biolog").dialog("open");
 	  }
-}
-
-void oldloadVideo(){
-  $.ajax({
-    type: "GET",
-	dataType:'jsonp',
-	url: "http://gdata.youtube.com/feeds/api/videos?q="+artist.topTracks[playingSong].title.replace(/ /g,'+')+"+"+artist.name.replace(/ /g, '+')+"&v=2&alt=jsonc&max-results=1&format=5",
-    success: function (response) {
-      if(response.data.items.length>0){
-        var video_id = response.data.items[0].id;
-        $("#ytplayer").html('<script type="text/javascript">var params={allowScriptAccess:"always"};var atts={id:"YouTubeP"};var url="http://www.youtube.com/v/'+video_id+'?enablejsapi=1&playerapiid=YouTubeP&version=3&autoplay=1&controls=1";swfobject.embedSWF(url,"ytplayer","350","300","8",null,null,params,atts);</script>');
-
-      }
-	  else{
-	    $("#ytplayer").html("<p>Couldn't find this song on YouTube</p>");
-	  }
-	}
-  });
 }

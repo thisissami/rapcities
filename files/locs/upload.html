@@ -225,9 +225,11 @@
 			var j;
 			var datahtml='<b>List:<br />  *Super Important* - if you are shifting the order of entries around, make sure to move the RID along with the other items. Otherwise, links on our site will no longer work.</b><br />'
 			for(j=0; j<locs[i].list.length; j++){
-				datahtml += '<span id="list'+i+'item'+j+'">Title: <input type="text" size="20" name="title'+j+'" id="'+i+'title'+j+'" value="'+locs[i].list[j].title+'"/> Youtube ID: <input type="text" size="20" name="ytid'+j+'" id="'+i+'ytid'+j+'" value="'+locs[i].list[j].ytid+'"/> RID:<input type="text" size="3" name="RID'+j+'" id="'+i+'RID'+j+'" value="'+locs[i].list[j].RID+'"/></span><br />';
-			}
-			datahtml += '<span id="listadd'+i+'"><a href="javascript:void(0)" onclick="addItem('+i+')">Click to Add an Item</a></span> -- ID Counter: <input type="text" size="3" name="listnum" id="listnum'+i+'" value="'+locs[i].listnum+'" readonly="readonly"/><br />To delete an item, leave the title, youtubeID, and RID empty before submitting.<br />';
+				datahtml += '<span id="list'+i+'item'+j+'">Title: <input type="text" size="20" name="title'+j+'" id="'+i+'title'+j+'" value="'+locs[i].list[j].title+'"/> Youtube ID: <input type="text" size="20" name="ytid'+j+'" id="'+i+'ytid'+j+'" value="'+locs[i].list[j].ytid+'"/>StreetCred^^:<input type="text" size="5" id="'+i+'streetcred'+j+'" name="streetcred'+j+'"';
+				if(locs[i].list[j].streetcred) datahtml += 'value="'+locs[i].list[j].streetcred+'"';
+				datahtml += '> RID:<input type="text" size="3" name="RID'+j+'" id="'+i+'RID'+j+'" value="'+locs[i].list[j].RID+'"/> </span><br />';
+			}//View Count:<input type="text" size="5" name="vc'+j+'" id="'+i+'vc'+j+'" value="'+locs[i].list[j].vc+'"/>
+			datahtml += '^^ <i>only necessary if Street Cred value is different from standard value for this artist</i><br /><span id="listadd'+i+'"><a href="javascript:void(0)" onclick="addItem('+i+')">Click to Add an Item</a></span> -- ID Counter: <input type="text" size="3" name="listnum" id="listnum'+i+'" value="'+locs[i].listnum+'" readonly="readonly"/><br />To delete an item, leave the title, youtubeID, and RID empty before submitting.<br />';
 		}
 		$('#list'+i).html(datahtml);
 		prepEditForm(i);
@@ -238,7 +240,7 @@
 		for(var key in locs[i]){
 			if(key == 'list'){ datahtml+= '<span id="list'+i+'"><a href="javascript:void(0)" onclick="editList('+i+')"> Click to Edit List </a></span><input type="text" name="list" readonly="readonly" size="1" value="list"/><br />';
 			}
-			else if(key == 'listnum' || key == 'x' || key == 'y') continue;
+			else if(key == 'listnum' || key == 'x' || key == 'y' || key == 'viewcount') continue;
 			else{
 				datahtml += key+': <input name="'+key+'" id="'+key+i+'"';
 				switch(key){
@@ -302,8 +304,10 @@ ____________________________________________<br /><br />
 <div id="newtype" style="display:none">
 	<b>TYPE CREATION</b><br /><br />
 	<form name="newtype" id="newtypeform">
+		Website: <input type="radio" name="site" id="nt-s" value="rapcities" checked="checked"/> RapCities<br />
+		City: <input type="radio" name="city" id="nt-c" value="nyc" checked="checked"/> NYC <br />
 		Type Name: <input type="text" name="type" id="nt-type" size="20"/> <br />
-		Type ID/Abbreviation (MAX 4 letters, preferably less): <input type="text" name="_id" id="nt-id" size="20"/> <br />
+		Type ID/Abbreviation (no spaces and non-alphanumeric characters): <input type="text" name="_id" id="nt-id" size="20"/> <br />
 		List or Single Item?: <input type="radio" name="list" id="nt-l1" value="list"/> list  
 							<input type="radio" name="list" id="nt-l2" value="solo"/> solo<br />
 		Color (for text and dot on minimap - 3 numbers 0-255): R<input type="text" id="nt-r" name="r" size="3">G<input type="text" id="nt-g" name="g" size="3">B<input type="text" id="nt-b" name="b" size="3"><br />
@@ -320,7 +324,7 @@ ____________________________________________<br /><br />
 	<form name="newicon" id="newlocform">
 		**Title (this shows up when hovering over icon): <input type="text" name="title" id="nl-title" size="20"/> <br />
 		*Information (brief blurb that details what this plot is. for single items, this is required and will show up in panel where list of songs usually are): <br /> <textarea name="info" cols="30" rows="4" id="nl-info"></textarea><br/>
-		Street Credit (numbers only): <input type="text" name="SC" id="nl-sc" size="20"/> <br />
+		Street Credit (numbers only): <input type="text" name="streetcred" id="nl-sc" size="20"/> <br />
 		DNA (as few characters as possible): <input type="text" name="DNA" id="nl-dna" size="20"/> <br />
 		Points (leave this for dan - number between 0 and 1, in the form of 0.xyz, 0, or 1):
 		<input type="text" name="points" id="nl-points" size="20"/> <br />

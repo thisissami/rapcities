@@ -73,6 +73,7 @@ function newType(req, res){
 							types.insert(newtype,{safe:true},function(err,doc){
 								if(err)returnError(res,'type insertion failure\n'+err.message);
 								else{
+									console.log(doc);
 									returnSuccess(res);
 								}
 							});
@@ -88,6 +89,7 @@ function newLoc(req, res){
 	var newloc = req.body;
 	newloc['_id'] = shortID.generate();
 	if(newloc['list']){ newloc['list'] = new Array(); newloc['listnum'] = 0;}
+	else newloc['viewcount'] = 0;
 	newloc.visible = false;
 //	var newnewloc = JSON.parse(JSON.stringify(newloc));
 //	console.log(newnewloc);
@@ -120,11 +122,27 @@ function editLoc(req,res){
 									ytid: loc['ytid'+i],
 									RID: loc['RID'+i]
 								}
+								if(loc['streetcred'+i]){
+									curlist['streetcred'] = loc['streetcred'+i];
+									console.log('akdjf');
+								}
+								var j; var curid = curlist.RID; var found = false;
+								for(j = 0; j < doc.listnum; j++){
+									if(curid == doc.list[j].RID){
+										curlist['viewcount'] = doc.list[j].viewcount;
+										found = true;
+										break;
+									}
+								}
+								if(!found){
+									curlist['viewcount'] = 0;
+								}
 								list.push(curlist);
 							}
 							delete loc['title'+i];
 							delete loc['ytid'+i];
 							delete loc['RID'+i];
+							delete loc['streetcred'+i];
 						}
 						loc.list = list;
 					}else{
@@ -132,6 +150,7 @@ function editLoc(req,res){
 						loc.list = doc.list;
 					}
 				}
+				else{loc.viewcount = doc.viewcount}
 				locs.findAndModify({'_id':loc._id}, [['_id', 'asc']], loc,{safe:true}, function(err,newloc) {
 	              if(err) {
 	                console.log(err.message); returnError(res,'editloc insertion error: '+err.message);
@@ -155,7 +174,10 @@ function editLocation(req,res){
 	              if(err) {
 	                console.log(err.message); returnError(res,'edit location insertion error: '+err.message);
 	              }
-					else{returnSuccess(res);}
+					else{
+						//console.log(newloc);
+						returnSuccess(res, null, newloc);
+					}
 				});		
 				
 			}
@@ -225,7 +247,7 @@ function getTypes(req, res){
 }
 
 function getTypeIcon(req,res){
-	if(req.query && req.query._id && req.query._id.length < 5){
+	if(req.query && req.query._id){
 		var GS = new gridStore(db, 'typeIcon/'+req.query._id, 'r');
 		GS.open(function(err, gs){
 			if(err) returnError(res, 'Error opening gs: '+err.message)
@@ -243,6 +265,19 @@ function getTypeIcon(req,res){
 	else returnError(res, 'query issue');
 }
 
+function view(req,res){
+	if(req.query && req.query._id){
+		if(req.query.position){
+			var listkey = {}
+			listkey['list.'+req.query.position+'.viewcount'] =1;
+			locs.update({'_id':req.query._id},{$inc: listkey});
+		}
+		else
+			locs.update({_id:req.query._id},{$inc: {'viewcount':1}});
+	}
+	res.end();
+}
+
 function showType(req,res){
 	console.log('yeeeaaah');
 	res.writeHead(200, {'Content-Type': 'image/jpeg'});
@@ -254,11 +289,13 @@ function showType(req,res){
 	})
 }
 
-function returnSuccess(response, message){
+function returnSuccess(response, message, object){
 	response.writeHead(200, {'Content-Type': 'application/json'});
 	var returned = {'success':true}
 	if(message)
 		returned['message'] = message;
+	if(object)
+		returned['object'] = object;
 	response.end(JSON.stringify(returned));
 }
 
@@ -430,3 +467,4 @@ exports.searchLoc = searchLoc;
 exports.browseLoc = browseLoc;
 exports.editLoc = editLoc;
 exports.editLocation = editLocation;
+exports.view = view;

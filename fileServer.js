@@ -29,7 +29,7 @@ module.exports = function fileServer(maxage){
 		folder = __dirname + '/files/locs/uploader.html';
 		contentType = 'text/html';
 	}
-/*	else if(req.url == '/upl0d.pde'){
+	/*else if(req.url == '/upl0d.pde'){
 		folder = __dirname + '/files/locs/uploadxy.pde';
 		contentType = 'text/processing';
 	}
@@ -135,15 +135,15 @@ module.exports = function fileServer(maxage){
 		var ext = path.extname(pathname);
 		if(ext == '.grid'){
 			if(req.url.split('.')[1]=='art'){
-				folder = __dirname + '/files/grid/art_'+req.url.split('/')[1].split('.')[0]+'.png';
+				folder = __dirname + '/files/grid/art_'+req.url.split('/')[1].split('.')[0]+'.gif';
 				contentType = 'image/png';
 			}
 			else if(req.url.split('.')[1]=='large'){
-				folder = __dirname + '/files/grid/NYCfinal_'+req.url.split('/')[1].split('.')[0]+'.png';
+				folder = __dirname + '/files/grid/standard_'+req.url.split('/')[1].split('.')[0]+'.gif';
 				contentType = 'image/png';
 			}
 			else{
-				folder = __dirname + '/files/grid/image_'+req.url.split('/')[1].split('.')[0]+'.gif';
+				folder = __dirname + '/files/grid/standard_'+req.url.split('/')[1].split('.')[0]+'.gif';
 				contentType = 'image/gif';
 			}
 		}

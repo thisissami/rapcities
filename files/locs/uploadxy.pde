@@ -57,8 +57,8 @@ $("#parent").css("width",WIDTH).css("height",HEIGHT);
   bannerY = 30;//HEIGHT/bannerYFull*300;
   YBASE = 30;
   XBASE = 0;
-  ygrid = 7757;
-  xgrid = 8189;
+  ygrid = 8*950;
+  xgrid = 8*1000;
 togglePlayer();
 recentlyPlayed = new ArrayList();
 		
@@ -343,9 +343,9 @@ class Map{
 		midY = 4100;
 		miniMidX = map(midX,0,xgrid,0,284);
 		miniMidY = map(midY,0,ygrid,0,270);
-		widths = new Array(1018,1027, 1017, 1028, 1017, 1028, 1017,1037);
-		heights = new Array(950 ,970 ,970 ,969 ,979 ,970 ,970 ,979);
-		allX = 9207; allY = 8707;
+		widths = new Array(1000,1000,1000,1000,1000,1000,1000,1000);
+		heights = new Array(950,950,950,950,950,950,950,950);
+		allX = 1000*8; allY = 950*8;
 		setMins();
 	}
 	void miniMousePressed(){
@@ -486,12 +486,13 @@ class Map{
 
 var curicon; var iconrequested = false; var iconready = false; var _id;
 var iconset = false; var iconx, icony;
-var location; var curVid = -1;
+var location; var curVid = -1; var curloc = -1;
 
 void mouseClicked(){
   if(curloc >= 0){
 	location = locations.get(curloc);
 	console.log(location);
+	$("#curid").html(location._id);
 	playingVideo = 0;
 	loadVideo();
   }
@@ -500,7 +501,7 @@ void mouseClicked(){
 		loadVideo();
 		//getSong(artist.topTracks[curSong].id);
 	}
-	else if(mouseX < PANEMINX || mouseX > PANEMAXX || mouseY < PANEMINY || mouseY > MINIMAXY && mouseButton == 'LEFT'){
+	else if(mouseX < PANEMINX || mouseX > PANEMAXX || mouseY < PANEMINY || mouseY > MINIMAXY){
 		if(mouseButton == LEFT){
 			if(iconready){			
 				if(iconset){
@@ -508,9 +509,24 @@ void mouseClicked(){
 						url: "http://localhost:8888/loc/editLocation",
 						data: {_id:_id, x:iconx+'', y:icony+''},
 						success: function(response){if(response){
-							if(response.success){ 
+							if(response.success && response.object){ 
+								var found = false;
+								for(int i = 0; i < locations.size(); i++){
+									if(locations.get(i)._id == _id){
+										locations.remove(i);
+										locations.add(response.object);
+										
+										found = true;
+										break;
+									}
+								}
+								if(!found) locations.add(response.object);
 								var str = 'Operation Successful';
 								if(response.message) str += '\n' + response.message;
+								curicon = null;
+								iconready = false;
+								iconset = false;
+								iconrequested = false;
 								alert(str);
 							} else alert('There seems to be an error:\n\n'+response.message);
 						}}
@@ -844,7 +860,7 @@ void createNext(){
 	//getSong(artist.topTracks[playingVideo].id);
   }
   else
-	nextVideo();
+	nextLocation();
 }
 
 ArrayList recentlyPlayed;
@@ -1472,7 +1488,7 @@ void videoEnded(){
 		loadVideo();
   }
   else
-	nextArtist();
+	nextLocation();
 }
 
 void togglePlayer(){
@@ -1504,7 +1520,7 @@ void loadVideo(){
 
 void playVideo(newlocation, newsub){
 	var newloc;
-	if(newloc == location._id)
+	if(newlocation == location._id)
 		newloc = false;
 	else
 		newloc = true;
