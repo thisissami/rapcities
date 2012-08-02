@@ -1,13 +1,9 @@
-uploadArtist
-topTracks
+locs
 server.js
-prepareGeoNYC
 fileserver *sometimes
-facebook
-artist_info
-artistID
 artistInfo
-artistLocs
+user
 
-uploaders .pde
+
+uploaders
 rapcities.pde

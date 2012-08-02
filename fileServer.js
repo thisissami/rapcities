@@ -4,8 +4,8 @@ var fs = require('fs'),
   zlib = require('zlib'),
   gzip = zlib.createGzip(),
   url = require('url'),
-  files = {},
-  indexCreator = require('./indexCreator');
+  files = {};
+  //indexCreator = require('./indexCreator');
 
 /**
  *   - `maxAge`  cache-control max-age directive, defaulting to 1 day
@@ -17,19 +17,141 @@ module.exports = function fileServer(maxage){
 
   return function fileServer(req, res, next){
     if(req.socket.remoteAddress || req.socket.socket.remoteAddress == '127.0.0.1'){
-      var folder,contentType;
-	  
-	  
-      
-	  if(req.url == '/upl0dder' && (req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001')){
-		folder = __dirname + '/files/locs/upload.html';
-		contentType = 'text/html';
-      }
-	else if(req.url == '/pl0dder' && (req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001')){
-		folder = __dirname + '/files/locs/uploader.html';
-		contentType = 'text/html';
-	}
-	/*else if(req.url == '/upl0d.pde'){
+    
+    switch(req.url){
+      case('/favicon.ico'):
+        if (files.icon) {
+          res.writeHead(200, files.icon.headers);
+          res.end(files.icon.body);
+        } else readfile('/files/icons/favicon.ico','image/x-icon','icon',false)
+        break;
+      case('/robots.txt'):
+        res.writeHead(404);
+        res.end();
+        break;
+      case('/areyouateapot'):
+        res.writeHead(418);
+        res.end('check the header!');
+        break;
+      case('/'):
+	  case('/#_=_'):
+      case('/hennessy'):
+	  case('/smirnoff'):
+	  case('/greygoose'):
+	case('/ciroc'):
+	case('/crownroyal'):
+	case('/baileys'):
+	case('/moet'):
+	case('/belvedere'):
+	case('/bacardi'):
+	//culture
+	case('/culture'):
+        if (files.index) sendfile('index',true);
+        else readfile('/files/index.html','text/html; charset=utf-8','index',true);
+        break;
+      case('/processing-1.3.6.min.js'):
+        if (files.processingmin) sendfile('processingmin',true);
+        else readfile('/files/lib/processing-1.3.6.min.js','text/javascript','processingmin',true)
+        break;
+      case('/soundmanager2.js'):
+        if (files.sm2) sendfile('sm2',true);
+        else readfile('/files/lib/soundmanager2-nodebug-jsmin.js','text/javascript','sm2',true)
+        break;
+      case('/soundmanager2.swf'):
+        if (files.sm2f) sendfile('sm2f');
+        else readfile('/files/lib/soundmanager2.swf','application/x-shockwave-flash','sm2f',false)
+        break;
+	  case('/upl0dder'):
+	 	if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001'){
+			if (files.upl0dder) sendfile('upl0dder',true);
+			else readfile('/files/locs/upload.html','text/html','upl0dder',true)
+	      }
+		  break;
+	  case('/pl0dder'):
+	 	if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001'){
+			if (files.upl0dder) sendfile('upl0dder',true);
+			else readfile('/files/locs/uploader.html','text/html','pl0dder',true)
+		}
+		break;
+	  case('/jquery-ui-1.8.18.custom.css'):
+		if (files.jqcss) sendfile('jqcss',true);
+		else readfile('/files/css/jquery-ui-1.8.18.custom.css','text/css','jqcss',true)
+		break;
+	  case('/images/ui-icons_454545_256x240.png'):
+	    if (files.icon1) sendfile('icon1');
+	    else readfile('/files/images/ui-icons_454545_256x240.png','image/png','icon1',false)
+	    break;
+	  case('/images/ui-icons_cccccc_256x240.png'):
+	    if (files.icon2) sendfile('icon2');
+	    else readfile('/files/images/ui-icons_cccccc_256x240.png','image/png','icon2',false)
+	    break;
+	  case('/images/ui-bg_highlight-soft_75_000000_1x100.png'):
+	    if (files.bg2) sendfile('bg2');
+	    else readfile('/files/images/ui-bg_highlight-soft_75_000000_1x100.png','image/png','bg2',false)
+	    break;
+	  case('/images/ui-bg_flat_75_000000_40x100.png'):
+	    if (files.bg1) sendfile('bg1');
+	    else readfile('/files/images/ui-bg_highlight-soft_75_000000_1x100.png','image/png','bg1',false)
+	    break;
+	  case('/heart.svg'):
+          if (files.heart) sendfile('heart');
+		  else readfile('/files/icons/heart.svg', 'image/svg+xml', 'heart', false);
+          break;
+        case('/greyHeart.svg'):
+          if (files.greyHeart) sendfile('greyHeart');
+          else readfile('/files/icons/greyHeart.svg', 'image/svg+xml', 'greyHeart', false);
+          break;
+		 case('/processing.js'):
+			if (files.processingjs) sendfile('processingjs',true);
+          	else readfile('/files/lib/processing.js', 'text/javascript', 'processingjs', true);
+          	break;
+		  case('/logo'):
+			if (files.logo) sendfile('logo');
+        	else readfile('/files/images/logo.png', 'image/png', 'logo', false);
+        	break;
+		  case('/info'):
+			if (files.info) sendfile('info');
+        	else readfile('/files/icons/info.png', 'image/png', 'info', false);
+        	break;
+		  case('/facebook'):
+			if (files.facebook) sendfile('facebook');
+        	else readfile('/files/icons/facebook.png', 'image/png', 'facebook', false);
+        	break;
+	      case('/exit.png'):
+			if (files.exit) sendfile('exit');
+        	else readfile('/files/icons/exit.png', 'image/png', 'exit', false);
+        	break;
+	      case('/wikibio.png'):
+			if (files.wikibio) sendfile('wikibio');
+        	else readfile('/files/icons/wikibio.png', 'image/png', 'wikibio', false);
+        	break;
+		  case('/heartbasket.png'):
+			if (files.heartbasket) sendfile('heartbasket');
+        	else readfile('/files/icons/heartbasket.png', 'image/png', 'heartbasket', false);
+        	break;
+		  case('/miniNYC.png'):
+			if (files.miniNYC) sendfile('miniNYC');
+        	else readfile('/files/images/miniNYC.png', 'image/png', 'miniNYC', false);
+        	break;
+
+      default: next();
+    } 
+	
+	  var folder,contentType;
+	 
+    var requrl = url.parse(req.url, true).pathname;
+    if(requrl.indexOf('/css/') == 0) {
+      var strippedString = requrl.replace('/', '');
+      if(files[strippedString]) sendfile(strippedString)
+      else readfile('/files' + requrl, 'text/css', strippedString, true);
+    } else if(requrl.indexOf('/js/') == 0) {
+      var strippedString = requrl.replace('/', '');
+      if(files[strippedString]) sendfile(strippedString)
+      else readfile('/files' + requrl, 'text/javascript', strippedString, true);
+    } /*else if(requrl.indexOf('/song/') == 0){ //songID
+		res.writeHead(302, {'location':'http://rapcities.com'});
+		res.end();
+    }*/ else if(req.url == '/upl0d.pde'){ // FROM HERE PLZ!
 		folder = __dirname + '/files/locs/uploadxy.pde';
 		contentType = 'text/processing';
 	}
@@ -40,95 +162,8 @@ module.exports = function fileServer(maxage){
 	else if(req.url == '/rapcities.pde'){
         folder = __dirname + '/pde/rapcitiesAlpha.pde';
         contentType = 'text/processing';
-      }*/
-	  else if(req.url == '/processing.js'){
-		folder = __dirname + '/pde/SVG/applet_js/processing.js';
-        contentType = 'text/javascript';
-      } 
-	  else if(req.url == '/NYCMapOutlines2_simple.svg'){
-		folder = __dirname + '/pde/SVG/applet_js/NYCMapOutlines2_simple.svg';
-        contentType = 'image/svg+xml';
-      }
-	  else if(req.url == '/NYC.svg'){
-		folder = __dirname + '/pde/SVG/applet_js/NYCfinal.svg';
-        contentType = 'image/svg+xml';
-      }
-	  else if(req.url == '/bot.svg'){
-		folder = __dirname + '/pde/SVG/applet_js/rappericon.svg';
-        contentType = 'image/svg+xml';
-      }
-	  else if(req.url == '/rapper.svg'){
-		folder = __dirname + '/pde/SVG/applet_js/rapper2.svg';
-        contentType = 'image/svg+xml';
-      }
-	  else if(req.url == '/frame.svg'){
-		folder = __dirname + '/pde/SVG/applet_js/frame.svg';
-        contentType = 'image/svg+xml';
-      }
-	  else if(req.url == '/sponsoricon.png'){
-		folder = __dirname + '/pde/SVG/applet_js/sponsoricon.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/favsicon.png'){
-		folder = __dirname + '/pde/SVG/applet_js/favsicon.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/frlogo.png'){
-		folder = __dirname + '/pde/SVG/applet_js/frlogo.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/cultureicon.png'){
-		folder = __dirname + '/pde/SVG/applet_js/cultureicon.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/logo'){
-		folder = __dirname + '/files/logo.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/NYC.gif'){
-		folder = __dirname + '/files/NYCfinal.gif';
-        contentType = 'image/gif';
-      }
-	  else if(req.url == '/info'){
-		folder = __dirname + '/files/icons/info.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/facebook'){
-		folder = __dirname + '/files/icons/facebook-recommend.png'; 
-        contentType = 'image/png';
-      }
-      else if(req.url == '/exit.png'){
-		folder = __dirname + '/files/icons/exit.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/youtube'){
-		folder = __dirname + '/files/icons/youtube_metal_grunge_icon_5_by_highaltitudes-d4168hp.png';
-        contentType = 'image/png';
-      }
-      else if(req.url == '/wikibio.png'){
-		folder = __dirname + '/files/icons/wikibio.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/heart'){
-		folder = __dirname + '/files/icons/thumb_COLOURBOX2702046.jpeg';
-        contentType = 'image/jpeg';
-      }
-	  else if(req.url == '/heartbasket.png'){
-		folder = __dirname + '/files/icons/heartbasket.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/twitter'){
-		folder = __dirname + '/files/icons/twitter_metal_grunge_icon_7_by_highaltitudes-d3dzum9.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/miniNYC.png'){
-		folder = __dirname + '/files/miniNYC.png';
-        contentType = 'image/png';
-      }
-	  else if(req.url == '/banner.png'){
-		folder = __dirname + '/files/banner.png';
-        contentType = 'image/png';
-      }
+      }//*/
+
 	  else{
 		var parsed = url.parse(req.url,true);
 		var pathname = parsed.pathname;
@@ -161,137 +196,22 @@ module.exports = function fileServer(maxage){
           }
         });
       }
-    }
-    var requrl = url.parse(req.url, true).pathname;
-    if(requrl.indexOf('/css/') == 0) {
-      var strippedString = requrl.replace('/', '');
-      if(files[strippedString]) sendfile(strippedString)
-      else readfile('/files' + requrl, 'text/css', strippedString, true);
-    } else if(requrl.indexOf('/js/') == 0) {
-      var strippedString = requrl.replace('/', '');
-      if(files[strippedString]) sendfile(strippedString)
-      else readfile('/files' + requrl, 'text/javascript', strippedString, true);
-    } else if(requrl.indexOf('/song/') == 0){ //songID
-	indexCreator.returnSongIndex(requrl.split('/'),res);
-    } else {
     
-    switch(req.url){
-      case('/favicon.ico'):
-        if (files.icon) {
-          res.writeHead(200, files.icon.headers);
-          res.end(files.icon.body);
-        } else readfile('/files/favicon.ico','image/x-icon','icon',false)
-        break;
-      case('/robots.txt'):
-        res.writeHead(404);
-        res.end();
-        break;
-      case('/areyouateapot'):
-        res.writeHead(418);
-        res.end('check the header!');
-        break;
-      case('/'):
-	  case('/#_=_'):
-      case('/hennessy'):
-	  case('/smirnoff'):
-	  case('/greygoose'):
-	case('/ciroc'):
-	case('/crownroyal'):
-	case('/baileys'):
-	case('/moet'):
-	case('/belvedere'):
-	case('/bacardi'):
-	//culture
-	case('/culture'):
-        if (files.index) sendfile('index')
-        else readfile('/files/index.html','text/html; charset=utf-8','index',true)
-        break;
-      case('/processing-1.3.6.min.js'):
-        if (files.processing) sendfile('processing')
-        else readfile('/files/processing-1.3.6.min.js','text/javascript','processing',true)
-        break;
-      case('/soundmanager2.js'):
-        if (files.sm2) sendfile('sm2')
-        else readfile('/files/soundmanager2-nodebug-jsmin.js','text/javascript','sm2',true)
-        break;
-      case('/soundmanager2.swf'):
-        if (files.sm2f){
-          res.writeHead(200, files.sm2f.headers);
-          res.end(files.sm2f.body);
-        }
-        else readfile('/files/soundmanager2.swf','application/x-shockwave-flash','sm2f',false)
-        break;
-      /*case('/soundmanager2_flash9.swf'):
-        if (files.sm2f9) {
-          res.writeHead(200, files.sm2f9.headers);
-          res.end(files.sm2f9.body);
-        } else readfile('/files/soundmanager2_flash9.swf','application/x-shockwave-flash','sm2f9',false)
-        break;*/
-      /*case('/youtube'):
-        if (files.ytube) {
-          res.writeHead(200, files.ytube.headers);
-          res.end(files.ytube.body);
-        } else readfile('/files/web_youtube2.png','image/png','ytube',false)
-        break;
-      case('/facebook'):
-        if (files.fbook) {
-          res.writeHead(200, files.fbook.headers);
-          res.end(files.fbook.body);
-        } else readfile('/files/facebook.gif','image/gif','fbook',false)
-        break;
-      case('/info.svg'):
-        if (files.info) {
-          res.writeHead(200, files.info.headers);
-          res.end(files.info.body);
-        } else readfile('/files/info.svg','image/svg+xml','info',false)
-        break;*/
-	  case('/jquery-ui-1.8.18.custom.css'):
-		if (files.css) sendfile('css')
-		else readfile('/files/jquery-ui-1.8.18.custom.css','text/css','css',true)
-		break;
-	  case('/images/ui-icons_454545_256x240.png'):
-	    if (files.icon1) sendfile('icon1')
-	    else readfile('/files/images/ui-icons_454545_256x240.png','image/png','icon1',true)
-	    break;
-	  case('/images/ui-icons_cccccc_256x240.png'):
-	    if (files.icon2) sendfile('icon2')
-	    else readfile('/files/images/ui-icons_cccccc_256x240.png','image/png','icon2',true)
-	    break;
-	  case('/images/ui-bg_highlight-soft_75_000000_1x100.png'):
-	    if (files.bg) sendfile('bg')
-	    else readfile('/files/images/ui-bg_highlight-soft_75_000000_1x100.png','image/png','bg',true)
-	    break;
-	  case('/images/ui-bg_flat_75_000000_40x100.png'):
-	    if (files.bg) sendfile('bg')
-	    else readfile('/files/images/ui-bg_highlight-soft_75_000000_1x100.png','image/png','bg',true)
-	    break;
-	  case('/heart.svg'):
-          if (files.heart) {
-            res.writeHead(200, files.heart.headers);
-            res.end(files.heart.body);
-          } else readfile('/files/heart.svg', 'image/svg+xml', 'heart', false);
-          break;
-        case('/greyHeart.svg'):
-          if (files.greyHeart) {
-            res.writeHead(200, files.greyHeart.headers);
-            res.end(files.greyHeart.body);
-          } else readfile('/files/greyHeart.svg', 'image/svg+xml', 'greyHeart', false);
-          break;
-      default: next();
-    } }
+}
  //icon, index, sm2, sm2f, sm2f9, processing, info, fbook, ytube;   
-    function sendfile(file){
+    function sendfile(file,compress){
       var acceptEncoding = req.headers['accept-encoding'];
-      if (!acceptEncoding) {
-        acceptEncoding = '';
+      if (!acceptEncoding || !compress) {
+		res.writeHead(200, files[file].headers);
+        res.end(files[file].body);
       }
       if (acceptEncoding.trim() == '*' || acceptEncoding.match(/\bgzip\b/)) {
-        res.writeHead(200, files[file].gzip.headers);
-        res.end(files[file].gzip.body);
+        res.writeHead(200, files[file+'g'].headers);
+        res.end(files[file+'g'].body);
       }
       else if (acceptEncoding.match(/\bdeflate\b/)) {
-        res.writeHead(200, files[file].deflate.headers);
-        res.end(files[file].deflate.body);
+        res.writeHead(200, files[file+'d'].headers);
+        res.end(files[file+'d'].body);
       }
       else{ 
         res.writeHead(200, files[file].headers);
@@ -312,7 +232,7 @@ module.exports = function fileServer(maxage){
         };
         if(compress){
           zlibBuffer(zlib.createGzip({level:zlib.Z_BEST_COMPRESSION,memLevel:zlib.Z_MAX_MEMLEVEL}),buf,function(err,gzip){
-            files[file].gzip = {
+            files[file+'g'] = {
               headers: {
                  'Content-Type': contentType,
                  'Content-Encoding':'gzip',
@@ -323,7 +243,7 @@ module.exports = function fileServer(maxage){
             };
           });
           zlibBuffer(zlib.createDeflate({level:zlib.Z_BEST_COMPRESSION,memLevel:zlib.Z_MAX_MEMLEVEL}),buf,function(err,deflate){
-            files[file].deflate = {
+            files[file+'d'] = {
               headers: {
                  'Content-Type': contentType,
                  'Content-Encoding':'deflate',

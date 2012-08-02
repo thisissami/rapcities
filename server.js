@@ -7,8 +7,8 @@ if(cluster.isMaster){
   for(var i = 0; i < numCPUs; i++)
     cluster.fork();
     
-  cluster.on('death', function(worker){
-    console.log('worker ' + worker.pid + ' died.');
+  cluster.on('exit', function(worker){
+    console.log('worker ' + worker.process.pid + ' died.');
     cluster.fork();
   });
   process.on("SIGTERM", process.exit);
@@ -23,8 +23,6 @@ else{
   url = require('url'),
   path = require('path'),
   fs = require('fs');
-  uploader = require('./uploadArtist'),
-  digital7 = require('./7Dconnect'),
   artistInfo = require('./artistInfo');
   locations = require('./locs');
   users = require('./user');
@@ -36,20 +34,18 @@ else{
   qs = require('querystring');
 
 passport.serializeUser(function(userid,done){
-	console.log('serializing!');
 	done(null, userid);
 });
 passport.deserializeUser(function(userid,done){
-	console.log('deserializing!');
 	done(null,userid);
 });
 
 passport.use(new fpass({
-		//clientID:'300271166724919',
-		//clientSecret:'b4ba0065d5002941b871610d00afd80b',
-		clientID:'134659439991720', //rapcities proper
-		clientSecret:'43c2b1a5bc972868418383d74a51bfa4', // DON'T FORGET TO SWITCH LOCALHOST HERE
-		callbackURL:'http://rapcities.com/auth/facebook/callback'
+		clientID:'300271166724919',
+		clientSecret:'b4ba0065d5002941b871610d00afd80b',
+		//clientID:'134659439991720', //rapcities proper
+		//clientSecret:'43c2b1a5bc972868418383d74a51bfa4', // DON'T FORGET TO SWITCH LOCALHOST HERE
+		callbackURL:'http://localhost:8888/auth/facebook/callback'
 	},
 	function(accessToken, refreshToken, fbUserData, done){
 		var toUpload = {
@@ -75,13 +71,12 @@ passport.use(new fpass({
     var arr = pathname.split('?')[0];
 
     switch(arr){
-      case '/addArtist': console.log('OH SHIT SOME SUCCESS!'); uploader.uploadLoc(res, parsed.query); break;
+      /*case '/addArtist': console.log('OH SHIT SOME SUCCESS!'); uploader.uploadLoc(res, parsed.query); break;
 	  case '/getArtists': console.log('GETTING ZE ARTISTS!!!!'); uploader.getLocs(res, parsed.query); break;
 	  case '/addEvent': console.log('OH SHIT ADDING AN EVENT!!!!'); uploader.uploadEvent(res, parsed.query); break;
-      case '/getEvents': console.log('OH SHIT GETTING AN EVENT!!!!'); uploader.getEvents(res, parsed.query); break;
-	  case '/getArtistInfo': console.log('getting artist info'); artistInfo.get(res, parsed.query); break;
+      case '/getEvents': console.log('OH SHIT GETTING AN EVENT!!!!'); uploader.getEvents(res, parsed.query); break;*/
+	  case '/getArtistInfo': artistInfo.get(res, parsed.query); break;
 	  case '/getBio': artistInfo.getBio(res, parsed.query); break;
-	  case '/getTrack': console.log('getting track'); digital7.getTrack(res, parsed.query); break;
       case '/seeSongs': users.seeSongs(req, res, next); break;
       case '/addSong': users.addSong(req, res, next); break;
       case '/removeSong': users.removeSong(req, res, next); break;
@@ -97,6 +92,7 @@ passport.use(new fpass({
 	  case '/loc/editLoc':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.editLoc(req,res); break;
 	  case '/loc/editLocation':if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.editLocation(req,res); break;
 	  case '/loc/view': locations.view(req,res); break;
+	  case '/loc/edittype':console.log('hello');if(req.user == '4fe486215a805bcf53000001' || req.user == '4fe77c671588a57e47000001' || req.user == '4fe42f6ecef89ced3d000004' || req.user == '4fe23f9b363283a404000001') locations.editType(req,res); break;
       default: return;
     }
   }
@@ -116,7 +112,7 @@ passport.use(new fpass({
 		if(req.user){
 			if(req.url == '/logout'){
 				req.logOut();
-				res.writeHead(302, {'location':'http://rapcities.com/login'});
+				res.writeHead(302, {'location':'http://localhost:8888/login'});
 				res.end();
 			}
 			else
@@ -128,11 +124,11 @@ passport.use(new fpass({
 		      	var folder,contentType;
 				console.log('req url = '+req.url);
 	  		   	if(req.url == '/landing.png'){
-					folder = __dirname+'/files/landing.png';
+					folder = __dirname+'/files/images/landing.png';
 					contentType = 'image/png';
 				}
 				else if(req.url == '/facebookLanding.png'){
-					folder = __dirname+'/files/facebookLanding.png';
+					folder = __dirname+'/files/images/facebookLanding.png';
 					contentType = 'image/png';
 				}
 				else if(req.url == '/auth/facebook'){
@@ -140,7 +136,7 @@ passport.use(new fpass({
 					return;
 				}
 				else if(req.url.split('?')[0] == '/auth/facebook/callback'){
-					passport.authenticate('facebook', {failureRedirect: '/failbook', 'successRedirect':'http://rapcities.com/'})(req, res, next);
+					passport.authenticate('facebook', {failureRedirect: '/failbook', 'successRedirect':'http://localhost:8888/'})(req, res, next);
 					return;
 				}
 				else if(req.url.split('?')[0] == '/failbook'){
@@ -184,8 +180,8 @@ passport.use(new fpass({
 	checkLoggedIn,
     require('./fileServer')(),
     connect.compress({memLevel:9}),
-    router).listen(80);
-	//router).listen(8888);
+    //router).listen(80);
+	router).listen(8888);
   console.log('Server has started.');
 }
 

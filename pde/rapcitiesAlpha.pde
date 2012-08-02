@@ -1,4 +1,4 @@
-/* @pjs preload="http://localhost:8888/heartbasket.png, http://localhost:8888/wikibio.png, http://localhost:8888/exit.png, http://localhost:8888/heart.svg, http://localhost:8888/greyHeart.svg, http://localhost:8888/facebook,http://localhost:8888/info,http://localhost:8888/twitter,http://localhost:8888/NYC.gif,http://localhost:8888/rapper.svg,http://localhost:8888/bot.svg,http://localhost:8888/miniNYC.png,http://localhost:8888/sponsoricon.png,http://localhost:8888/cultureicon.png,http://localhost:8888/logo";*/
+/* @pjs preload="http://localhost:8888/heartbasket.png, http://localhost:8888/wikibio.png, http://localhost:8888/exit.png, http://localhost:8888/heart.svg, http://localhost:8888/greyHeart.svg, http://localhost:8888/facebook,http://localhost:8888/miniNYC.png,http://localhost:8888/logo";*/
 boolean started;
 PFont font;
 color[] colors;
@@ -90,7 +90,6 @@ artmode = false;
   heartBasket = loadImage("http://localhost:8888/heartbasket.png");
   heart = loadShape("http://localhost:8888/heart.svg");
   greyHeart = loadShape("http://localhost:8888/greyHeart.svg");
-  twitter = loadImage("http://localhost:8888/twitter");
   wikibio = loadImage("http://localhost:8888/wikibio.png");
 }
 
@@ -150,7 +149,7 @@ void setUpSize(width,height){
 }
 
 PShapeSVG heart,greyHeart;
-PImage facebook,info,facebook2,twitter,heartBasket,logout,wikibio;
+PImage facebook,heartBasket,logout,wikibio;
 
 void setUpColors(){
   colorMode(RGB);
@@ -192,12 +191,12 @@ void draw(){
 
 var location;
 var icons = new HashMap();
-var media = {}
-var colors = {}
+var media = {};
+var colors = {};
 var locations = new ArrayList();
 
 void setUpLocations(){
-	$.getJSON('http://localhost:8888/loc/browse?hasLoc=8', function(results){      
+	$.getJSON('http://localhost:8888/loc/browse?hasLoc=8&public=4', function(results){      
       if(results && results.locs){
         for(int i = 0; i < results.locs.length; i++){
             locations.add(results.locs[i]);
@@ -368,8 +367,7 @@ void keyPressed(){
 
 int miniMidX,miniMidY,midX,midY;
 class Map{
-	PShape rapper, rapcircle;
-	PImage NYC, miniNYC, cultureIcon, sponsorIcon;
+	PImage miniNYC;
 	int NYCx = 1000;
 	int NYCy = 711;
 	int ox, oy, ocx, ocy;
@@ -380,18 +378,8 @@ class Map{
 	boolean opressed = false;
 	boolean miniPressed = false;
 	Map(){
-		NYC = loadImage("http://localhost:8888/NYC.gif");
 		miniNYC = loadImage("http://localhost:8888/miniNYC.png");
-		sponsorIcon = loadImage("http://localhost:8888/sponsoricon.png");
-		cultureIcon = loadImage("http://localhost:8888/cultureicon.png");
 		ox = oy = -1;
-		/*ominx = minX = NYCx - xdif;//map(NYCx - xdif,0,2000,725.056,935.131);
-		maxX = NYCx + xdif;//map(NYCx + xdif,0,2000,725.056,935.131);
-		ominy = minY = NYCy - ydif;//map(NYCy - ydif,0,1422,701.865,950.945);
-		maxY = NYCy + ydif;//map(NYCy + ydif,0,1422,701.865,950.945);*/
-		//531.749 231.083 853 810
-		rapper = loadShape("http://localhost:8888/rapper.svg");
-		rapcircle = loadShape("http://localhost:8888/bot.svg");
 		prep();
 	}
 //	2000 x 1422

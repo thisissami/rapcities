@@ -1,6 +1,6 @@
 var mongodb = require('mongodb'),
-  mongoserver = new mongodb.Server('10.112.0.110', 26374),
-  //mongoserver = new mongodb.Server('localhost', 26374),
+  //mongoserver = new mongodb.Server('10.112.0.110', 26374),
+  mongoserver = new mongodb.Server('localhost', 26374),
   dbConnector = new mongodb.Db('uenergy', mongoserver);
 var fs = require('fs');
 var gridStore = mongodb.GridStore;
@@ -70,19 +70,64 @@ function newType(req, res){
 					gs.writeFile(req.files.icon.path, function(err, obj){
 						if(err){returnError(res, 'gs write failure: '+err.message)}
 						else{
-							types.insert(newtype,{safe:true},function(err,doc){
-								if(err)returnError(res,'type insertion failure\n'+err.message);
+							GS.close(function(err, result){
+								if(err)returnError(res,'gs close error: '+ err.message);
 								else{
-									console.log(doc);
-									returnSuccess(res);
-								}
-							});
+								types.insert(newtype,{safe:true},function(err,doc){
+									if(err)returnError(res,'type insertion failure\n'+err.message);
+									else{
+										console.log(doc);
+										returnSuccess(res);
+									}
+								});
+							}});
 						}
 					});
 				}
 			});
 		}
 	});	
+}
+
+function editType(req, res){
+	//console.log(req.body);
+	if(req.files && req.files.icon){
+		//var grid = new Grid(dbConnector, 'fs');
+		//grid.delete(req.body._id)
+		var GS = new gridStore(db, 'typeIcon/'+req.body._id, 'w', {'content_type':req.files.icon.type});
+		GS.open(function(err, gs){
+			if(err){returnError(res, 'gs open failure: '+err.message)}
+			else{
+				gs.writeFile(req.files.icon.path, function(err, obj){
+					if(err){returnError(res, 'gs write failure: '+err.message)}
+					GS.close(function(err,result){
+						if(err){returnError(res, 'gs close failure: ' + err.message);}
+						else if(req.body.r) editTypeColor(req, res);
+						else returnSuccess(res);
+					});
+				});
+			}
+		});
+	}
+	else if(req.body.r){
+		console.log('bjsdlfkj');
+		editTypeColor(req, res);
+	}
+	else returnError(res,'nothing to insert');
+
+}
+
+function editTypeColor(req, res){
+	var r = parseInt(req.body.r);
+	var g = parseInt(req.body.g);
+	var b = parseInt(req.body.b);
+	
+	types.findAndModify({'_id':req.body._id},[['_id', 'asc']],{$set:{r:r,g:g,b:b}},{safe:true},function(err,doc){
+		if(err)returnError(res,'type color modification failure\n'+err.message);
+		else{
+			returnSuccess(res);
+		}
+	});
 }
 
 function newLoc(req, res){
@@ -468,3 +513,4 @@ exports.browseLoc = browseLoc;
 exports.editLoc = editLoc;
 exports.editLocation = editLocation;
 exports.view = view;
+exports.editType = editType;

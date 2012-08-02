@@ -17,16 +17,31 @@
 		$('#newtypeform').ajaxForm(options);
 	}
 	var types;
-	function prepNewLoc(){
+	function prepTypeSelector(functionName){
 		$.get('/loc/getTypes', function(data){
 			if(data.types){
 				$('#display #types').append('Please pick a type from below:<br /><br />');
 				var i; types = data.types;
 				for(i = 0; i < types.length; i++){
-					$('#display #types').append('<a href="javascript:void(0)" onclick="prepNewLocForm('+i+')"><img src="/loc/getTypeIcon?_id=' + types[i]._id + '" alt="image should show up..."/>' + types[i].type +'</a><br />');
+					$('#display #types').append('<a href="javascript:void(0)" onclick="'+functionName+'('+i+')"><img src="/loc/getTypeIcon?_id=' + types[i]._id + '" alt="image should show up..."/>' + types[i].type +'</a><br />');
 				}
 			}
 		});
+	}
+	
+	function prepEditTypeForm(i){
+		$('#display #types').html('<i>Please fill one or both of the following fields in order to edit type</i> <b>'+types[i].type+'</b>: <br /><br />');
+		$('#display #types').append($('#edittypeform').html());
+		$('#display #et-sub').before('<input type="text" name="_id" readonly="readonly" value="'+types[i]._id+'"/>');
+		var options = {
+			beforeSubmit: validateEditType,
+			success: checkResponse,
+			url:'/loc/edittype',
+			type:'POST',
+			dataType: 'json'
+		}
+		$('#editTypeForm').ajaxForm(options);
+		curtype = i
 	}
 	
 	function prepNewLocForm(i){
@@ -95,6 +110,33 @@
 		return true;
 	}
 	var curtype;
+	
+	function validateEditType(){
+		var boolicon = false;
+		var boolcolor = true;
+		if($('#et-icon').val()){
+			boolicon = true;
+		}
+		if(!$('#et-r').val() || isNaN(parseInt($('#et-r').val())) || parseInt($('#et-r').val()) > 256 || parseInt($('#et-r').val()) < 0){
+			boolcolor = false;
+		}
+		if(!$('#et-g').val() || isNaN(parseInt($('#et-g').val())) || parseInt($('#et-g').val()) > 256 || parseInt($('#et-g').val()) < 0){
+			boolcolor = false;
+		}
+		if(!$('#et-b').val() || isNaN(parseInt($('#et-b').val())) || parseInt($('#et-b').val()) > 256 || parseInt($('#et-b').val()) < 0){
+			boolcolor = false;
+		}
+		if(!boolcolor && ($('#et-r').val() || $('#et-g').val() || $('#et-b').val())){
+			alert('one of your color inputs is not okay. either delete them all or put in 3 proper values.');
+			return false;
+		}
+		if(!boolcolor && !boolicon){
+			alert('you need to have at least one thing to change...');
+			return false;
+		}
+		return true;
+	}
+
 	function validateType(){
 		if(!$('#nt-type').val()){
 			alert('ruh roh! you need to supply a type name!')
@@ -235,8 +277,14 @@
 		prepEditForm(i);
 	}
 	
+	function closeLoc(i){
+		if(confirm('You will lose any data you inputted for this location (if you have not saved). Continue?'))
+			$('#loc'+i).html('<a href="javascript:void(0)" onclick="editLoc('+i+')">'
+			+locs[i].title+'</a> of type: '+locs[i].type);
+	}
+	
 	function editLoc(i){
-		var datahtml = '<form name="locupdate" id="locupdate'+i+'">';
+		var datahtml = '<br /><a href="javascript:void(0)" onclick="closeLoc('+i+')">Close <b>'+locs[i].title+'</b></a><br /><br /> <form name="locupdate" id="locupdate'+i+'">';
 		for(var key in locs[i]){
 			if(key == 'list'){ datahtml+= '<span id="list'+i+'"><a href="javascript:void(0)" onclick="editList('+i+')"> Click to Edit List </a></span><input type="text" name="list" readonly="readonly" size="1" value="list"/><br />';
 			}
@@ -280,20 +328,23 @@
 				prepType();
 				break;	 
 			case 1: $("div#display").html($('#newloc').html());
-				prepNewLoc();
+				prepTypeSelector('prepNewLocForm');
 				break;
 			case 2: $("div#display").html($('#search').html());
 				prepSearch();
 				break;
 			case 3: $("div#display").html($('#browse').html());
-				break;			
+				break;
+			case 4: $("div#display").html($('#editexistingtype').html());
+				prepTypeSelector('prepEditTypeForm');
+				break;
 		}
 	  }		
 		</script>
 </head>
 <body>
 	<b>Choose A Choice from the Chosen Choices</b> <br /><br />
-<a href="javascript:void(0)" onclick="setMenu(0)"> Create A New Type of Location </a> <br />
+<a href="javascript:void(0)" onclick="setMenu(0)"> Create A New Type of Location</a> | <a href="javascript:void(0)" onclick="setMenu(4)">Edit an existing Type</a><br />
 <a href="javascript:void(0)" onclick="setMenu(1)"> Create A New Location from an Existing Type </a> <br />
 <a href="javascript:void(0)" onclick="setMenu(2)"> Search For Location </a> <br />
 <a href="javascript:void(0)" onclick="setMenu(3)"> Browse All Locations </a> <br /><br />
@@ -320,6 +371,18 @@ ____________________________________________<br /><br />
 	<b>NEW LOCATION CREATION</b><br /><br />
 	<div id="types"></div>	
 </div>
+<div id="editexistingtype" style="display:none">
+	<b>EDIT EXISTING TYPE</b><br /><br />
+	<div id="types"></div>	
+</div>
+<div id="edittypeform" style="display:none">
+	<form name="editTypeForm" id="editTypeForm">
+		Color (for text and dot on minimap - 3 numbers 0-255): R<input type="text" id="et-r" name="r" size="3">G<input type="text" id="et-g" name="g" size="3">B<input type="text" id="et-b" name="b" size="3"><br />
+		Icon: <input type="file" name="icon" id="et-icon" accept="image/*" /><br />
+		<input type="submit" id="et-sub">
+	</form>
+</div>	
+		
 <div id="newlocformtop" style="display:none">
 	<form name="newicon" id="newlocform">
 		**Title (this shows up when hovering over icon): <input type="text" name="title" id="nl-title" size="20"/> <br />
